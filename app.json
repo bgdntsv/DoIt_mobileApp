@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "scheme": "acme",
+    "web": {
+      "bundler": "metro"
+    },
+    "name": "DoIt_mobileApp",
+    "slug": "DoIt_mobileApp"
+  }
+}

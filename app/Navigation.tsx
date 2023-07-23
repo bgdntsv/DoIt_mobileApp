@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from 'react-redux'
-import {Text, Platform, useWindowDimensions} from 'react-native'
+import {Text, Platform, useWindowDimensions, StatusBar} from 'react-native'
 import {AntDesign} from '@expo/vector-icons'
 import {Settings} from './Settings/Settings'
 import {NavigationContainer} from '@react-navigation/native'
@@ -66,6 +66,8 @@ export const Navigation = () => {
         return <Text>Loading...</Text>
     }
     return <NavigationContainer>
+        <StatusBar barStyle={'light-content'} backgroundColor={ColorPalette[theme].fourth}/>
+
         <Drawer.Navigator
             initialRouteName={'DoIt'}
             screenOptions = {({route})=> {

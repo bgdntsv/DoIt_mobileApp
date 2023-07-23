@@ -1,15 +1,19 @@
-import {Text, View, StyleSheet, TextInput, Pressable} from 'react-native'
+import {Text, View, StyleSheet, TextInput, Pressable, ScrollView} from 'react-native'
 import React, {useRef, useState} from 'react'
-import {ColorPalette} from '../../../assets/colors'
+import {ColorPalette} from '../../assets/colors'
 import {useDispatch, useSelector} from 'react-redux'
-import {AppDispatch, STORE_TYPE} from '../../../redux/store'
+import {AppDispatch, STORE_TYPE} from '../../redux/store'
 import Checkbox from 'expo-checkbox'
 import {Picker} from '@react-native-picker/picker'
-import {addExercise, EXERCISE_TYPE, MUSCLE_AREA_TYPE} from '../../../redux/slices/exerciseSlice'
-import {CustomButton} from '../../../common/Button'
+import {addExercise, EXERCISE_TYPE} from '../../redux/slices/exerciseSlice'
+import {CustomButton} from '../../common/Button'
 import {MuscleTypeModal} from './Modal'
+import {AntDesign} from '@expo/vector-icons'
+import {useTranslation} from 'react-i18next'
+import {MUSCLE_AREA_TYPE} from '../../helpers/constants'
 
 const AddExercise = () => {
+    const {t} = useTranslation()
     const dispatch = useDispatch<AppDispatch>()
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -26,9 +30,9 @@ const AddExercise = () => {
     const isValidForm = (): boolean => {
         if (!name) {
             return false
-        }else if (!description) {
+        } else if (!description) {
             return false
-        }else if (!isSelectedGym && !isSelectedOutdoors && !isSelectedHome) {
+        } else if (!isSelectedGym && !isSelectedOutdoors && !isSelectedHome) {
             return false
         }
         return true
@@ -42,7 +46,7 @@ const AddExercise = () => {
     const handleOutdoorsClick = () => {
         setIsSelectedOutdoors(prev => !prev)
     }
-    const handleChangeTheme = (metric: 'kg' | 'lb') => {
+    const handleChangeMetric = (metric: 'kg' | 'lb') => {
         setMetric(metric)
     }
 
@@ -58,6 +62,12 @@ const AddExercise = () => {
             metric
         }
         dispatch(addExercise(exercise))
+    }
+    const muscleAreaArrayShow = () => {
+        const toShow = muscleArea.map(e => {
+            return t(e)
+        })
+        return toShow.toLocaleString().split(',').join(', ')
     }
     const styles = StyleSheet.create({
         container: {
@@ -84,15 +94,13 @@ const AddExercise = () => {
             color: ColorPalette[theme].second
         },
         submit: {
-            borderRadius: 5,
-            marginTop: 15,
-            overflow: 'hidden'
+            marginTop: 15
         },
         checkboxes: {
             borderWidth: 1,
             borderColor: ColorPalette[theme].second,
             borderRadius: 5,
-            paddingVertical: 10
+            paddingVertical: 5,
         },
         checkboxContainer: {
             display: 'flex',
@@ -109,30 +117,44 @@ const AddExercise = () => {
         checkboxSpan: {
             color: ColorPalette[theme].second
         },
-        weightBlock: {
-            display: 'flex',
+        splitBlock: {
+            flex: 1,
             flexDirection: 'row'
         },
         weight: {
-            width: '70%',
+            flexGrow: 3,
             marginRight: 8
         },
         weightInput: {
             paddingVertical: 14
         },
         metric: {
-            width: '30%'
+            flexGrow: 1
         },
         metricDropdown: {
             borderWidth: 1,
             borderColor: ColorPalette[theme].second,
             borderRadius: 5,
             padding: 1
+        },
+        muscleAreaContainer: {
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center'
+        },
+        muscleAreaInput: {
+            width: '80%'
+        },
+        plusIcon: {
+            display: 'flex',
+            alignItems: 'center',
+            width: '20%',
+            paddingTop: 17
         }
     })
 
-    return <View style={styles.container}>
-        <Text style={styles.span}>Add name*</Text>
+    return <ScrollView style={styles.container}>
+        <Text style={styles.span}>{t('add_name')}*</Text>
         <TextInput value={name} onChangeText={setName} style={styles.input}
                    onSubmitEditing={() => {
                        if (descriptionRef.current) {
@@ -142,7 +164,7 @@ const AddExercise = () => {
                    blurOnSubmit={false}
                    returnKeyType={'next'}/>
 
-        <Text style={styles.span}>Add description*</Text>
+        <Text style={styles.span}>{t('add_description')}*</Text>
         <TextInput ref={descriptionRef} value={description} onChangeText={setDescription} style={styles.input}
                    onSubmitEditing={() => {
                        if (weightRef.current) {
@@ -152,7 +174,7 @@ const AddExercise = () => {
                    blurOnSubmit={false}
                    returnKeyType={'next'}/>
 
-        <Text style={styles.span}>Select place*</Text>
+        <Text style={styles.span}>{t('select_place')}*</Text>
         <View style={styles.checkboxes}>
             <Pressable onPress={handleGymClick} style={styles.checkboxContainer}>
                 <Checkbox
@@ -160,7 +182,7 @@ const AddExercise = () => {
                     color={ColorPalette[theme].second}
                     style={styles.checkbox} onValueChange={setIsSelectedGym}
                 />
-                <Text style={styles.checkboxSpan}>Gym</Text>
+                <Text style={styles.checkboxSpan}>{t('gym')}</Text>
             </Pressable>
             <Pressable onPress={handleHomeClick} style={styles.checkboxContainer}>
                 <Checkbox
@@ -168,7 +190,7 @@ const AddExercise = () => {
                     color={ColorPalette[theme].second}
                     style={styles.checkbox} onValueChange={setIsSelectedHome}
                 />
-                <Text style={styles.checkboxSpan}>Home</Text>
+                <Text style={styles.checkboxSpan}>{t('home')}</Text>
             </Pressable>
             <Pressable onPress={handleOutdoorsClick} style={styles.checkboxContainer}>
                 <Checkbox
@@ -176,13 +198,13 @@ const AddExercise = () => {
                     color={ColorPalette[theme].second}
                     style={styles.checkbox} onValueChange={setIsSelectedOutdoors}
                 />
-                <Text style={styles.checkboxSpan}>Outdoors</Text>
+                <Text style={styles.checkboxSpan}>{t('outdoors')}</Text>
             </Pressable>
         </View>
 
-        <View style={styles.weightBlock}>
+        <View style={styles.splitBlock}>
             <View style={styles.weight}>
-                <Text style={styles.span}>Weight</Text>
+                <Text style={styles.span}>{t('weight')}</Text>
                 <TextInput
                     ref={weightRef}
                     value={weight}
@@ -193,34 +215,45 @@ const AddExercise = () => {
                 />
             </View>
             <View style={styles.metric}>
-                <Text style={styles.span}>Metric</Text>
+                <Text style={styles.span}>{t('metric')}</Text>
                 <View style={styles.metricDropdown}>
                     <Picker
                         mode={'dialog'}
                         selectedValue={metric}
-                        onValueChange={handleChangeTheme}
-                        dropdownIconColor={ColorPalette[theme].second}>
+                        onValueChange={handleChangeMetric}
+                        dropdownIconColor={ColorPalette[theme].mainFont}>
                         <Picker.Item style={{backgroundColor: ColorPalette[theme].main}}
                                      color={ColorPalette[theme].mainFont}
-                                     label="kg"
+                                     label={t('kg')}
                                      value="kg"/>
                         <Picker.Item style={{backgroundColor: ColorPalette[theme].main}}
                                      color={ColorPalette[theme].mainFont}
-                                     label="lb"
+                                     label={t('lb')}
                                      value="lb"/>
                     </Picker>
                 </View>
             </View>
         </View>
 
-        <View style={styles.submit}>
-            <CustomButton title={'Submit'}
-                          disabled={!isValidForm()}
-                          onPress={handleSubmit}/>
-        </View>
+        <Pressable onPress={() => setIsModalOpen(true)} style={styles.muscleAreaContainer}>
+            <View style={styles.muscleAreaInput}>
+                <Text style={styles.span}>{t('muscle_area')}*</Text>
+                <TextInput
+                    value={muscleAreaArrayShow()}
+                    editable={false}
+                    style={styles.input}
+                    multiline={true}
+                />
+            </View>
+            <View style={styles.plusIcon}>
+                <AntDesign name="plus" size={38} color={ColorPalette[theme].mainFont}/>
+            </View>
+        </Pressable>
 
         <View style={styles.submit}>
-            <CustomButton title={'Show exercises'} onPress={() => setIsModalOpen(true)}/>
+            <CustomButton title={t('add_exercise')}
+                          disabled={!isValidForm()}
+                          onPress={handleSubmit}/>
         </View>
 
         <MuscleTypeModal isOpen={isModalOpen}
@@ -228,7 +261,7 @@ const AddExercise = () => {
                          muscleArea={muscleArea}
                          setMuscleArea={setMuscleArea}
                          styles={styles}/>
-    </View>
+    </ScrollView>
 }
 
 export default AddExercise

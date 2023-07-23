@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import {writeUiFile} from '../../helpers/fileHelper'
 import {STORE_TYPE} from '../store'
+import i18n from 'i18next'
 
 export type THEME_TYPE = 'white' | 'pink'
 export type LANGUAGE_TYPE = 'ua' | 'en'
@@ -35,6 +36,7 @@ export const changeLanguage = createAsyncThunk<LANGUAGE_TYPE | undefined, LANGUA
         const newUiFile: UI_STATE_TYPE = {...ui, language}
         const isWrote = await writeUiFile(newUiFile)
         if (isWrote) {
+            await i18n.changeLanguage(language)
             return language
         } else {
             console.error('Can\'t change language: ' + language)

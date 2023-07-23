@@ -1,8 +1,6 @@
-import {Text, View} from 'react-native'
+import {WorkInProgress} from '../../../common/WorkInProgress'
 
 const Abs = () => {
-    return <View>
-        <Text>Прес</Text>
-    </View>
+    return <WorkInProgress/>
 }
 export default Abs

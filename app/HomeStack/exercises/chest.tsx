@@ -1,8 +1,6 @@
-import {Text, View} from 'react-native'
+import {WorkInProgress} from '../../../common/WorkInProgress'
 
 const Chest = () => {
-    return <View>
-        <Text>Груди</Text>
-    </View>
+    return <WorkInProgress/>
 }
 export default Chest

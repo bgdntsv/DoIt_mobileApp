@@ -1,6 +1,4 @@
-import {StyleSheet, Text, View, Image, TouchableHighlight} from 'react-native'
-import {globalStyles} from '../../assets/globalStyles'
-import {useFonts} from 'expo-font'
+import {StyleSheet, Text, View, Image, TouchableHighlight, ScrollView} from 'react-native'
 import chestImage from '../../assets/images/chest_muscles.png'
 import absImage from '../../assets/images/abs.webp'
 import {ColorPalette} from '../../assets/colors'
@@ -8,21 +6,15 @@ import {useSelector} from 'react-redux'
 import {STORE_TYPE} from '../../redux/store'
 import {NativeStackScreenProps} from '@react-navigation/native-stack'
 import React from 'react'
+import {useGlobalStyles} from '../../hooks/useUI'
 
 type PropScreensList = {
     'Chest-exercises': undefined,
     'Abs-exercises': undefined
 }
 export const ExercisesList = ({navigation}: NativeStackScreenProps<PropScreensList>) => {
-    const [fontsLoaded] = useFonts({
-        'Inter-Bold': require('../../assets/fonts/inter/Inter-Bold.ttf'),
-        'Inter-Regular': require('../../assets/fonts/inter/Inter-Regular.ttf'),
-        'Inter-Light': require('../../assets/fonts/inter/Inter-Light.ttf')
-    })
     const {theme} = useSelector(({ui}: STORE_TYPE) => ui)
-    if (!fontsLoaded) {
-        return <Text>Loading</Text>
-    }
+    const globalStyles = useGlobalStyles()
     const goToChestExercises = () => {
         navigation.navigate('Chest-exercises')
     }
@@ -31,9 +23,11 @@ export const ExercisesList = ({navigation}: NativeStackScreenProps<PropScreensLi
     }
 
     const styles = StyleSheet.create({
-        mainContainer: {
-            flex: 1,
-            backgroundColor: ColorPalette[theme].main
+        containerBlock: {
+            height: 200,
+            borderRadius: 5,
+            overflow: 'hidden',
+            marginVertical: 8,
         },
         containerContent: {
             flex: 1,
@@ -50,14 +44,11 @@ export const ExercisesList = ({navigation}: NativeStackScreenProps<PropScreensLi
             width: '100%',
             flex: 4
         },
-        title: {
-            color: ColorPalette[theme].mainFont
-        }
     })
-    return <View style={{...globalStyles.mainContainer, ...styles.mainContainer}}>
-        <Text style={{...globalStyles.title, ...styles.title}}>Оберіть тренування на сьогодні</Text>
+    return <ScrollView style={globalStyles.container}>
+        <Text style={globalStyles.h1}>Оберіть тренування на сьогодні</Text>
         <TouchableHighlight onPress={goToChestExercises} underlayColor={ColorPalette[theme].main}>
-            <View style={globalStyles.container}>
+            <View style={styles.containerBlock}>
                 <View style={styles.containerContent}>
                     <Image style={styles.image} source={chestImage}/>
                     <Text style={{...globalStyles.p, ...styles.containerTitle}}>Груди</Text>
@@ -65,12 +56,12 @@ export const ExercisesList = ({navigation}: NativeStackScreenProps<PropScreensLi
             </View>
         </TouchableHighlight>
         <TouchableHighlight onPress={goToAbdExercises} underlayColor={ColorPalette[theme].main}>
-            <View style={globalStyles.container}>
+            <View style={styles.containerBlock}>
                 <View style={styles.containerContent}>
                     <Image style={styles.image} source={absImage}/>
                     <Text style={{...globalStyles.p, ...styles.containerTitle}}>Прес</Text>
                 </View>
             </View>
         </TouchableHighlight>
-    </View>
+    </ScrollView>
 }

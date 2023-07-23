@@ -1,11 +1,7 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {STORE_TYPE} from '../store'
 import {writeExercisesFile} from '../../helpers/fileHelper'
-
-export type MUSCLE_AREA_TYPE = 'chest_base' | 'chest_up' | 'chest_down' |
-    'press_base' | 'press_down' | 'press_up' | 'press_side' |
-    'biceps' | 'triceps' | 'forearm' | 'shoulders_base' | 'shoulders_front' | 'shoulders_back' |
-    'back_base' | 'back_up' | 'back_down' | 'leg_base'
+import {MUSCLE_AREA_TYPE} from '../../helpers/constants'
 
 export type EXERCISE_TYPE = {
     name: string,
@@ -29,7 +25,7 @@ export type EXERCISE_STATE_TYPE = {
 
 export const addExercise = createAsyncThunk<EXERCISE_STATE_TYPE | undefined, EXERCISE_TYPE, {
     state: STORE_TYPE
-}>('exercise/addExercise', async (exercise, thunkAPI) => {
+}>('exercise/AddExercise', async (exercise, thunkAPI) => {
     const {exercise: exerciseState} = thunkAPI.getState()
     let newExerciseState = exerciseState
     newExerciseState.ownExercises.push(exercise)

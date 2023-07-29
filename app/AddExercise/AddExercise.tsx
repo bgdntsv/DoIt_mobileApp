@@ -11,9 +11,12 @@ import {MuscleTypeModal} from './Modal'
 import {AntDesign} from '@expo/vector-icons'
 import {useTranslation} from 'react-i18next'
 import {MUSCLE_AREA_TYPE} from '../../helpers/constants'
+import uuid from 'react-native-uuid'
+import {showToast} from '../../helpers/toast'
 
 const AddExercise = () => {
     const {t} = useTranslation()
+    const {exercises} = useSelector(({exercise}: STORE_TYPE) => exercise)
     const dispatch = useDispatch<AppDispatch>()
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -34,9 +37,12 @@ const AddExercise = () => {
             return false
         } else if (!isSelectedGym && !isSelectedOutdoors && !isSelectedHome) {
             return false
+        } else if(muscleArea.length === 0){
+            return false
         }
         return true
     }
+
     const handleGymClick = () => {
         setIsSelectedGym(prev => !prev)
     }
@@ -51,6 +57,16 @@ const AddExercise = () => {
     }
 
     const handleSubmit = () => {
+        const id = uuid.v4().toString()
+        for (const exercise1 of exercises) { // is already created exercise with the same name
+            if(exercise1.name === name){
+                showToast({
+                    type: 'error',
+                    text1: 'Exercise with the same name is already created'
+                })
+                return
+            }
+        }
         const exercise: EXERCISE_TYPE = {
             name,
             description,
@@ -59,15 +75,30 @@ const AddExercise = () => {
             outdoors: isSelectedOutdoors,
             muscleArea,
             weight,
-            metric
+            metric,
+            id
         }
         dispatch(addExercise(exercise))
+        showToast({
+            type: 'success',
+            text1: 'Exercise added'
+        })
+        clearState()
     }
     const muscleAreaArrayShow = () => {
         const toShow = muscleArea.map(e => {
             return t(e)
         })
         return toShow.toLocaleString().split(',').join(', ')
+    }
+    const clearState = () => {
+        setName('')
+            setDescription('')
+            setIsSelectedGym(false)
+            setIsSelectedHome(false)
+            setIsSelectedOutdoors(false)
+            setMuscleArea([])
+            setWeight('')
     }
     const styles = StyleSheet.create({
         container: {

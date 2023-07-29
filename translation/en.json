@@ -37,7 +37,6 @@
   "leg_back": "Biceps thigh",
   "leg_calf": "Calf",
   "leg_ass": "Gluteal muscles",
-
   "add_name": "Add name",
   "add_description": "Add description",
   "select_place": "Select place",
@@ -48,5 +47,7 @@
   "metric": "Metric",
   "kg": "kg",
   "lb": "lb",
-  "muscle_area": "Muscle area"
+  "muscle_area": "Muscle area",
+  "warming_up": "Warming up...",
+  "description": "Description"
 }

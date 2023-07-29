@@ -1,14 +1,14 @@
-# Expo Router Example
+# DoIt mobile app
 
-Use [`expo-router`](https://expo.github.io/router) to build native navigation using files in the `app/` directory.
+Actual code you can find here [`GitHub`](https://github.com/bgdntsv/DoIt_mobileApp)
 
 ## 🚀 How to use
 
+Run it locally
 ```sh
-npx create-expo-app -e with-router
+expo start
 ```
 
 ## 📝 Notes
 
-- [Expo Router: Docs](https://expo.github.io/router)
-- [Expo Router: Repo](https://github.com/expo/router)
+- No notes for now

@@ -14,12 +14,12 @@ export const useGlobalStyles = () => {
         },
         h1:{
             fontFamily: 'Inter-Bold',
-            fontSize: 25,
+            fontSize: 22,
             color: ColorPalette[theme].mainFont
         },
         p:{
             fontFamily: 'Inter-Regular',
-            fontSize: 20,
+            fontSize: 18,
             color: ColorPalette[theme].mainFont
         },
         span:{

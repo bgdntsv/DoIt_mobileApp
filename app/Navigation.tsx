@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from 'react-redux'
-import {Text, Platform, useWindowDimensions, StatusBar} from 'react-native'
+import {Platform, useWindowDimensions, StatusBar} from 'react-native'
 import {AntDesign} from '@expo/vector-icons'
 import {Settings} from './Settings/Settings'
 import {NavigationContainer} from '@react-navigation/native'
@@ -15,15 +15,16 @@ import {createDrawerNavigator} from '@react-navigation/drawer'
 import {Login} from './Login/Login'
 import AddExercise from './AddExercise/AddExercise'
 import {useTranslation} from 'react-i18next'
-import {useLocales} from 'expo-localization'
+import {getLocales} from 'expo-localization'
 import {initExerciseState} from '../redux/slices/exerciseSlice'
 import {useFonts} from 'expo-font'
+import {Loading} from '../common/Loading'
 
 export const Navigation = () => {
     const {theme} = useSelector(({ui}: STORE_TYPE) => ui)
     const {t} = useTranslation()
     const Drawer = createDrawerNavigator()
-    const {languageCode} = useLocales()[0]
+    const {languageCode} = getLocales()[0]
     const dispatch = useDispatch<AppDispatch>()
     const [isLoading, setIsLoading] = useState(true)
     const dimensions = useWindowDimensions();
@@ -63,7 +64,7 @@ export const Navigation = () => {
     }, [])
 
     if (isLoading || !fontsLoaded) {
-        return <Text>Loading...</Text>
+        return <Loading/>
     }
     return <NavigationContainer>
         <StatusBar barStyle={'light-content'} backgroundColor={ColorPalette[theme].fourth}/>

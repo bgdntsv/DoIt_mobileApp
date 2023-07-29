@@ -14,7 +14,8 @@ export type EXERCISE_TYPE = {
     gym: boolean,
     outdoors: boolean,
     home: boolean,
-    inventory?: Array<string>
+    inventory?: Array<string>,
+    id: string
 }
 
 export type EXERCISE_STATE_TYPE = {
@@ -26,17 +27,17 @@ export type EXERCISE_STATE_TYPE = {
 export const addExercise = createAsyncThunk<EXERCISE_STATE_TYPE | undefined, EXERCISE_TYPE, {
     state: STORE_TYPE
 }>('exercise/AddExercise', async (exercise, thunkAPI) => {
-    const {exercise: exerciseState} = thunkAPI.getState()
-    let newExerciseState = exerciseState
-    newExerciseState.ownExercises.push(exercise)
-    newExerciseState.exercises.push(exercise)
     try {
+        const {exercise: exerciseState} = thunkAPI.getState()
+        let newExerciseState = exerciseState
+        newExerciseState.ownExercises = [...newExerciseState.ownExercises, exercise]
+        newExerciseState.exercises = [...newExerciseState.exercises, exercise]
         const isWrote = await writeExercisesFile(newExerciseState)
         if (isWrote) {
             return newExerciseState
         }
     } catch (e) {
-        console.error('Can\'t add exercise')
+        console.error('Can\'t add exercise', e)
     }
 })
 
@@ -57,7 +58,9 @@ const exerciseSlice = createSlice({
         builder
             .addCase(addExercise.fulfilled, (state, action) => {
                 if (action.payload) {
-                    return action.payload
+                    state.exercises = action.payload.exercises
+                    state.ownExercises = action.payload.ownExercises
+                    state.baseExercises = action.payload.baseExercises
                 }
             })
     }

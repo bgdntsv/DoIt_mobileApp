@@ -15,11 +15,9 @@ type PropScreensList = {
 export const ExercisesList = ({navigation}: NativeStackScreenProps<PropScreensList>) => {
     const {theme} = useSelector(({ui}: STORE_TYPE) => ui)
     const globalStyles = useGlobalStyles()
-    const goToChestExercises = () => {
-        navigation.navigate('Chest-exercises')
-    }
-    const goToAbdExercises = () => {
-        navigation.navigate('Abs-exercises')
+
+    const goToExercises = (route: 'Chest-exercises' | 'Abs-exercises') => {
+        navigation.navigate(route)
     }
 
     const styles = StyleSheet.create({
@@ -27,12 +25,12 @@ export const ExercisesList = ({navigation}: NativeStackScreenProps<PropScreensLi
             height: 200,
             borderRadius: 5,
             overflow: 'hidden',
-            marginVertical: 8,
+            marginVertical: 8
         },
         containerContent: {
             flex: 1,
             justifyContent: 'space-between',
-            backgroundColor: ColorPalette[theme].fourth,
+            backgroundColor: ColorPalette[theme].fourth
         },
         containerTitle: {
             paddingVertical: 8,
@@ -43,11 +41,11 @@ export const ExercisesList = ({navigation}: NativeStackScreenProps<PropScreensLi
             height: '100%',
             width: '100%',
             flex: 4
-        },
+        }
     })
     return <ScrollView style={globalStyles.container}>
         <Text style={globalStyles.h1}>Оберіть тренування на сьогодні</Text>
-        <TouchableHighlight onPress={goToChestExercises} underlayColor={ColorPalette[theme].main}>
+        <TouchableHighlight onPress={()=>goToExercises('Chest-exercises')} underlayColor={ColorPalette[theme].main}>
             <View style={styles.containerBlock}>
                 <View style={styles.containerContent}>
                     <Image style={styles.image} source={chestImage}/>
@@ -55,7 +53,7 @@ export const ExercisesList = ({navigation}: NativeStackScreenProps<PropScreensLi
                 </View>
             </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={goToAbdExercises} underlayColor={ColorPalette[theme].main}>
+        <TouchableHighlight onPress={()=>goToExercises('Abs-exercises')} underlayColor={ColorPalette[theme].main}>
             <View style={styles.containerBlock}>
                 <View style={styles.containerContent}>
                     <Image style={styles.image} source={absImage}/>

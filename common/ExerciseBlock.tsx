@@ -1,9 +1,9 @@
 import React from 'react'
-import {EXERCISE_TYPE} from '../redux/slices/exerciseSlice'
+import {deleteExercise, EXERCISE_TYPE} from '../redux/slices/exerciseSlice'
 import {Text, View, StyleSheet} from 'react-native'
 import {useGlobalStyles} from '../hooks/useUI'
-import {useSelector} from 'react-redux'
-import {STORE_TYPE} from '../redux/store'
+import {useDispatch, useSelector} from 'react-redux'
+import {AppDispatch, STORE_TYPE} from '../redux/store'
 import {ColorPalette} from '../assets/colors'
 import {useTranslation} from 'react-i18next'
 import {CustomButton} from './Button'
@@ -11,10 +11,10 @@ import {CustomButton} from './Button'
 type propTypes = {
     exercise: EXERCISE_TYPE
 }
-export const ExerciseListBlock = ({exercise}: propTypes) => {
+export const ExerciseBlock = ({exercise}: propTypes) => {
     const {theme} = useSelector(({ui}: STORE_TYPE) => ui)
     const {t} = useTranslation()
-
+    const dispatch = useDispatch<AppDispatch>()
     const globalStyles = useGlobalStyles()
 
     const muscleAreaArrayShow = () => {
@@ -22,6 +22,10 @@ export const ExerciseListBlock = ({exercise}: propTypes) => {
             return t(e)
         })
         return toShow.toLocaleString().split(',').join(', ')
+    }
+
+    const handleDeleteExercise = () => {
+        dispatch(deleteExercise(exercise.id))
     }
 
     const styles = StyleSheet.create({
@@ -39,6 +43,6 @@ export const ExerciseListBlock = ({exercise}: propTypes) => {
         <Text style={{...globalStyles.h1, ...styles.whiteFont}}>{exercise.name}</Text>
         <Text style={{...globalStyles.p, ...styles.whiteFont}}>{t('description')}: {exercise.description}</Text>
         <Text style={{...globalStyles.p, ...styles.whiteFont}}>{t('muscle_area')}: {muscleAreaArrayShow()}</Text>
-        <CustomButton title={'Delete'} onPress={()=>{}}/>
+        <CustomButton title={'Delete'} onPress={handleDeleteExercise}/>
     </View>
 }

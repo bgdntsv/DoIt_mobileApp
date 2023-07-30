@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {STORE_TYPE} from '../store'
 import {writeExercisesFile} from '../../helpers/fileHelper'
 import {MUSCLE_AREA_TYPE} from '../../helpers/constants'
+import {showToast} from '../../helpers/toast'
 
 export type EXERCISE_TYPE = {
     name: string,
@@ -40,6 +41,22 @@ export const addExercise = createAsyncThunk<EXERCISE_STATE_TYPE | undefined, EXE
         console.error('Can\'t add exercise', e)
     }
 })
+export const deleteExercise = createAsyncThunk<EXERCISE_STATE_TYPE | undefined, string, {
+    state: STORE_TYPE
+}>('exercise/DeleteExercise', async (exerciseId, thunkAPI) => {
+    try{
+        const {exercise: exerciseState} = thunkAPI.getState()
+        let newExerciseState = exerciseState
+        newExerciseState.ownExercises = newExerciseState.ownExercises.filter(e=>e.id !== exerciseId)
+        newExerciseState.exercises = newExerciseState.exercises.filter(e=>e.id !== exerciseId)
+        const isWrote = await writeExercisesFile(newExerciseState)
+        if (isWrote) {
+            return newExerciseState
+        }
+    }catch (e) {
+        console.error('Can\'t delete exercise', e)
+    }
+})
 
 const initialState: EXERCISE_STATE_TYPE = {
     baseExercises: [],
@@ -51,16 +68,33 @@ const exerciseSlice = createSlice({
     initialState,
     reducers: {
         initExerciseState: (state, action: PayloadAction<EXERCISE_STATE_TYPE>) => {
-            state = action.payload
+            Object.assign(state, action.payload)
         }
     },
     extraReducers: builder => {
         builder
             .addCase(addExercise.fulfilled, (state, action) => {
                 if (action.payload) {
-                    state.exercises = action.payload.exercises
-                    state.ownExercises = action.payload.ownExercises
-                    state.baseExercises = action.payload.baseExercises
+                    showToast({
+                        type: 'success',
+                        text1: 'Exercise added'
+                    })
+                    Object.assign(state, action.payload)
+                //     debugger
+                //     state.exercises = action.payload.exercises
+                //     state.ownExercises = action.payload.ownExercises
+                }
+            })
+            .addCase(deleteExercise.fulfilled, (state, action)=> {
+                if(action.payload){
+                    showToast({
+                        type: 'success',
+                        text1: 'Exercise deleted'
+                    })
+                    Object.assign(state, action.payload)
+                //     debugger
+                //     state.exercises = action.payload.exercises
+                //     state.ownExercises = action.payload.ownExercises
                 }
             })
     }

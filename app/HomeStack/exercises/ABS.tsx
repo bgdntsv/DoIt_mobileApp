@@ -1,6 +1,5 @@
 import {WorkInProgress} from '../../../common/WorkInProgress'
 
-const ABS = () => {
+export const ABS = () => {
     return <WorkInProgress/>
 }
-export default ABS

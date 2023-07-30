@@ -79,10 +79,6 @@ const AddExercise = () => {
             id
         }
         dispatch(addExercise(exercise))
-        showToast({
-            type: 'success',
-            text1: 'Exercise added'
-        })
         clearState()
     }
     const muscleAreaArrayShow = () => {

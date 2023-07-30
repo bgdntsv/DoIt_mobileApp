@@ -3,11 +3,27 @@ import {StyleSheet, Text, View} from 'react-native'
 import React from 'react'
 import {STORE_TYPE} from '../../../redux/store'
 import {useGlobalStyles} from '../../../hooks/useUI'
-import {ExerciseListBlock} from '../../../common/ExerciseListBlock'
+import {ExerciseBlock} from '../../../common/ExerciseBlock'
+import {EXERCISE_STATE_TYPE} from '../../../redux/slices/exerciseSlice'
 
-const Chest = () => {
-    const {exercises} = useSelector(({exercise}: STORE_TYPE) => exercise)
+export const Chest = () => {
+    const {exercises} = useSelector<STORE_TYPE, EXERCISE_STATE_TYPE>((state) => state.exercise)
     const globalStyles = useGlobalStyles()
+
+    const isExercisesExist = () => {
+        return !!exercises.find(e => e.muscleArea.find(m => m.includes('chest', 0)))
+    }
+
+    const exercisesToShow = () => {
+        return exercises
+            .filter(e => e.muscleArea.find(m => m.includes('chest', 0)))
+            .map((e) => {
+                return <View key={e.id}>
+                    <ExerciseBlock exercise={e}/>
+                </View>
+            })
+    }
+
     const styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -16,15 +32,8 @@ const Chest = () => {
     })
 
     return <View style={{...styles.container, ...globalStyles.container}}>
-        {exercises.length > 0
-            ? exercises
-                .filter(e => e.muscleArea.find(m => m.includes('chest', 0)))
-                .map((e) => {
-                    return <View key={e.id}>
-                        <ExerciseListBlock exercise={e}/>
-                    </View>
-                })
+        {isExercisesExist()
+            ? exercisesToShow()
             : <Text style={globalStyles.h1}>No exercises</Text>}
     </View>
 }
-export default Chest

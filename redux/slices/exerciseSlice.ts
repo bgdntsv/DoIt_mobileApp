@@ -68,7 +68,9 @@ const exerciseSlice = createSlice({
     initialState,
     reducers: {
         initExerciseState: (state, action: PayloadAction<EXERCISE_STATE_TYPE>) => {
-            Object.assign(state, action.payload)
+            state.exercises = action.payload.exercises
+            state.baseExercises = action.payload.baseExercises
+            state.ownExercises = action.payload.ownExercises
         }
     },
     extraReducers: builder => {
@@ -79,10 +81,8 @@ const exerciseSlice = createSlice({
                         type: 'success',
                         text1: 'Exercise added'
                     })
-                    Object.assign(state, action.payload)
-                //     debugger
-                //     state.exercises = action.payload.exercises
-                //     state.ownExercises = action.payload.ownExercises
+                    state.exercises = action.payload.exercises
+                    state.ownExercises = action.payload.ownExercises
                 }
             })
             .addCase(deleteExercise.fulfilled, (state, action)=> {
@@ -91,10 +91,8 @@ const exerciseSlice = createSlice({
                         type: 'success',
                         text1: 'Exercise deleted'
                     })
-                    Object.assign(state, action.payload)
-                //     debugger
-                //     state.exercises = action.payload.exercises
-                //     state.ownExercises = action.payload.ownExercises
+                    state.exercises = action.payload.exercises
+                    state.ownExercises = action.payload.ownExercises
                 }
             })
     }

@@ -1,15 +1,15 @@
 import {View, Text, StyleSheet} from 'react-native'
 import React from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 import {changeLanguage, changeTheme, LANGUAGE_TYPE, THEME_TYPE} from '../../redux/slices/uiSlice'
-import {AppDispatch, STORE_TYPE} from '../../redux/store'
+import {STORE_TYPE, useAppDispatch} from '../../redux/store'
 import {Picker} from '@react-native-picker/picker'
 import {useTranslation} from 'react-i18next'
 import {useGlobalStyles} from '../../hooks/useUI'
 import {ColorPalette} from '../../assets/colors'
 
 export const Settings = () => {
-    const dispatch = useDispatch<AppDispatch>()
+    const dispatch = useAppDispatch()
     const {t} = useTranslation()
     const {theme, language} = useSelector(({ui}: STORE_TYPE) => ui)
     const globalStyles = useGlobalStyles()

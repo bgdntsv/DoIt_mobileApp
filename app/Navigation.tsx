@@ -1,14 +1,14 @@
-import {useDispatch, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 import {Platform, useWindowDimensions, StatusBar} from 'react-native'
 import {AntDesign} from '@expo/vector-icons'
 import {Settings} from './Settings/Settings'
 import {NavigationContainer} from '@react-navigation/native'
 import {ColorPalette} from '../assets/colors'
-import {AppDispatch, STORE_TYPE} from '../redux/store'
+import {STORE_TYPE, useAppDispatch} from '../redux/store'
 import {Notifications} from './Notifications/Notifications'
 import {ExerciseNavigation} from './HomeStack/ExerciseNavigation'
 import React, {useLayoutEffect, useState} from 'react'
-import {readExercisesFile, readUiFile} from '../helpers/fileHelper'
+import {getFilesPermissions, readExercisesFile, readUiFile} from '../helpers/fileHelper'
 import {changeLanguage, changeTheme, LANGUAGE_TYPE} from '../redux/slices/uiSlice'
 import * as ScreenOrientation from 'expo-screen-orientation'
 import {createDrawerNavigator} from '@react-navigation/drawer'
@@ -25,7 +25,7 @@ export const Navigation = () => {
     const {t} = useTranslation()
     const Drawer = createDrawerNavigator()
     const {languageCode} = getLocales()[0]
-    const dispatch = useDispatch<AppDispatch>()
+    const dispatch = useAppDispatch()
     const [isLoading, setIsLoading] = useState(true)
     const dimensions = useWindowDimensions();
     const [fontsLoaded] = useFonts({
@@ -38,6 +38,7 @@ export const Navigation = () => {
         setIsLoading(true)
         if (Platform.OS !== 'web') {
             await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP)
+            await getFilesPermissions()
             const uiFile = await readUiFile()
             if (uiFile) {
                 if (!uiFile.theme) {

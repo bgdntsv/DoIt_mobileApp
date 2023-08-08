@@ -1,8 +1,8 @@
 import {Text, View, StyleSheet, TextInput, Pressable, ScrollView} from 'react-native'
 import React, {useRef, useState} from 'react'
 import {ColorPalette} from '../../assets/colors'
-import {useDispatch, useSelector} from 'react-redux'
-import {AppDispatch, STORE_TYPE} from '../../redux/store'
+import {useSelector} from 'react-redux'
+import {STORE_TYPE, useAppDispatch} from '../../redux/store'
 import Checkbox from 'expo-checkbox'
 import {Picker} from '@react-native-picker/picker'
 import {addExercise, EXERCISE_TYPE} from '../../redux/slices/exerciseSlice'
@@ -17,7 +17,7 @@ import {showToast} from '../../helpers/toast'
 const AddExercise = () => {
     const {t} = useTranslation()
     const {exercises} = useSelector(({exercise}: STORE_TYPE) => exercise)
-    const dispatch = useDispatch<AppDispatch>()
+    const dispatch = useAppDispatch()
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [isSelectedGym, setIsSelectedGym] = useState(false)

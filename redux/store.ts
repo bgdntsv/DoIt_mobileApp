@@ -1,6 +1,7 @@
 import {configureStore} from '@reduxjs/toolkit'
 import uiReducer, {UI_STATE_TYPE} from './slices/uiSlice'
 import exerciseReducer, {EXERCISE_STATE_TYPE} from './slices/exerciseSlice'
+import {useDispatch} from 'react-redux'
 
 export const store = configureStore({
     reducer: {
@@ -14,4 +15,5 @@ export type STORE_TYPE = {
     exercise: EXERCISE_STATE_TYPE
 }
 export type AppDispatch = typeof store.dispatch
+export const useAppDispatch: () => AppDispatch = useDispatch
 

@@ -18,7 +18,8 @@
       }
     },
     "android": {
-      "package": "DO.IT.UKRAINE"
+      "package": "DO.IT.UKRAINE",
+      "permissions": ["android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"]
     },
     "plugins": [
       [

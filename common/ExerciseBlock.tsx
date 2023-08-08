@@ -2,19 +2,21 @@ import React from 'react'
 import {deleteExercise, EXERCISE_TYPE} from '../redux/slices/exerciseSlice'
 import {Text, View, StyleSheet} from 'react-native'
 import {useGlobalStyles} from '../hooks/useUI'
-import {useDispatch, useSelector} from 'react-redux'
-import {AppDispatch, STORE_TYPE} from '../redux/store'
+import {useSelector} from 'react-redux'
+import {STORE_TYPE, useAppDispatch} from '../redux/store'
 import {ColorPalette} from '../assets/colors'
 import {useTranslation} from 'react-i18next'
 import {CustomButton} from './Button'
+import {UI_STATE_TYPE} from '../redux/slices/uiSlice'
 
 type propTypes = {
-    exercise: EXERCISE_TYPE
+    exercise: EXERCISE_TYPE,
+    setCount: (prev: (num: number) => number) => void
 }
-export const ExerciseBlock = ({exercise}: propTypes) => {
-    const {theme} = useSelector(({ui}: STORE_TYPE) => ui)
+export const ExerciseBlock = ({exercise, setCount}: propTypes) => {
+    const {theme} = useSelector<STORE_TYPE, UI_STATE_TYPE>(({ui}) => ui)
     const {t} = useTranslation()
-    const dispatch = useDispatch<AppDispatch>()
+    const dispatch = useAppDispatch()
     const globalStyles = useGlobalStyles()
 
     const muscleAreaArrayShow = () => {
@@ -25,6 +27,7 @@ export const ExerciseBlock = ({exercise}: propTypes) => {
     }
 
     const handleDeleteExercise = () => {
+        setCount(prev => prev + 1)
         dispatch(deleteExercise(exercise.id))
     }
 
@@ -35,8 +38,8 @@ export const ExerciseBlock = ({exercise}: propTypes) => {
             padding: 8,
             borderRadius: 5
         },
-        whiteFont:{
-            color: ColorPalette[theme].secondFont,
+        whiteFont: {
+            color: ColorPalette[theme].secondFont
         }
     })
     return <View style={styles.container}>

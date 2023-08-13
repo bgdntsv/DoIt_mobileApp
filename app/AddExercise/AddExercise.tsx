@@ -1,4 +1,4 @@
-import {Text, View, StyleSheet, TextInput, Pressable, ScrollView} from 'react-native'
+import {Text, View, StyleSheet, TextInput, Pressable, ScrollView, Image} from 'react-native'
 import React, {useRef, useState} from 'react'
 import {ColorPalette} from '../../assets/colors'
 import {useSelector} from 'react-redux'
@@ -7,12 +7,15 @@ import Checkbox from 'expo-checkbox'
 import {Picker} from '@react-native-picker/picker'
 import {addExercise, EXERCISE_TYPE} from '../../redux/slices/exerciseSlice'
 import {CustomButton} from '../../common/Button'
-import {MuscleTypeModal} from './Modal'
+import {MuscleTypeModal} from './SelectTypeModal'
 import {AntDesign} from '@expo/vector-icons'
 import {useTranslation} from 'react-i18next'
 import {MUSCLE_AREA_TYPE} from '../../helpers/constants'
 import uuid from 'react-native-uuid'
 import {showToast} from '../../helpers/toast'
+import * as ImagePicker from 'expo-image-picker'
+import {ImagePickerAsset} from 'expo-image-picker'
+import {ResizeMode, Video} from 'expo-av'
 
 const AddExercise = () => {
     const {t} = useTranslation()
@@ -30,14 +33,13 @@ const AddExercise = () => {
     const descriptionRef = useRef<TextInput>(null)
     const weightRef = useRef<TextInput>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [mediaURI, setMediaURI] = useState<ImagePickerAsset | null>(null)
     const isValidForm = (): boolean => {
         if (!name) {
             return false
-        } else if (!description) {
-            return false
         } else if (!isSelectedGym && !isSelectedOutdoors && !isSelectedHome) {
             return false
-        } else if(muscleArea.length === 0){
+        } else if (muscleArea.length === 0) {
             return false
         }
         return true
@@ -59,7 +61,7 @@ const AddExercise = () => {
     const handleSubmit = () => {
         const id = uuid.v4().toString()
         for (const exercise1 of exercises) { // is already created exercise with the same name
-            if(exercise1.name === name){
+            if (exercise1.name === name) {
                 showToast({
                     type: 'error',
                     text1: 'Exercise with the same name is already created'
@@ -78,6 +80,9 @@ const AddExercise = () => {
             metric,
             id
         }
+        if (mediaURI) {
+            exercise.media = [mediaURI]
+        }
         dispatch(addExercise(exercise))
         clearState()
     }
@@ -87,14 +92,28 @@ const AddExercise = () => {
         })
         return toShow.toLocaleString().split(',').join(', ')
     }
+
+    const getImageURI = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1
+        })
+
+        if (result.assets) {
+            setMediaURI(result.assets[0])
+        }
+    }
     const clearState = () => {
         setName('')
-            setDescription('')
-            setIsSelectedGym(false)
-            setIsSelectedHome(false)
-            setIsSelectedOutdoors(false)
-            setMuscleArea([])
-            setWeight('')
+        setDescription('')
+        setIsSelectedGym(false)
+        setIsSelectedHome(false)
+        setIsSelectedOutdoors(false)
+        setMuscleArea([])
+        setWeight('')
+        setMediaURI(null)
     }
     const styles = StyleSheet.create({
         container: {
@@ -127,7 +146,7 @@ const AddExercise = () => {
             borderWidth: 1,
             borderColor: ColorPalette[theme].second,
             borderRadius: 5,
-            paddingVertical: 5,
+            paddingVertical: 5
         },
         checkboxContainer: {
             display: 'flex',
@@ -191,7 +210,7 @@ const AddExercise = () => {
                    blurOnSubmit={false}
                    returnKeyType={'next'}/>
 
-        <Text style={styles.span}>{t('add_description')}*</Text>
+        <Text style={styles.span}>{t('add_description')}</Text>
         <TextInput ref={descriptionRef} value={description} onChangeText={setDescription} style={styles.input}
                    onSubmitEditing={() => {
                        if (weightRef.current) {
@@ -276,6 +295,25 @@ const AddExercise = () => {
                 <AntDesign name="plus" size={38} color={ColorPalette[theme].mainFont}/>
             </View>
         </Pressable>
+
+        {mediaURI && (mediaURI.type === 'image'
+            ? <Image width={100} height={100} source={{uri: mediaURI.uri}}/>
+            : <Video
+                style={{
+                    width: 200,
+                    height: 200
+                }}
+                source={{
+                    uri: mediaURI?.uri
+                }}
+                useNativeControls={false}
+                resizeMode={ResizeMode.COVER}
+                isLooping
+                isMuted
+                shouldPlay
+            />)}
+
+        <CustomButton title={'get image'} onPress={getImageURI}/>
 
         <View style={styles.submit}>
             <CustomButton title={t('add_exercise')}

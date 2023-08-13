@@ -7,9 +7,10 @@ import {ColorPalette} from '../assets/colors'
 export type BUTTON_COMPONENT_TYPE = {
     title: string,
     onPress: () => void,
-    disabled?: boolean
+    disabled?: boolean,
+    style?: object
 }
-export const CustomButton = ({title, onPress, disabled}: BUTTON_COMPONENT_TYPE) => {
+export const CustomButton = ({title, onPress, disabled, style}: BUTTON_COMPONENT_TYPE) => {
     const {theme} = useSelector(({ui}: STORE_TYPE) => ui)
     const animated = new Animated.Value(1)
     const fadeIn = () => {
@@ -30,7 +31,7 @@ export const CustomButton = ({title, onPress, disabled}: BUTTON_COMPONENT_TYPE) 
         buttonContainer: {
             backgroundColor: disabled ? ColorPalette[theme].third : ColorPalette[theme].second,
             borderRadius: 5,
-            padding: 7
+            padding: 7,
         },
         text: {
             color: ColorPalette[theme].secondFont,
@@ -39,7 +40,7 @@ export const CustomButton = ({title, onPress, disabled}: BUTTON_COMPONENT_TYPE) 
         }
     })
     return <Pressable onPress={onPress} disabled={disabled} onPressIn={fadeIn} onPressOut={fadeOut}>
-        <Animated.View style={{...styles.buttonContainer, opacity: animated}}>
+        <Animated.View style={{...styles.buttonContainer, opacity: animated, ...style}}>
             <Text style={styles.text}>{title}</Text>
         </Animated.View>
     </Pressable>

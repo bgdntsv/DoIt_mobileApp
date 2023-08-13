@@ -3,12 +3,13 @@ import {STORE_TYPE} from '../store'
 import {writeExercisesFile} from '../../helpers/fileHelper'
 import {MUSCLE_AREA_TYPE} from '../../helpers/constants'
 import {showToast} from '../../helpers/toast'
+import {ImagePickerAsset} from 'expo-image-picker'
 
 export type EXERCISE_TYPE = {
     name: string,
     description: string,
     muscleArea: Array<MUSCLE_AREA_TYPE>,
-    links?: Array<string>,
+    media?: Array<ImagePickerAsset>,
     weight?: string,
     metric?: 'kg' | 'lb',
     count?: number,
@@ -19,20 +20,46 @@ export type EXERCISE_TYPE = {
     id: string
 }
 
+export type EXERCISE_FILE_TYPE = {
+    baseExercises: Array<EXERCISE_TYPE>,
+    ownExercises: Array<EXERCISE_TYPE>,
+    exercises: Array<EXERCISE_TYPE>,
+}
+
+
 export type EXERCISE_STATE_TYPE = {
     baseExercises: Array<EXERCISE_TYPE>,
     ownExercises: Array<EXERCISE_TYPE>,
-    exercises: Array<EXERCISE_TYPE>
+    exercises: Array<EXERCISE_TYPE>,
+    selectedExercises: SELECTED_EXERCISES
 }
 
-export const addExercise = createAsyncThunk<EXERCISE_STATE_TYPE | undefined, EXERCISE_TYPE, {
+export type SELECTED_EXERCISES = {
+    press?: Array<EXERCISE_TYPE>,
+    chest?: Array<EXERCISE_TYPE>,
+    legs?: Array<EXERCISE_TYPE>,
+    hands?: Array<EXERCISE_TYPE>,
+    shoulders?: Array<EXERCISE_TYPE>,
+    back?: Array<EXERCISE_TYPE>,
+}
+
+export type EXERCISE_NAME_TYPES = 'press' |
+    'chest' |
+    'legs' |
+    'hands' |
+    'shoulders' |
+    'back'
+
+export const addExercise = createAsyncThunk<EXERCISE_FILE_TYPE | undefined, EXERCISE_TYPE, {
     state: STORE_TYPE
 }>('exercise/AddExercise', async (exercise, thunkAPI) => {
     try {
         const {exercise: exerciseState} = thunkAPI.getState()
-        let newExerciseState = exerciseState
-        newExerciseState.ownExercises = [...newExerciseState.ownExercises, exercise]
-        newExerciseState.exercises = [...newExerciseState.exercises, exercise]
+        const newExerciseState = {
+            baseExercises: [...exerciseState.baseExercises],
+            ownExercises: [...exerciseState.ownExercises, exercise],
+            exercises: [...exerciseState.exercises, exercise]
+        }
         const isWrote = await writeExercisesFile(newExerciseState)
         if (isWrote) {
             return newExerciseState
@@ -41,19 +68,21 @@ export const addExercise = createAsyncThunk<EXERCISE_STATE_TYPE | undefined, EXE
         console.error('Can\'t add exercise', e)
     }
 })
-export const deleteExercise = createAsyncThunk<EXERCISE_STATE_TYPE | undefined, string, {
+export const deleteExercise = createAsyncThunk<EXERCISE_FILE_TYPE | undefined, string, {
     state: STORE_TYPE
 }>('exercise/DeleteExercise', async (exerciseId, thunkAPI) => {
-    try{
+    try {
         const {exercise: exerciseState} = thunkAPI.getState()
-        let newExerciseState = exerciseState
-        newExerciseState.ownExercises = newExerciseState.ownExercises.filter(e=>e.id !== exerciseId)
-        newExerciseState.exercises = newExerciseState.exercises.filter(e=>e.id !== exerciseId)
+        const newExerciseState = {
+            baseExercises: [...exerciseState.baseExercises],
+            ownExercises: [...exerciseState.ownExercises.filter(e => e.id !== exerciseId)],
+            exercises: [...exerciseState.exercises.filter(e => e.id !== exerciseId)]
+        }
         const isWrote = await writeExercisesFile(newExerciseState)
         if (isWrote) {
             return newExerciseState
         }
-    }catch (e) {
+    } catch (e) {
         console.error('Can\'t delete exercise', e)
     }
 })
@@ -61,7 +90,8 @@ export const deleteExercise = createAsyncThunk<EXERCISE_STATE_TYPE | undefined, 
 const initialState: EXERCISE_STATE_TYPE = {
     baseExercises: [],
     ownExercises: [],
-    exercises: []
+    exercises: [],
+    selectedExercises: {}
 }
 const exerciseSlice = createSlice({
     name: 'exercise',
@@ -71,6 +101,27 @@ const exerciseSlice = createSlice({
             state.exercises = action.payload.exercises
             state.baseExercises = action.payload.baseExercises
             state.ownExercises = action.payload.ownExercises
+        },
+        toggleSelectedExercise: (state, {payload: {type, exercise}}: PayloadAction<{
+            type: EXERCISE_NAME_TYPES,
+            exercise?: EXERCISE_TYPE
+        }>) => {
+            if (!exercise) {
+                if (!!state.selectedExercises[type]) {
+                    delete state.selectedExercises[type]
+                    state.selectedExercises = {...state.selectedExercises}
+                } else {
+                    state.selectedExercises = {...state.selectedExercises, [type]: []}
+                }
+            } else {
+                // @ts-ignore
+                if (state.selectedExercises[type] && state.selectedExercises[type].length > 0) {
+                    // @ts-ignore
+                    state.selectedExercises = {...state.selectedExercises, [type]: state.selectedExercises[type].filter(e => e.id !== exercise.id)}
+                } else {
+                    state.selectedExercises[type] = [exercise]
+                }
+            }
         }
     },
     extraReducers: builder => {
@@ -85,8 +136,8 @@ const exerciseSlice = createSlice({
                     state.ownExercises = action.payload.ownExercises
                 }
             })
-            .addCase(deleteExercise.fulfilled, (state, action)=> {
-                if(action.payload){
+            .addCase(deleteExercise.fulfilled, (state, action) => {
+                if (action.payload) {
                     showToast({
                         type: 'success',
                         text1: 'Exercise deleted'
@@ -98,5 +149,5 @@ const exerciseSlice = createSlice({
     }
 })
 
-export const {initExerciseState} = exerciseSlice.actions
+export const {initExerciseState, toggleSelectedExercise} = exerciseSlice.actions
 export default exerciseSlice.reducer

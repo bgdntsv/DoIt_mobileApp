@@ -33,7 +33,6 @@ export const Navigation = () => {
         'Inter-Regular': require('../assets/fonts/inter/Inter-Regular.ttf'),
         'Inter-Light': require('../assets/fonts/inter/Inter-Light.ttf')
     })
-
     const init = async () => {
         setIsLoading(true)
         if (Platform.OS !== 'web') {
@@ -67,20 +66,25 @@ export const Navigation = () => {
     if (isLoading || !fontsLoaded) {
         return <Loading/>
     }
-    return <NavigationContainer>
+    return <NavigationContainer theme={{
+        dark: false,
+        colors: {
+            primary: ColorPalette[theme].mainFont,
+            background: ColorPalette[theme].main,
+            text: ColorPalette[theme].secondFont,
+            card: ColorPalette[theme].fourth,
+            notification: ColorPalette[theme].secondFont,
+            border: ColorPalette[theme].secondFont
+            }
+    }}>
         <StatusBar barStyle={'light-content'} backgroundColor={ColorPalette[theme].fourth}/>
 
         <Drawer.Navigator
             initialRouteName={'DoIt'}
+            backBehavior={'firstRoute'}
             screenOptions = {({route})=> {
                 return {
-                    headerStyle: {
-                        backgroundColor: ColorPalette[theme].fourth
-                    },
                     headerTintColor: ColorPalette[theme].secondFont,
-                    drawerStyle: {
-                        backgroundColor: ColorPalette[theme].fourth
-                    },
                     drawerInactiveTintColor: ColorPalette[theme].secondFont,
                     drawerActiveBackgroundColor: ColorPalette[theme].main,
                     drawerActiveTintColor: ColorPalette[theme].mainFont,

@@ -49,5 +49,6 @@
   "lb": "lb",
   "muscle_area": "Muscle area",
   "warming_up": "Warming up...",
-  "description": "Description"
+  "description": "Description",
+  "no_exercises": "No exercises"
 }

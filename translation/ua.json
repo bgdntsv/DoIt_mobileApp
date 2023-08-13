@@ -49,5 +49,6 @@
   "lb": "фт",
   "muscle_area": "Облясть м'язів",
   "warming_up": "Розігріваємось...",
-  "description": "Опис"
+  "description": "Опис",
+  "no_exercises": "Вправ немає"
 }

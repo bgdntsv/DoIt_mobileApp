@@ -18,14 +18,26 @@
       }
     },
     "android": {
-      "package": "DO.IT.UKRAINE",
-      "permissions": ["android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"]
+      "package": "DO.IT.UKRAINE"
     },
     "plugins": [
       [
         "expo-screen-orientation",
         {
           "initialOrientation": "PORTRAIT_UP"
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos."
         }
       ],
       "expo-localization"

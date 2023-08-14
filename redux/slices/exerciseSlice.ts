@@ -114,12 +114,23 @@ const exerciseSlice = createSlice({
                     state.selectedExercises = {...state.selectedExercises, [type]: []}
                 }
             } else {
-                // @ts-ignore
-                if (state.selectedExercises[type] && state.selectedExercises[type].length > 0) {
-                    // @ts-ignore
-                    state.selectedExercises = {...state.selectedExercises, [type]: state.selectedExercises[type].filter(e => e.id !== exercise.id)}
-                } else {
+                if (state.selectedExercises[type] === undefined) {
                     state.selectedExercises[type] = [exercise]
+                } else {
+                    // @ts-ignore
+                    if (!!state.selectedExercises[type].find(e => e.id === exercise.id)) {
+                        state.selectedExercises = {
+                            ...state.selectedExercises,
+                            // @ts-ignore
+                            [type]: state.selectedExercises[type].filter(e => e.id !== exercise.id)
+                        }
+                    } else {
+                        state.selectedExercises = {
+                            ...state.selectedExercises,
+                            // @ts-ignore
+                            [type]: [...state.selectedExercises[type], exercise]
+                        }
+                    }
                 }
             }
         }

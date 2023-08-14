@@ -1,6 +1,6 @@
 import React from 'react'
 import {Modal, StyleSheet, Text, View} from 'react-native'
-import {ExerciseBlock} from '../../../common/ExerciseBlock'
+import {ExerciseCard} from '../../../common/ExerciseCard'
 import {CustomButton} from '../../../common/Button'
 import {useGlobalStyles} from '../../../hooks/useUI'
 import {useSelector} from 'react-redux'
@@ -69,7 +69,7 @@ export const CheckTrainingModal = ({isOpen, setIsOpen}: PROP_TYPES) => {
                                    onPress={() => toggleType('chest')}
                         />
                     </View>
-                    {selectedExercises.chest.map(e => <ExerciseBlock exercise={e} key={e.id}/>)}
+                    {selectedExercises.chest.map(e => <ExerciseCard exercise={e} key={e.id}/>)}
                 </>}
 
             {selectedExercises.press
@@ -83,7 +83,7 @@ export const CheckTrainingModal = ({isOpen, setIsOpen}: PROP_TYPES) => {
                         />
                     </View>
                     {selectedExercises.press.length > 0
-                        ? selectedExercises.press.map(e => <ExerciseBlock exercise={e} key={e.id}/>)
+                        ? selectedExercises.press.map(e => <ExerciseCard exercise={e} key={e.id}/>)
                         : <Text style={globalStyles.span}>Ви не обрали вправи, ми їх згенеруємо</Text>}
                 </>}
 

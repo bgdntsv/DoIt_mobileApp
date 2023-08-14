@@ -82,7 +82,7 @@ export const ExerciseTypeBlock = ({
             height: '100%',
             backgroundColor: ColorPalette[theme].second
         },
-        checkBox: {
+        icon: {
             position: 'absolute',
             zIndex: 1,
             right: 10,
@@ -97,7 +97,7 @@ export const ExerciseTypeBlock = ({
         <Pressable onPress={clickCheckBox} style={styles.image}>
             {select && isSelected
                 &&
-                <AntDesign style={styles.checkBox} name="checkcircle" size={20} color={ColorPalette[theme].secondFont}/>
+                <AntDesign style={styles.icon} name="checkcircle" size={20} color={ColorPalette[theme].secondFont}/>
             }
             {img && typeof img !== 'string'
                 ? <Image style={styles.img} source={img}/>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {EXERCISE_NAME_TYPES, EXERCISE_TYPE, toggleSelectedExercise} from '../redux/slices/exerciseSlice'
 import {Text, StyleSheet, Pressable} from 'react-native'
 import {useGlobalStyles} from '../hooks/useUI'
@@ -8,18 +8,20 @@ import {ColorPalette} from '../assets/colors'
 import {useTranslation} from 'react-i18next'
 import {UI_STATE_TYPE} from '../redux/slices/uiSlice'
 import {AntDesign} from '@expo/vector-icons'
+import {ExerciseDetailsModal} from './ExerciseDetailsModal'
 
 type propTypes = {
     exercise: EXERCISE_TYPE,
     type?: EXERCISE_NAME_TYPES,
     select?: boolean,
 }
-export const ExerciseBlock = ({exercise, type, select = false}: propTypes) => {
+export const ExerciseCard = ({exercise, type, select = false}: propTypes) => {
     const {theme} = useSelector<STORE_TYPE, UI_STATE_TYPE>(({ui}) => ui)
     const {t} = useTranslation()
     const dispatch = useAppDispatch()
     const globalStyles = useGlobalStyles()
     const {selectedExercises} = useSelector(({exercise}: STORE_TYPE) => exercise)
+    const [isOpenedModal, setIsOpenedModal] = useState(false)
 
     const muscleAreaArrayShow = () => {
         const toShow = exercise.muscleArea.map(e => {
@@ -28,8 +30,12 @@ export const ExerciseBlock = ({exercise, type, select = false}: propTypes) => {
         return toShow.toLocaleString().split(',').join(', ')
     }
 
-    const handleClick = () => {
-        if(select && type){
+    const cardClick = () => {
+        setIsOpenedModal(true)
+    }
+
+    const selectExercise = () => {
+        if (select && type) {
             dispatch(toggleSelectedExercise({type, exercise}))
         }
     }
@@ -52,20 +58,28 @@ export const ExerciseBlock = ({exercise, type, select = false}: propTypes) => {
         whiteFont: {
             color: ColorPalette[theme].secondFont
         },
-        checkBox: {
+        title: {
+            fontWeight: 'bold'
+        },
+        icon: {
             position: 'absolute',
             zIndex: 1,
             right: 10,
             top: 10
         }
     })
-    return <Pressable style={styles.container} onPress={handleClick}>
-        {select && isSelected()
-            && <AntDesign style={styles.checkBox} name="checkcircle" size={20} color={ColorPalette[theme].secondFont}/>
+    return <Pressable style={styles.container} onPress={cardClick}>
+        {select && (isSelected()
+            ? <AntDesign style={styles.icon} name="checkcircle" size={26} color={ColorPalette[theme].secondFont}
+                         onPress={selectExercise}/>
+            : <AntDesign style={styles.icon} name="plus" size={26} color={ColorPalette[theme].secondFont}
+                         onPress={selectExercise}/>)
         }
-        <Text style={{...globalStyles.h1, ...styles.whiteFont}}>{exercise.name}</Text>
-        <Text style={{...globalStyles.p, ...styles.whiteFont}}>{t('description')}: {exercise.description}</Text>
+        <Text style={{...globalStyles.p, ...styles.whiteFont, ...styles.title}}>{exercise.name}</Text>
+        {exercise.description &&
+            <Text style={{...globalStyles.p, ...styles.whiteFont}}>{t('description')}: {exercise.description}</Text>}
         <Text style={{...globalStyles.p, ...styles.whiteFont}}>{t('muscle_area')}: {muscleAreaArrayShow()}</Text>
-        {/*<CustomButton title={'Delete'} onPress={handleDeleteExercise}/>*/}
+
+        <ExerciseDetailsModal isOpen={isOpenedModal} setIsOpen={setIsOpenedModal} exercise={exercise}/>
     </Pressable>
 }

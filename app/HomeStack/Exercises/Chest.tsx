@@ -3,7 +3,7 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native'
 import React, {useCallback, useMemo} from 'react'
 import {STORE_TYPE} from '../../../redux/store'
 import {useGlobalStyles} from '../../../hooks/useUI'
-import {ExerciseBlock} from '../../../common/ExerciseBlock'
+import {ExerciseCard} from '../../../common/ExerciseCard'
 import {EXERCISE_TYPE} from '../../../redux/slices/exerciseSlice'
 import {NativeStackScreenProps} from '@react-navigation/native-stack'
 import {EXERCISES_NAVIGATION_TYPES} from '../CreateExercise/CreateExercise'
@@ -27,7 +27,7 @@ export const Chest = (navigation: NativeStackScreenProps<EXERCISES_NAVIGATION_TY
                 .filter(e => e.muscleArea.find(m => m.includes('chest', 0)))
                 .map((e) => {
                     return <View key={e.id}>
-                        <ExerciseBlock exercise={e} type={'chest'} select={true}/>
+                        <ExerciseCard exercise={e} type={'chest'} select={true}/>
                     </View>
                 })
         },

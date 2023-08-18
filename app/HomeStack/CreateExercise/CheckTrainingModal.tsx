@@ -79,7 +79,7 @@ export const CheckTrainingModal = ({isOpen, setIsOpen}: PROP_TYPES) => {
     return <Modal visible={isOpen}
                   animationType={'slide'}>
         <View style={globalStyles.container}>
-            <TextInput value={name} defaultValue={date} onChangeText={t => setName(t)}/>
+            <TextInput value={name} placeholder={date} onChangeText={t => setName(t)}/>
             {selectedExercises.chest
                 && <>
                     <View style={styles.titleBlock}>

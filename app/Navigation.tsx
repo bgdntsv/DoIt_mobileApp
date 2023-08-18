@@ -8,7 +8,7 @@ import {STORE_TYPE, useAppDispatch} from '../redux/store'
 import {Notifications} from './Notifications/Notifications'
 import {ExerciseNavigation} from './HomeStack/ExerciseNavigation'
 import React, {useLayoutEffect, useState} from 'react'
-import {getFilesPermissions, readExercisesFile, readUiFile} from '../helpers/fileHelper'
+import {getFilesPermissions, readExercisesFile, readTrainingsFile, readUiFile} from '../helpers/fileHelper'
 import {changeLanguage, changeTheme, LANGUAGE_TYPE} from '../redux/slices/uiSlice'
 import * as ScreenOrientation from 'expo-screen-orientation'
 import {createDrawerNavigator} from '@react-navigation/drawer'
@@ -19,6 +19,7 @@ import {getLocales} from 'expo-localization'
 import {initExerciseState} from '../redux/slices/exerciseSlice'
 import {useFonts} from 'expo-font'
 import {Loading} from '../common/Loading'
+import {initTrainingsState} from '../redux/slices/trainingSlice'
 
 export const Navigation = () => {
     const {theme} = useSelector(({ui}: STORE_TYPE) => ui)
@@ -54,6 +55,10 @@ export const Navigation = () => {
             const exercises = await readExercisesFile()
             if (exercises) {
                 dispatch(initExerciseState(exercises))
+            }
+            const trainings = await readTrainingsFile()
+            if(trainings){
+                dispatch(initTrainingsState(trainings))
             }
         }
         setIsLoading(false)

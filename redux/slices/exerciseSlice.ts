@@ -62,12 +62,49 @@ export const addExercise = createAsyncThunk<EXERCISE_FILE_TYPE | undefined, EXER
         }
         const isWrote = await writeExercisesFile(newExerciseState)
         if (isWrote) {
+            showToast({
+                type: 'success',
+                text1: 'Exercise is added'
+            })
             return newExerciseState
         }
     } catch (e) {
+        showToast({
+            type: 'error',
+            text1: 'Cannot add exercise'
+        })
         console.error('Can\'t add exercise', e)
     }
 })
+
+export const changeExercise = createAsyncThunk<EXERCISE_FILE_TYPE | undefined, EXERCISE_TYPE, {
+    state: STORE_TYPE
+}>('exercise/ChangeExercise', async (exercise, thunkAPI) => {
+    try {
+        const {exercise: exerciseState} = thunkAPI.getState()
+        const newExerciseState = {
+            baseExercises: [...exerciseState.baseExercises],
+            ownExercises: [...exerciseState.ownExercises.filter(e => e.id !== exercise.id), exercise],
+            exercises: [...exerciseState.exercises.filter(e => e.id !== exercise.id), exercise]
+        }
+        const isWrote = await writeExercisesFile(newExerciseState)
+        if (isWrote) {
+            showToast({
+                type: 'success',
+                text1: 'Exercise is changed'
+            })
+            return newExerciseState
+        }
+    } catch (e) {
+        showToast({
+            type: 'error',
+            text1: 'Cannot change exercise'
+        })
+        console.error('Can\'t change exercise', e)
+    }
+})
+
+
 export const deleteExercise = createAsyncThunk<EXERCISE_FILE_TYPE | undefined, string, {
     state: STORE_TYPE
 }>('exercise/DeleteExercise', async (exerciseId, thunkAPI) => {
@@ -80,9 +117,18 @@ export const deleteExercise = createAsyncThunk<EXERCISE_FILE_TYPE | undefined, s
         }
         const isWrote = await writeExercisesFile(newExerciseState)
         if (isWrote) {
+            showToast({
+                type: 'success',
+                text1: 'Exercise was deleted'
+            })
             return newExerciseState
         }
     } catch (e) {
+        showToast({
+            type: 'error',
+            text1: 'Cannot delete exercise',
+            text2: e instanceof Error ? 'Error: ' + e.message : ''
+        })
         console.error('Can\'t delete exercise', e)
     }
 })
@@ -97,7 +143,7 @@ const exerciseSlice = createSlice({
     name: 'exercise',
     initialState,
     reducers: {
-        initExerciseState: (state, action: PayloadAction<EXERCISE_STATE_TYPE>) => {
+        initExerciseState: (state, action: PayloadAction<EXERCISE_FILE_TYPE>) => {
             state.exercises = action.payload.exercises
             state.baseExercises = action.payload.baseExercises
             state.ownExercises = action.payload.ownExercises
@@ -133,16 +179,21 @@ const exerciseSlice = createSlice({
                     }
                 }
             }
+        },
+        clearSelectedExercises: (state) => {
+            state.selectedExercises = {}
         }
     },
     extraReducers: builder => {
         builder
             .addCase(addExercise.fulfilled, (state, action) => {
                 if (action.payload) {
-                    showToast({
-                        type: 'success',
-                        text1: 'Exercise added'
-                    })
+                    state.exercises = action.payload.exercises
+                    state.ownExercises = action.payload.ownExercises
+                }
+            })
+            .addCase(changeExercise.fulfilled, (state, action)=>{
+                if(action.payload){
                     state.exercises = action.payload.exercises
                     state.ownExercises = action.payload.ownExercises
                 }
@@ -160,5 +211,5 @@ const exerciseSlice = createSlice({
     }
 })
 
-export const {initExerciseState, toggleSelectedExercise} = exerciseSlice.actions
+export const {initExerciseState, toggleSelectedExercise, clearSelectedExercises} = exerciseSlice.actions
 export default exerciseSlice.reducer

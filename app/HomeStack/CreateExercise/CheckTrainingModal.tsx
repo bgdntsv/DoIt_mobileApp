@@ -1,5 +1,5 @@
-import React from 'react'
-import {Modal, StyleSheet, Text, View} from 'react-native'
+import React, {useState} from 'react'
+import {Modal, StyleSheet, Text, TextInput, View} from 'react-native'
 import {ExerciseCard} from '../../../common/ExerciseCard'
 import {CustomButton} from '../../../common/Button'
 import {useGlobalStyles} from '../../../hooks/useUI'
@@ -8,7 +8,10 @@ import {STORE_TYPE, useAppDispatch} from '../../../redux/store'
 import {useTranslation} from 'react-i18next'
 import {ColorPalette} from '../../../assets/colors'
 import {AntDesign} from '@expo/vector-icons'
-import {EXERCISE_NAME_TYPES, toggleSelectedExercise} from '../../../redux/slices/exerciseSlice'
+import {clearSelectedExercises, EXERCISE_NAME_TYPES, toggleSelectedExercise} from '../../../redux/slices/exerciseSlice'
+import {addTraining} from '../../../redux/slices/trainingSlice'
+import uuid from 'react-native-uuid'
+import {useGetDateString} from '../../../helpers/dateHelper'
 
 type PROP_TYPES = {
     isOpen: boolean,
@@ -19,11 +22,29 @@ export const CheckTrainingModal = ({isOpen, setIsOpen}: PROP_TYPES) => {
     const {t} = useTranslation()
     const {theme} = useSelector(({ui}: STORE_TYPE) => ui)
     const dispatch = useAppDispatch()
+    const [name, setName] = useState('')
+    const date = useGetDateString()
 
     const globalStyles = useGlobalStyles()
 
     const toggleType = (type: EXERCISE_NAME_TYPES) => {
         dispatch(toggleSelectedExercise({type}))
+    }
+
+    const closeModal = () => {
+        setIsOpen(false)
+    }
+
+    const saveTraining = () => {
+        const id = uuid.v4().toString()
+        console.log(id)
+        dispatch(addTraining({
+            id,
+            name: name || date,
+            ...selectedExercises
+        }))
+        dispatch(clearSelectedExercises())
+        closeModal()
     }
 
     const styles = StyleSheet.create({
@@ -58,7 +79,7 @@ export const CheckTrainingModal = ({isOpen, setIsOpen}: PROP_TYPES) => {
     return <Modal visible={isOpen}
                   animationType={'slide'}>
         <View style={globalStyles.container}>
-
+            <TextInput value={name} defaultValue={date} onChangeText={t => setName(t)}/>
             {selectedExercises.chest
                 && <>
                     <View style={styles.titleBlock}>
@@ -86,8 +107,8 @@ export const CheckTrainingModal = ({isOpen, setIsOpen}: PROP_TYPES) => {
                         ? selectedExercises.press.map(e => <ExerciseCard exercise={e} key={e.id}/>)
                         : <Text style={globalStyles.span}>Ви не обрали вправи, ми їх згенеруємо</Text>}
                 </>}
-
-            <CustomButton title={'close'} onPress={() => setIsOpen(false)}/>
+            <CustomButton title={'Add training'} onPress={saveTraining}/>
+            <CustomButton title={'close'} onPress={closeModal}/>
         </View>
     </Modal>
 }

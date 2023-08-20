@@ -4,76 +4,64 @@ import {
     ImageSourcePropType,
     View,
 } from 'react-native'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useGlobalStyles} from '../../../hooks/useUI'
 import {ExerciseTypeBlock} from '../../../common/ExerciseTypeBlock'
 import {useTranslation} from 'react-i18next'
 import pressImg from '../../../assets/images/abs.webp'
 import chestImg from '../../../assets/images/chest_muscles.png'
-import {NativeStackScreenProps} from '@react-navigation/native-stack'
 import {BackButtonNavigation} from '../../../common/BackButtonNavigation'
 import {useSelector} from 'react-redux'
 import {STORE_TYPE} from '../../../redux/store'
 import {EXERCISE_NAME_TYPES} from '../../../redux/slices/exerciseSlice'
 import {AntDesign} from '@expo/vector-icons'
 import {ColorPalette} from '../../../assets/colors'
-import {CheckTrainingModal} from './CheckTrainingModal'
+import {ConfirmTrainingModal} from './ConfirmTrainingModal'
+import {useIsFocused, useNavigation} from '@react-navigation/native'
+import {NativeStackNavigationProp} from '@react-navigation/native-stack'
+import {HOME_STACK_ROUTE_PROPS} from '../ExerciseNavigation'
 
-export type EXERCISES_NAVIGATION_TYPES = {
-    'Chest-exercises': undefined,
-    'Abs-exercises': undefined,
-    'Legs-exercises': undefined,
-    'Hands-exercises': undefined,
-    'Shoulders-exercises': undefined,
-    'Back-exercises': undefined
-}
-export type EXERCISES_ROUTES_TYPES =
-    'Chest-exercises'
-    | 'Legs-exercises'
-    | 'Abs-exercises'
-    | 'Hands-exercises'
-    | 'Shoulders-exercises'
-    | 'Back-exercises'
-
-
-
-export const CreateExercise = (navigation: NativeStackScreenProps<EXERCISES_NAVIGATION_TYPES>) => {
+export const CreateTraining = () => {
     const {theme} = useSelector(({ui}: STORE_TYPE) => ui)
     const {selectedExercises} = useSelector(({exercise}: STORE_TYPE)=>exercise)
     const {t} = useTranslation()
     const globalStyles = useGlobalStyles()
     const [isOpenModal, setIsOpenModal] = useState(false)
+    const navigation = useNavigation<NativeStackNavigationProp<HOME_STACK_ROUTE_PROPS>>()
+    const isFocused = useIsFocused();
 
-    const exercises: Array<{ name: EXERCISE_NAME_TYPES, img: ImageSourcePropType | string, route: EXERCISES_ROUTES_TYPES }> = [
+    useEffect(()=>{
+        if(isFocused){
+            navigation.getParent()?.setOptions({headerTitle: t('select_trainings_zone')})
+        } else {
+            navigation.getParent()?.setOptions({headerTitle: ''})
+        }
+    }, [isFocused])
+
+    const exercises: Array<{ name: EXERCISE_NAME_TYPES, img: ImageSourcePropType | string }> = [
         {
             name: 'press',
             img: pressImg,
-            route: 'Abs-exercises'
         },
         {
             name: 'chest',
             img: chestImg,
-            route: 'Chest-exercises'
         },
         {
             name: 'legs',
             img: '',
-            route: 'Legs-exercises'
         },
         {
             name: 'hands',
             img: '',
-            route: 'Hands-exercises'
         },
         {
             name: 'shoulders',
             img: '',
-            route: 'Shoulders-exercises'
         },
         {
             name: 'back',
             img: '',
-            route: 'Back-exercises'
         }
     ]
     const startTraining = () => {
@@ -81,7 +69,7 @@ export const CreateExercise = (navigation: NativeStackScreenProps<EXERCISES_NAVI
     }
     const styles = StyleSheet.create({
         container: {
-            paddingVertical: 0
+            marginVertical: 0
         },
         startButton: {
             position: 'absolute'
@@ -112,7 +100,7 @@ export const CreateExercise = (navigation: NativeStackScreenProps<EXERCISES_NAVI
     return <>
         <ScrollView style={{...globalStyles.container, ...styles.container}}>
             <View style={styles.header}>
-                <BackButtonNavigation navigation={navigation}/>
+                <BackButtonNavigation/>
             </View>
             {exercises
                 .map(e =>
@@ -121,9 +109,7 @@ export const CreateExercise = (navigation: NativeStackScreenProps<EXERCISES_NAVI
                                        isSelected={!!selectedExercises[e.name]}
                                        select={true}
                                        img={e.img}
-                                       route={e.route}
-                                       navigation={navigation}
-                                         />
+                    />
                 )}
         </ScrollView>
 
@@ -135,6 +121,6 @@ export const CreateExercise = (navigation: NativeStackScreenProps<EXERCISES_NAVI
                            onPress={startTraining}/>
             </View>}
 
-        <CheckTrainingModal isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>
+        <ConfirmTrainingModal isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>
     </>
 }

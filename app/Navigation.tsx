@@ -21,6 +21,13 @@ import {useFonts} from 'expo-font'
 import {Loading} from '../common/Loading'
 import {initTrainingsState} from '../redux/slices/trainingSlice'
 
+export type DRAWER_PROP_TYPES = {
+    'Home': undefined,
+    'Login': undefined,
+    'AddExercise': undefined,
+    'Notifications': undefined,
+    'Settings': undefined
+}
 export const Navigation = () => {
     const {theme} = useSelector(({ui}: STORE_TYPE) => ui)
     const {t} = useTranslation()
@@ -28,11 +35,9 @@ export const Navigation = () => {
     const {languageCode} = getLocales()[0]
     const dispatch = useAppDispatch()
     const [isLoading, setIsLoading] = useState(true)
-    const dimensions = useWindowDimensions();
+    const dimensions = useWindowDimensions()
     const [fontsLoaded] = useFonts({
-        'Inter-Bold': require('../assets/fonts/inter/Inter-Bold.ttf'),
         'Inter-Regular': require('../assets/fonts/inter/Inter-Regular.ttf'),
-        'Inter-Light': require('../assets/fonts/inter/Inter-Light.ttf')
     })
     const init = async () => {
         setIsLoading(true)
@@ -57,7 +62,7 @@ export const Navigation = () => {
                 dispatch(initExerciseState(exercises))
             }
             const trainings = await readTrainingsFile()
-            if(trainings){
+            if (trainings) {
                 dispatch(initTrainingsState(trainings))
             }
         }
@@ -80,14 +85,14 @@ export const Navigation = () => {
             card: ColorPalette[theme].fourth,
             notification: ColorPalette[theme].secondFont,
             border: ColorPalette[theme].secondFont
-            }
+        }
     }}>
         <StatusBar barStyle={'light-content'} backgroundColor={ColorPalette[theme].fourth}/>
 
         <Drawer.Navigator
             initialRouteName={'DoIt'}
             backBehavior={'firstRoute'}
-            screenOptions = {({route})=> {
+            screenOptions={({route}) => {
                 return {
                     headerTintColor: ColorPalette[theme].secondFont,
                     drawerInactiveTintColor: ColorPalette[theme].secondFont,
@@ -110,7 +115,7 @@ export const Navigation = () => {
                                 return <AntDesign name="user" size={size} color={color}/>
                             }
                             case 'AddExercise': {
-                                return <AntDesign name="pluscircleo" size={size} color={color} />
+                                return <AntDesign name="pluscircleo" size={size} color={color}/>
                             }
                             default: {
                                 return <AntDesign name={'question'} size={size} color={color}/>
@@ -119,7 +124,7 @@ export const Navigation = () => {
                     }
                 }
             }}>
-            <Drawer.Screen name={'Home'} options={{title: t('main')}} component={ExerciseNavigation}/>
+            <Drawer.Screen name={'Home'} options={{title: t('main'), headerTitle: ''}} component={ExerciseNavigation}/>
             <Drawer.Screen name={'Login'} options={{title: t('login')}} component={Login}/>
             <Drawer.Screen name={'AddExercise'} options={{title: t('add_exercise')}} component={AddExercise}/>
             <Drawer.Screen name={'Notifications'} options={{title: t('notifications')}} component={Notifications}/>

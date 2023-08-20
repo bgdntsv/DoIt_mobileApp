@@ -9,11 +9,12 @@ export const useGlobalStyles = () => {
         container:{
             flex: 1,
             backgroundColor: ColorPalette[theme].main,
-            paddingVertical: 20,
-            paddingHorizontal: 8
+            marginVertical: 10,
+            paddingHorizontal: 8,
         },
         h1:{
-            fontFamily: 'Inter-Bold',
+            fontFamily: 'Inter-Regular',
+            fontWeight: 'bold',
             fontSize: 22,
             color: ColorPalette[theme].mainFont
         },
@@ -23,7 +24,7 @@ export const useGlobalStyles = () => {
             color: ColorPalette[theme].mainFont
         },
         span:{
-            fontFamily: 'Inter-Light',
+            fontFamily: 'Inter-Regular',
             fontSize: 16,
             color: ColorPalette[theme].mainFont
         }

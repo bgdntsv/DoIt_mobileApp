@@ -1,12 +1,12 @@
 import React, {useState} from 'react'
-import {EXERCISE_NAME_TYPES, EXERCISE_TYPE, toggleSelectedExercise} from '../redux/slices/exerciseSlice'
+import {EXERCISE_NAME_TYPES, EXERCISE_TYPE, toggleSelectedExercise} from '../../../redux/slices/exerciseSlice'
 import {Text, StyleSheet, Pressable} from 'react-native'
-import {useGlobalStyles} from '../hooks/useUI'
+import {useGlobalStyles} from '../../../hooks/useUI'
 import {useSelector} from 'react-redux'
-import {STORE_TYPE, useAppDispatch} from '../redux/store'
-import {ColorPalette} from '../assets/colors'
+import {STORE_TYPE, useAppDispatch} from '../../../redux/store'
+import {ColorPalette} from '../../../assets/colors'
 import {useTranslation} from 'react-i18next'
-import {UI_STATE_TYPE} from '../redux/slices/uiSlice'
+import {UI_STATE_TYPE} from '../../../redux/slices/uiSlice'
 import {AntDesign} from '@expo/vector-icons'
 import {ExerciseDetailsModal} from './ExerciseDetailsModal'
 
@@ -41,11 +41,15 @@ export const ExerciseCard = ({exercise, type, select = false}: propTypes) => {
     }
 
     const isSelected = (): boolean => {
-        if (selectedExercises['chest']) {
-            return !!selectedExercises['chest']?.find(e => e.id === exercise.id)
+        if (type && selectedExercises[type]) {
+            return !!selectedExercises[type]?.find(e => e.id === exercise.id)
         } else {
             return false
         }
+    }
+
+    const getPlaceText = (): string => {
+        return `${exercise.gym ? t('gym') : ''}${(exercise.home || exercise.outdoors) ? ', ' : ''}${exercise.home ? t('home') : ''}${exercise.outdoors ? ', ' : ''}${exercise.outdoors ? t('outdoors') : ''}`
     }
 
     const styles = StyleSheet.create({
@@ -76,9 +80,11 @@ export const ExerciseCard = ({exercise, type, select = false}: propTypes) => {
                          onPress={selectExercise}/>)
         }
         <Text style={{...globalStyles.p, ...styles.whiteFont, ...styles.title}}>{exercise.name}</Text>
+        {(exercise.gym || exercise.outdoors || exercise.home)
+            && <Text style={{...globalStyles.p, ...styles.whiteFont}}>{t('place')}: {getPlaceText().toLowerCase()}</Text>}
         {exercise.description &&
             <Text style={{...globalStyles.p, ...styles.whiteFont}}>{t('description')}: {exercise.description}</Text>}
-        <Text style={{...globalStyles.p, ...styles.whiteFont}}>{t('muscle_area')}: {muscleAreaArrayShow()}</Text>
+        <Text style={{...globalStyles.p, ...styles.whiteFont}}>{t('muscle_area')}: {muscleAreaArrayShow().toLowerCase()}</Text>
 
         <ExerciseDetailsModal isOpen={isOpenedModal} setIsOpen={setIsOpenedModal} exercise={exercise}/>
     </Pressable>

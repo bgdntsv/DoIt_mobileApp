@@ -1,5 +1,5 @@
-import {Text, View, StyleSheet, TextInput, Pressable, ScrollView, Image} from 'react-native'
-import React, {useRef, useState} from 'react'
+import {Text, View, StyleSheet, TextInput, Pressable, ScrollView, Image, Alert} from 'react-native'
+import React, {useEffect, useRef, useState} from 'react'
 import {ColorPalette} from '../../assets/colors'
 import {useSelector} from 'react-redux'
 import {STORE_TYPE, useAppDispatch} from '../../redux/store'
@@ -16,6 +16,7 @@ import {showToast} from '../../helpers/toast'
 import * as ImagePicker from 'expo-image-picker'
 import {ImagePickerAsset} from 'expo-image-picker'
 import {ResizeMode, Video} from 'expo-av'
+import {useIsFocused} from '@react-navigation/native'
 
 const AddExercise = () => {
     const {t} = useTranslation()
@@ -34,6 +35,14 @@ const AddExercise = () => {
     const weightRef = useRef<TextInput>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [mediaURI, setMediaURI] = useState<ImagePickerAsset | null>(null)
+
+    const isFocused = useIsFocused()
+
+    useEffect(() => {
+        if (!isFocused) {
+            clearState()
+        }
+    }, [isFocused])
     const isValidForm = (): boolean => {
         if (!name) {
             return false
@@ -93,16 +102,29 @@ const AddExercise = () => {
         return toShow.toLocaleString().split(',').join(', ')
     }
 
-    const getImageURI = async () => {
+    const getMediaURI = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [5, 3],
             quality: 1
         })
 
         if (result.assets) {
             setMediaURI(result.assets[0])
+        }
+    }
+
+    const changeMedia = () => {
+        if (mediaURI) {
+            Alert.alert(
+                `Do you want to change selected ${mediaURI?.type === 'image' ? 'image' : 'video'}?`,
+                undefined,
+                [
+                    {text: 'Yes', onPress: getMediaURI},
+                    {text: 'No'}
+                ]
+            )
         }
     }
     const clearState = () => {
@@ -140,7 +162,7 @@ const AddExercise = () => {
             color: ColorPalette[theme].second
         },
         submit: {
-            marginTop: 15
+            position: 'absolute'
         },
         checkboxes: {
             borderWidth: 1,
@@ -200,6 +222,22 @@ const AddExercise = () => {
     })
 
     return <ScrollView style={styles.container}>
+        <Pressable onPress={changeMedia}>{mediaURI && (mediaURI.type === 'image'
+            ? <Image height={150} source={{uri: mediaURI.uri}}/>
+            : <Video
+                style={{
+                    height: 150
+                }}
+                source={{
+                    uri: mediaURI?.uri
+                }}
+                useNativeControls={false}
+                resizeMode={ResizeMode.COVER}
+                isLooping
+                isMuted
+                shouldPlay
+            />)}
+        </Pressable>
         <Text style={styles.span}>{t('add_name')}*</Text>
         <TextInput value={name} onChangeText={setName} style={styles.input}
                    onSubmitEditing={() => {
@@ -296,29 +334,15 @@ const AddExercise = () => {
             </View>
         </Pressable>
 
-        {mediaURI && (mediaURI.type === 'image'
-            ? <Image width={100} height={100} source={{uri: mediaURI.uri}}/>
-            : <Video
-                style={{
-                    width: 200,
-                    height: 200
-                }}
-                source={{
-                    uri: mediaURI?.uri
-                }}
-                useNativeControls={false}
-                resizeMode={ResizeMode.COVER}
-                isLooping
-                isMuted
-                shouldPlay
-            />)}
-
-        <CustomButton title={'get image'} onPress={getImageURI}/>
+        {!mediaURI && <CustomButton title={'add media'}
+                                    onPress={getMediaURI}
+                                    icon={<AntDesign name="videocamera" size={24} color={ColorPalette[theme].secondFont} />}/>}
 
         <View style={styles.submit}>
             <CustomButton title={t('add_exercise')}
                           disabled={!isValidForm()}
-                          onPress={handleSubmit}/>
+                          onPress={handleSubmit}
+                          icon={<AntDesign name="save" size={24} color={ColorPalette[theme].secondFont} />}/>
         </View>
 
         <MuscleTypeModal isOpen={isModalOpen}

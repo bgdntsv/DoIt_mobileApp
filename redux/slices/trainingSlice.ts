@@ -6,7 +6,8 @@ import {showToast} from '../../helpers/toast'
 
 export type TRAINING_TYPE = {
     name: string
-    id: string
+    id: string,
+    dateCreation: number,
     press?: Array<EXERCISE_TYPE>
     chest?: Array<EXERCISE_TYPE>,
     legs?: Array<EXERCISE_TYPE>,
@@ -112,7 +113,8 @@ const trainingSlice = createSlice({
     initialState,
     reducers: {
         initTrainingsState: (state, action: PayloadAction<TRAININGS_STATE_TYPE>) => {
-            state = {...action.payload}
+            state.trainings = action.payload.trainings
+            state.trainingsHistory = action.payload.trainingsHistory
         }
     },
     extraReducers: builder => {

@@ -5,49 +5,40 @@ import {STORE_TYPE, useAppDispatch} from '../redux/store'
 import {UI_STATE_TYPE} from '../redux/slices/uiSlice'
 import {ColorPalette} from '../assets/colors'
 import {useGlobalStyles} from '../hooks/useUI'
-import {NativeStackScreenProps} from '@react-navigation/native-stack'
-import {
-    EXERCISES_NAVIGATION_TYPES,
-    EXERCISES_ROUTES_TYPES,
-} from '../app/HomeStack/CreateExercise/CreateExercise'
+import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 import {AntDesign, EvilIcons} from '@expo/vector-icons'
 import {useTranslation} from 'react-i18next'
 import {EXERCISE_NAME_TYPES, toggleSelectedExercise} from '../redux/slices/exerciseSlice'
+import {HOME_STACK_ROUTE_PROPS} from '../app/HomeStack/ExerciseNavigation'
+import {useNavigation} from '@react-navigation/native'
 
 type PROP_TYPES = {
     title: EXERCISE_NAME_TYPES,
     select?: boolean,
     isSelected?: boolean,
     img?: ImageSourcePropType | string,
-    navigation?: NativeStackScreenProps<EXERCISES_NAVIGATION_TYPES>,
-    route?: EXERCISES_ROUTES_TYPES,
 }
 export const ExerciseTypeBlock = ({
-                                        select = false,
-                                        isSelected,
-                                        title,
-                                        img,
-                                        navigation,
-                                        route,
-                                    }: PROP_TYPES) => {
+                                      select = false,
+                                      isSelected,
+                                      title,
+                                      img
+                                  }: PROP_TYPES) => {
     const {theme} = useSelector<STORE_TYPE, UI_STATE_TYPE>(({ui}) => ui)
     const globalStyles = useGlobalStyles()
     const dispatch = useAppDispatch()
     const {t} = useTranslation()
+    const navigation = useNavigation<NativeStackNavigationProp<HOME_STACK_ROUTE_PROPS>>()
 
-    const navigateTo = (route: EXERCISES_ROUTES_TYPES | undefined) => {
-        if (navigation?.navigation && route) {
-            navigation.navigation.navigate(route)
-        }
+    const goToExercises = () => {
+        navigation.navigate('Exercises-type', {exerciseType: title})
     }
     const clickCheckBox = () => {
         if (select && title) {
             dispatch(toggleSelectedExercise({type: title}))
         }
     }
-    const clickToRoute = () => {
-        navigateTo(route)
-    }
+
     const styles = StyleSheet.create({
         container: {
             borderRadius: 8,
@@ -108,7 +99,7 @@ export const ExerciseTypeBlock = ({
 
         <View style={styles.bottom}>
             <Text style={{...globalStyles.p, ...styles.containerTitle}}>{t(title)}</Text>
-            <AntDesign name="arrowright" style={styles.containerTitle} size={26} onPress={clickToRoute}/>
+            <AntDesign name="arrowright" style={styles.containerTitle} size={26} onPress={goToExercises}/>
         </View>
     </View>
 }

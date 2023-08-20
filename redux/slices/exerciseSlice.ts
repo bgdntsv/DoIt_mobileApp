@@ -31,10 +31,10 @@ export type EXERCISE_STATE_TYPE = {
     baseExercises: Array<EXERCISE_TYPE>,
     ownExercises: Array<EXERCISE_TYPE>,
     exercises: Array<EXERCISE_TYPE>,
-    selectedExercises: SELECTED_EXERCISES
+    selectedExercises: EXERCISES_BY_TYPES_TYPE
 }
 
-export type SELECTED_EXERCISES = {
+export type EXERCISES_BY_TYPES_TYPE = {
     press?: Array<EXERCISE_TYPE>,
     chest?: Array<EXERCISE_TYPE>,
     legs?: Array<EXERCISE_TYPE>,
@@ -43,12 +43,7 @@ export type SELECTED_EXERCISES = {
     back?: Array<EXERCISE_TYPE>,
 }
 
-export type EXERCISE_NAME_TYPES = 'press' |
-    'chest' |
-    'legs' |
-    'hands' |
-    'shoulders' |
-    'back'
+export type EXERCISE_NAME_TYPES = 'press' | 'chest' | 'legs' | 'hands' | 'shoulders' | 'back'
 
 export const addExercise = createAsyncThunk<EXERCISE_FILE_TYPE | undefined, EXERCISE_TYPE, {
     state: STORE_TYPE

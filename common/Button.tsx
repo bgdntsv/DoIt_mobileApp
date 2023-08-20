@@ -1,5 +1,5 @@
-import React from 'react'
-import {StyleSheet, Pressable, Text, Animated} from 'react-native'
+import React, {ReactElement} from 'react'
+import {StyleSheet, Pressable, Text, Animated, View} from 'react-native'
 import {useSelector} from 'react-redux'
 import {STORE_TYPE} from '../redux/store'
 import {ColorPalette} from '../assets/colors'
@@ -8,9 +8,11 @@ export type BUTTON_COMPONENT_TYPE = {
     title: string,
     onPress: () => void,
     disabled?: boolean,
-    style?: object
+    style?: object,
+    icon?: ReactElement,
+    second?: boolean
 }
-export const CustomButton = ({title, onPress, disabled, style}: BUTTON_COMPONENT_TYPE) => {
+export const CustomButton = ({title, onPress, disabled, style, icon, second}: BUTTON_COMPONENT_TYPE) => {
     const {theme} = useSelector(({ui}: STORE_TYPE) => ui)
     const animated = new Animated.Value(1)
     const fadeIn = () => {
@@ -29,19 +31,34 @@ export const CustomButton = ({title, onPress, disabled, style}: BUTTON_COMPONENT
     }
     const styles = StyleSheet.create({
         buttonContainer: {
-            backgroundColor: disabled ? ColorPalette[theme].third : ColorPalette[theme].second,
+            backgroundColor: second
+                ? ColorPalette[theme].main
+                : disabled ? ColorPalette[theme].third : ColorPalette[theme].second,
             borderRadius: 5,
-            padding: 7,
+            padding: 8,
+            marginVertical: 5,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'row',
+            borderColor: second ? ColorPalette[theme].mainFont : 'none',
+            borderWidth: second ? 1 : 0
         },
         text: {
-            color: ColorPalette[theme].secondFont,
+            color: second
+                ? ColorPalette[theme].mainFont
+                : ColorPalette[theme].secondFont,
             fontSize: 18,
             textAlign: 'center'
+        },
+        icon: {
+            marginLeft: 5
         }
     })
     return <Pressable onPress={onPress} disabled={disabled} onPressIn={fadeIn} onPressOut={fadeOut}>
         <Animated.View style={{...styles.buttonContainer, opacity: animated, ...style}}>
             <Text style={styles.text}>{title}</Text>
+            <View style={styles.icon}>{icon}</View>
         </Animated.View>
     </Pressable>
 }

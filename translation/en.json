@@ -50,5 +50,22 @@
   "muscle_area": "Muscle area",
   "warming_up": "Warming up...",
   "description": "Description",
-  "no_exercises": "No exercises"
+  "no_exercises": "No exercises",
+  "sun": "Sun",
+  "mon": "Mon",
+  "tue": "Tue",
+  "wed": "Wed",
+  "thu": "Thu",
+  "fri": "Fri",
+  "sat": "Sat",
+  "add_training": "Add training",
+  "close": "Close",
+  "name": "Name",
+  "generate_training": "Generate training",
+  "training_create": "Create training",
+  "select_training": "Select training",
+  "training_select": "Select training",
+  "place": "Place",
+  "select_trainings_zone": "Select training's zone",
+  "select_exercise": "Select exercises"
 }

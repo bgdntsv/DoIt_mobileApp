@@ -2,23 +2,31 @@ import {StyleSheet, Text, View, Image, TouchableHighlight, ScrollView} from 'rea
 import {ColorPalette} from '../../assets/colors'
 import {useSelector} from 'react-redux'
 import {STORE_TYPE} from '../../redux/store'
-import {NativeStackScreenProps} from '@react-navigation/native-stack'
-import React from 'react'
+import {NativeStackNavigationProp} from '@react-navigation/native-stack'
+import React, {useEffect} from 'react'
 import {useGlobalStyles} from '../../hooks/useUI'
 import robotImage from '../../assets/images/robot_sportsman.png'
 import sportsmanImage from '../../assets/images/sportsman_writing.png'
+import selectTrainingImage from '../../assets/images/select_training.jpg'
+import {useTranslation} from 'react-i18next'
+import {HOME_STACK_ROUTE_PROPS} from './ExerciseNavigation'
+import {useIsFocused, useNavigation} from '@react-navigation/native'
 
-type PropScreensList = {
-    'Chest-exercises': undefined,
-    'Abs-exercises': undefined,
-    'Generate-exercise': undefined,
-    'Create-exercise': undefined
-}
-export const ExercisesMain = ({navigation}: NativeStackScreenProps<PropScreensList>) => {
+export const ExercisesMain = () => {
     const {theme} = useSelector(({ui}: STORE_TYPE) => ui)
     const globalStyles = useGlobalStyles()
+    const {t} = useTranslation()
 
-    const goToExercises = (route: 'Chest-exercises' | 'Abs-exercises' | 'Generate-exercise' | 'Create-exercise') => {
+    const navigation = useNavigation<NativeStackNavigationProp<HOME_STACK_ROUTE_PROPS>>()
+    const isFocused = useIsFocused();
+
+    useEffect(()=>{
+        if(isFocused){
+            navigation.getParent()?.setOptions({headerTitle: ''})
+        }
+    }, [isFocused])
+
+    const goToExercises = (route: any) => {
         navigation.navigate(route)
     }
 
@@ -46,19 +54,27 @@ export const ExercisesMain = ({navigation}: NativeStackScreenProps<PropScreensLi
         }
     })
     return <ScrollView style={globalStyles.container}>
-        <TouchableHighlight onPress={()=>goToExercises('Generate-exercise')} underlayColor={ColorPalette[theme].main}>
+        <TouchableHighlight onPress={()=>goToExercises('Select-training')} underlayColor={ColorPalette[theme].main}>
             <View style={styles.containerBlock}>
                 <View style={styles.containerContent}>
-                    <Image source={robotImage} style={styles.image}/>
-                    <Text style={{...globalStyles.p, ...styles.containerTitle}}>Генерувати тренування</Text>
+                    <Image source={selectTrainingImage} style={styles.image}/>
+                    <Text style={{...globalStyles.p, ...styles.containerTitle}}>{t('training_select')}</Text>
                 </View>
             </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={()=>goToExercises('Create-exercise')} underlayColor={ColorPalette[theme].main}>
+        <TouchableHighlight onPress={()=>goToExercises('Create-training')} underlayColor={ColorPalette[theme].main}>
             <View style={styles.containerBlock}>
                 <View style={styles.containerContent}>
                     <Image source={sportsmanImage} style={styles.image}/>
-                    <Text style={{...globalStyles.p, ...styles.containerTitle}}>Створити тренування</Text>
+                    <Text style={{...globalStyles.p, ...styles.containerTitle}}>{t('training_create')}</Text>
+                </View>
+            </View>
+        </TouchableHighlight>
+        <TouchableHighlight onPress={()=>goToExercises('Generate-training')} underlayColor={ColorPalette[theme].main}>
+            <View style={styles.containerBlock}>
+                <View style={styles.containerContent}>
+                    <Image source={robotImage} style={styles.image}/>
+                    <Text style={{...globalStyles.p, ...styles.containerTitle}}>{t('generate_training')}</Text>
                 </View>
             </View>
         </TouchableHighlight>

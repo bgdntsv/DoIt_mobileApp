@@ -33,8 +33,6 @@ export const CreateTraining = () => {
     useEffect(()=>{
         if(isFocused){
             navigation.getParent()?.setOptions({headerTitle: t('select_trainings_zone')})
-        } else {
-            navigation.getParent()?.setOptions({headerTitle: ''})
         }
     }, [isFocused])
 
@@ -64,11 +62,12 @@ export const CreateTraining = () => {
             img: '',
         }
     ]
-    const startTraining = () => {
+    const confirmTraining = () => {
         setIsOpenModal(true)
     }
     const styles = StyleSheet.create({
         container: {
+            ...globalStyles.container,
             marginVertical: 0
         },
         startButton: {
@@ -98,7 +97,7 @@ export const CreateTraining = () => {
         }
     })
     return <>
-        <ScrollView style={{...globalStyles.container, ...styles.container}}>
+        <ScrollView style={styles.container}>
             <View style={styles.header}>
                 <BackButtonNavigation/>
             </View>
@@ -118,7 +117,7 @@ export const CreateTraining = () => {
                 <AntDesign name="play"
                            size={54}
                            color={ColorPalette[theme].secondFont}
-                           onPress={startTraining}/>
+                           onPress={confirmTraining}/>
             </View>}
 
         <ConfirmTrainingModal isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>

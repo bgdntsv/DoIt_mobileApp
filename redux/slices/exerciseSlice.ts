@@ -1,9 +1,10 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {STORE_TYPE} from '../store'
 import {writeExercisesFile} from '../../helpers/fileHelper'
-import {MUSCLE_AREA_TYPE} from '../../helpers/constants'
+import {INVENTORY_TYPE, MUSCLE_AREA_TYPE} from '../../helpers/constants'
 import {showToast} from '../../helpers/toast'
 import {ImagePickerAsset} from 'expo-image-picker'
+import {baseExercises} from '../../helpers/baseExercises'
 
 export type EXERCISE_TYPE = {
     name: string,
@@ -16,22 +17,21 @@ export type EXERCISE_TYPE = {
     gym: boolean,
     outdoors: boolean,
     home: boolean,
-    inventory?: Array<string>,
+    inventory?: Array<INVENTORY_TYPE>,
     id: string
 }
 
 export type EXERCISE_FILE_TYPE = {
-    baseExercises: Array<EXERCISE_TYPE>,
     ownExercises: Array<EXERCISE_TYPE>,
     exercises: Array<EXERCISE_TYPE>,
 }
 
 
 export type EXERCISE_STATE_TYPE = {
-    baseExercises: Array<EXERCISE_TYPE>,
     ownExercises: Array<EXERCISE_TYPE>,
     exercises: Array<EXERCISE_TYPE>,
-    selectedExercises: EXERCISES_BY_TYPES_TYPE
+    selectedExercises: EXERCISES_BY_TYPES_TYPE,
+    blackListExerciseIds: Array<string>
 }
 
 export type EXERCISES_BY_TYPES_TYPE = {
@@ -51,7 +51,6 @@ export const addExercise = createAsyncThunk<EXERCISE_FILE_TYPE | undefined, EXER
     try {
         const {exercise: exerciseState} = thunkAPI.getState()
         const newExerciseState = {
-            baseExercises: [...exerciseState.baseExercises],
             ownExercises: [...exerciseState.ownExercises, exercise],
             exercises: [...exerciseState.exercises, exercise]
         }
@@ -78,7 +77,6 @@ export const changeExercise = createAsyncThunk<EXERCISE_FILE_TYPE | undefined, E
     try {
         const {exercise: exerciseState} = thunkAPI.getState()
         const newExerciseState = {
-            baseExercises: [...exerciseState.baseExercises],
             ownExercises: [...exerciseState.ownExercises.filter(e => e.id !== exercise.id), exercise],
             exercises: [...exerciseState.exercises.filter(e => e.id !== exercise.id), exercise]
         }
@@ -106,7 +104,6 @@ export const deleteExercise = createAsyncThunk<EXERCISE_FILE_TYPE | undefined, s
     try {
         const {exercise: exerciseState} = thunkAPI.getState()
         const newExerciseState = {
-            baseExercises: [...exerciseState.baseExercises],
             ownExercises: [...exerciseState.ownExercises.filter(e => e.id !== exerciseId)],
             exercises: [...exerciseState.exercises.filter(e => e.id !== exerciseId)]
         }
@@ -129,18 +126,20 @@ export const deleteExercise = createAsyncThunk<EXERCISE_FILE_TYPE | undefined, s
 })
 
 const initialState: EXERCISE_STATE_TYPE = {
-    baseExercises: [],
     ownExercises: [],
     exercises: [],
-    selectedExercises: {}
+    selectedExercises: {},
+    blackListExerciseIds: []
 }
 const exerciseSlice = createSlice({
     name: 'exercise',
     initialState,
     reducers: {
         initExerciseState: (state, action: PayloadAction<EXERCISE_FILE_TYPE>) => {
-            state.exercises = action.payload.exercises
-            state.baseExercises = action.payload.baseExercises
+            state.exercises = [
+                ...action.payload.ownExercises.filter(e => !state.blackListExerciseIds.includes(e.id)),
+                ...baseExercises.filter(e => !state.blackListExerciseIds.includes(e.id))
+            ]
             state.ownExercises = action.payload.ownExercises
         },
         toggleSelectedExercise: (state, {payload: {type, exercise}}: PayloadAction<{
@@ -187,8 +186,8 @@ const exerciseSlice = createSlice({
                     state.ownExercises = action.payload.ownExercises
                 }
             })
-            .addCase(changeExercise.fulfilled, (state, action)=>{
-                if(action.payload){
+            .addCase(changeExercise.fulfilled, (state, action) => {
+                if (action.payload) {
                     state.exercises = action.payload.exercises
                     state.ownExercises = action.payload.ownExercises
                 }

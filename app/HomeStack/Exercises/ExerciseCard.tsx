@@ -59,18 +59,27 @@ export const ExerciseCard = ({exercise, type, select = false}: propTypes) => {
             padding: 8,
             borderRadius: 5
         },
-        whiteFont: {
+        title: {
+            ...globalStyles.h1,
+            fontWeight: 'bold',
             color: ColorPalette[theme].secondFont
         },
-        title: {
-            fontWeight: 'bold'
+        subTitle: {
+            ...globalStyles.p,
+            fontWeight: 'bold',
+            color: ColorPalette[theme].secondFont
+        },
+        text: {
+            ...globalStyles.p,
+            color: ColorPalette[theme].secondFont,
+            paddingVertical: 5
         },
         icon: {
             position: 'absolute',
             zIndex: 1,
             right: 10,
             top: 10
-        }
+        },
     })
     return <Pressable style={styles.container} onPress={cardClick}>
         {select && (isSelected()
@@ -79,13 +88,18 @@ export const ExerciseCard = ({exercise, type, select = false}: propTypes) => {
             : <AntDesign style={styles.icon} name="plus" size={26} color={ColorPalette[theme].secondFont}
                          onPress={selectExercise}/>)
         }
-        <Text style={{...globalStyles.p, ...styles.whiteFont, ...styles.title}}>{exercise.name}</Text>
+        <Text style={styles.title}>{exercise.name}</Text>
         {(exercise.gym || exercise.outdoors || exercise.home)
-            && <Text style={{...globalStyles.p, ...styles.whiteFont}}>{t('place')}: {getPlaceText().toLowerCase()}</Text>}
+            && <Text style={styles.text}>
+                <Text style={styles.subTitle}>{t('place')}:</Text> {getPlaceText().toLowerCase()}
+            </Text>}
         {exercise.description &&
-            <Text style={{...globalStyles.p, ...styles.whiteFont}}>{t('description')}: {exercise.description}</Text>}
-        <Text style={{...globalStyles.p, ...styles.whiteFont}}>{t('muscle_area')}: {muscleAreaArrayShow().toLowerCase()}</Text>
-
+            <Text style={styles.text}>
+                <Text style={styles.subTitle}>{t('description')}:</Text> {exercise.description}
+            </Text>}
+        <Text style={styles.text}>
+            <Text style={styles.subTitle}>{t('muscle_area')}:</Text> {muscleAreaArrayShow().toLowerCase()}
+        </Text>
         <ExerciseDetailsModal isOpen={isOpenedModal} setIsOpen={setIsOpenedModal} exercise={exercise}/>
     </Pressable>
 }

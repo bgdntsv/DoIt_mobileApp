@@ -67,5 +67,12 @@
   "training_select": "Обрати тренування",
   "place": "Місце",
   "select_trainings_zone": "Оберіть зону тренування",
-  "select_exercise": "Оберіть вправи"
+  "select_exercise": "Оберіть вправи",
+  "bar": "Перекладина",
+  "fitness_ball": "М'яч для фітнесу",
+  "dumbbells": "Гантелі",
+  "ball": "М'яч",
+  "roman_chair": "Римський стілець",
+  "exercise_machine_for_lifting_legs": "Тренажер для підтягування ніг",
+  "no_exercises_with_this_name": "Немає вправ з такою назвою"
 }

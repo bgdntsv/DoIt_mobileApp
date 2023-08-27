@@ -67,5 +67,12 @@
   "training_select": "Select training",
   "place": "Place",
   "select_trainings_zone": "Select training's zone",
-  "select_exercise": "Select exercises"
+  "select_exercise": "Select exercises",
+  "bar": "Bar",
+  "fitness_ball": "Fitness ball",
+  "dumbbells": "Dumbbells",
+  "ball": "Ball",
+  "roman_chair": "Roman chair",
+  "exercise_machine_for_lifting_legs": "Exercise machine for lifting legs",
+  "no_exercises_with_this_name": "No exercises with this name"
 }

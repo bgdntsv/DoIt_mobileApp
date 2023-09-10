@@ -142,7 +142,9 @@ const AddExercise = () => {
             flex: 1,
             paddingHorizontal: 10,
             paddingVertical: 10,
-            backgroundColor: ColorPalette[theme].main
+            backgroundColor: ColorPalette[theme].main,
+            height: '100%',
+            position: 'relative'
         },
         span: {
             transform: [{translateY: 9}, {translateX: 10}],
@@ -161,8 +163,11 @@ const AddExercise = () => {
             paddingHorizontal: 10,
             color: ColorPalette[theme].second
         },
+        content: {
+
+        },
         submit: {
-            position: 'absolute'
+            bottom: 0
         },
         checkboxes: {
             borderWidth: 1,
@@ -238,111 +243,113 @@ const AddExercise = () => {
                 shouldPlay
             />)}
         </Pressable>
-        <Text style={styles.span}>{t('add_name')}*</Text>
-        <TextInput value={name} onChangeText={setName} style={styles.input}
-                   onSubmitEditing={() => {
-                       if (descriptionRef.current) {
-                           descriptionRef.current.focus()
-                       }
-                   }}
-                   blurOnSubmit={false}
-                   returnKeyType={'next'}/>
+        <View style={styles.content}>
+            <Text style={styles.span}>{t('add_name')}*</Text>
+            <TextInput value={name} onChangeText={setName} style={styles.input}
+                       onSubmitEditing={() => {
+                           if (descriptionRef.current) {
+                               descriptionRef.current.focus()
+                           }
+                       }}
+                       blurOnSubmit={false}
+                       returnKeyType={'next'}/>
 
-        <Text style={styles.span}>{t('add_description')}</Text>
-        <TextInput ref={descriptionRef} value={description} onChangeText={setDescription} style={styles.input}
-                   onSubmitEditing={() => {
-                       if (weightRef.current) {
-                           weightRef.current.focus()
-                       }
-                   }}
-                   blurOnSubmit={false}
-                   returnKeyType={'next'}/>
+            <Text style={styles.span}>{t('add_description')}</Text>
+            <TextInput ref={descriptionRef} value={description} onChangeText={setDescription} style={styles.input}
+                       onSubmitEditing={() => {
+                           if (weightRef.current) {
+                               weightRef.current.focus()
+                           }
+                       }}
+                       blurOnSubmit={false}
+                       returnKeyType={'next'}/>
 
-        <Text style={styles.span}>{t('select_place')}*</Text>
-        <View style={styles.checkboxes}>
-            <Pressable onPress={handleGymClick} style={styles.checkboxContainer}>
-                <Checkbox
-                    value={isSelectedGym}
-                    color={ColorPalette[theme].second}
-                    style={styles.checkbox} onValueChange={setIsSelectedGym}
-                />
-                <Text style={styles.checkboxSpan}>{t('gym')}</Text>
-            </Pressable>
-            <Pressable onPress={handleHomeClick} style={styles.checkboxContainer}>
-                <Checkbox
-                    value={isSelectedHome}
-                    color={ColorPalette[theme].second}
-                    style={styles.checkbox} onValueChange={setIsSelectedHome}
-                />
-                <Text style={styles.checkboxSpan}>{t('home')}</Text>
-            </Pressable>
-            <Pressable onPress={handleOutdoorsClick} style={styles.checkboxContainer}>
-                <Checkbox
-                    value={isSelectedOutdoors}
-                    color={ColorPalette[theme].second}
-                    style={styles.checkbox} onValueChange={setIsSelectedOutdoors}
-                />
-                <Text style={styles.checkboxSpan}>{t('outdoors')}</Text>
-            </Pressable>
-        </View>
-
-        <View style={styles.splitBlock}>
-            <View style={styles.weight}>
-                <Text style={styles.span}>{t('weight')}</Text>
-                <TextInput
-                    ref={weightRef}
-                    value={weight}
-                    onChangeText={setWeight}
-                    style={{...styles.input, ...styles.weightInput}}
-                    keyboardType={'numeric'}
-                    maxLength={8}
-                />
+            <Text style={styles.span}>{t('select_place')}*</Text>
+            <View style={styles.checkboxes}>
+                <Pressable onPress={handleGymClick} style={styles.checkboxContainer}>
+                    <Checkbox
+                        value={isSelectedGym}
+                        color={ColorPalette[theme].second}
+                        style={styles.checkbox} onValueChange={setIsSelectedGym}
+                    />
+                    <Text style={styles.checkboxSpan}>{t('gym')}</Text>
+                </Pressable>
+                <Pressable onPress={handleHomeClick} style={styles.checkboxContainer}>
+                    <Checkbox
+                        value={isSelectedHome}
+                        color={ColorPalette[theme].second}
+                        style={styles.checkbox} onValueChange={setIsSelectedHome}
+                    />
+                    <Text style={styles.checkboxSpan}>{t('home')}</Text>
+                </Pressable>
+                <Pressable onPress={handleOutdoorsClick} style={styles.checkboxContainer}>
+                    <Checkbox
+                        value={isSelectedOutdoors}
+                        color={ColorPalette[theme].second}
+                        style={styles.checkbox} onValueChange={setIsSelectedOutdoors}
+                    />
+                    <Text style={styles.checkboxSpan}>{t('outdoors')}</Text>
+                </Pressable>
             </View>
-            <View style={styles.metric}>
-                <Text style={styles.span}>{t('metric')}</Text>
-                <View style={styles.metricDropdown}>
-                    <Picker
-                        mode={'dialog'}
-                        selectedValue={metric}
-                        onValueChange={handleChangeMetric}
-                        dropdownIconColor={ColorPalette[theme].mainFont}>
-                        <Picker.Item style={{backgroundColor: ColorPalette[theme].main}}
-                                     color={ColorPalette[theme].mainFont}
-                                     label={t('kg')}
-                                     value="kg"/>
-                        <Picker.Item style={{backgroundColor: ColorPalette[theme].main}}
-                                     color={ColorPalette[theme].mainFont}
-                                     label={t('lb')}
-                                     value="lb"/>
-                    </Picker>
+
+            <View style={styles.splitBlock}>
+                <View style={styles.weight}>
+                    <Text style={styles.span}>{t('weight')}</Text>
+                    <TextInput
+                        ref={weightRef}
+                        value={weight}
+                        onChangeText={setWeight}
+                        style={{...styles.input, ...styles.weightInput}}
+                        keyboardType={'numeric'}
+                        maxLength={8}
+                    />
+                </View>
+                <View style={styles.metric}>
+                    <Text style={styles.span}>{t('metric')}</Text>
+                    <View style={styles.metricDropdown}>
+                        <Picker
+                            mode={'dialog'}
+                            selectedValue={metric}
+                            onValueChange={handleChangeMetric}
+                            dropdownIconColor={ColorPalette[theme].mainFont}>
+                            <Picker.Item style={{backgroundColor: ColorPalette[theme].main}}
+                                         color={ColorPalette[theme].mainFont}
+                                         label={t('kg')}
+                                         value="kg"/>
+                            <Picker.Item style={{backgroundColor: ColorPalette[theme].main}}
+                                         color={ColorPalette[theme].mainFont}
+                                         label={t('lb')}
+                                         value="lb"/>
+                        </Picker>
+                    </View>
                 </View>
             </View>
+
+            <Pressable onPress={() => setIsModalOpen(true)} style={styles.muscleAreaContainer}>
+                <View style={styles.muscleAreaInput}>
+                    <Text style={styles.span}>{t('muscle_area')}*</Text>
+                    <TextInput
+                        value={muscleAreaArrayShow()}
+                        editable={false}
+                        style={styles.input}
+                        multiline={true}
+                    />
+                </View>
+                <View style={styles.plusIcon}>
+                    <AntDesign name="plus" size={38} color={ColorPalette[theme].mainFont}/>
+                </View>
+            </Pressable>
+
+            {!mediaURI && <CustomButton title={'add media'}
+                                        onPress={getMediaURI}
+                                        icon={<AntDesign name="videocamera" size={24}
+                                                         color={ColorPalette[theme].secondFont}/>}/>}
         </View>
-
-        <Pressable onPress={() => setIsModalOpen(true)} style={styles.muscleAreaContainer}>
-            <View style={styles.muscleAreaInput}>
-                <Text style={styles.span}>{t('muscle_area')}*</Text>
-                <TextInput
-                    value={muscleAreaArrayShow()}
-                    editable={false}
-                    style={styles.input}
-                    multiline={true}
-                />
-            </View>
-            <View style={styles.plusIcon}>
-                <AntDesign name="plus" size={38} color={ColorPalette[theme].mainFont}/>
-            </View>
-        </Pressable>
-
-        {!mediaURI && <CustomButton title={'add media'}
-                                    onPress={getMediaURI}
-                                    icon={<AntDesign name="videocamera" size={24} color={ColorPalette[theme].secondFont} />}/>}
-
         <View style={styles.submit}>
             <CustomButton title={t('add_exercise')}
                           disabled={!isValidForm()}
                           onPress={handleSubmit}
-                          icon={<AntDesign name="save" size={24} color={ColorPalette[theme].secondFont} />}/>
+                          icon={<AntDesign name="save" size={24} color={ColorPalette[theme].secondFont}/>}/>
         </View>
 
         <MuscleTypeModal isOpen={isModalOpen}

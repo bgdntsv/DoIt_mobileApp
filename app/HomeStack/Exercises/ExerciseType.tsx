@@ -1,5 +1,5 @@
 import {useSelector} from 'react-redux'
-import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native'
+import {ScrollView, StyleSheet, Text, TextInput, View, Keyboard} from 'react-native'
 import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {STORE_TYPE} from '../../../redux/store'
 import {useGlobalStyles} from '../../../hooks/useUI'
@@ -35,6 +35,15 @@ export const ExerciseType = () => {
             navigation.getParent()?.setOptions({headerTitle: t('select_exercise')})
         }
     }, [isFocused])
+
+    useEffect(() => {
+        Keyboard.addListener('keyboardDidHide', ()=> {
+            closeSearch()
+        })
+        return () => {
+            Keyboard.removeAllListeners('keyboardDidHide')
+        }
+    }, [])
 
     const getContent = useCallback(
         () => {

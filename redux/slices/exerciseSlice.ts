@@ -135,12 +135,18 @@ const exerciseSlice = createSlice({
     name: 'exercise',
     initialState,
     reducers: {
-        initExerciseState: (state, action: PayloadAction<EXERCISE_FILE_TYPE>) => {
-            state.exercises = [
-                ...action.payload.ownExercises.filter(e => !state.blackListExerciseIds.includes(e.id)),
-                ...baseExercises.filter(e => !state.blackListExerciseIds.includes(e.id))
-            ]
-            state.ownExercises = action.payload.ownExercises
+        initExerciseState: (state, action: PayloadAction<EXERCISE_FILE_TYPE | undefined>) => {
+            if (action.payload) {
+                state.exercises = [
+                    ...action.payload.ownExercises.filter(e => !state.blackListExerciseIds.includes(e.id)),
+                    ...baseExercises.filter(e => !state.blackListExerciseIds.includes(e.id))
+                ]
+                state.ownExercises = action.payload.ownExercises
+            } else {
+                state.exercises = [
+                    ...baseExercises.filter(e => !state.blackListExerciseIds.includes(e.id))
+                ]
+            }
         },
         toggleSelectedExercise: (state, {payload: {type, exercise}}: PayloadAction<{
             type: EXERCISE_NAME_TYPES,

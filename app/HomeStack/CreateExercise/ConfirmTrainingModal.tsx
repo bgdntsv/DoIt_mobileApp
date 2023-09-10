@@ -72,8 +72,10 @@ export const ConfirmTrainingModal = ({isOpen, setIsOpen}: PROP_TYPES) => {
                         />
                     </View>
                     {selectedExercises[exercisesKey as EXERCISE_NAME_TYPES]?.length
-                        ? selectedExercises[exercisesKey as EXERCISE_NAME_TYPES]?.map(e => <ExerciseCard exercise={e}
-                                                                                                         key={e.id}/>)
+                        ? selectedExercises[exercisesKey as EXERCISE_NAME_TYPES]
+                            ?.map(e => <ExerciseCard exercise={e}
+                                                     key={e.id} type={exercisesKey as EXERCISE_NAME_TYPES}
+                                                     select={true}/>)
                         : <Text style={globalStyles.span}>Ви не обрали вправи, ми їх згенеруємо</Text>
                     }
                 </>)

@@ -58,9 +58,8 @@ export const Navigation = () => {
                 }
             }
             const exercises = await readExercisesFile()
-            if (exercises) {
-                dispatch(initExerciseState(exercises))
-            }
+            dispatch(initExerciseState(exercises))
+
             const trainings = await readTrainingsFile()
             if (trainings) {
                 dispatch(initTrainingsState(trainings))

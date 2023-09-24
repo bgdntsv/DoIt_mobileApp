@@ -10,6 +10,12 @@ Run it locally
 expo start
 ```
 
+Start building APK on Expo server. Check and download [here](https://expo.dev/)
+
+```sh
+https://github.com/bgdntsv/DoIt_mobileApp.git
+```
+
 ## 📝 Notes
 
 -   No notes for now

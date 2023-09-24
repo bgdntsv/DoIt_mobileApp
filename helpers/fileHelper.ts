@@ -1,8 +1,8 @@
-import {UI_STATE_TYPE} from '../redux/slices/uiSlice'
+import { UI_STATE_TYPE } from '../redux/slices/uiSlice'
 import * as FileSystem from 'expo-file-system'
-import {EXERCISE_FILE_TYPE} from '../redux/slices/exerciseSlice'
+import { EXERCISE_FILE_TYPE } from '../redux/slices/exerciseSlice'
 import * as MediaLibrary from 'expo-media-library'
-import {TRAININGS_STATE_TYPE} from '../redux/slices/trainingSlice'
+import { TRAININGS_STATE_TYPE } from '../redux/slices/trainingSlice'
 
 const directoryPath = FileSystem.documentDirectory
 const UI_PATH = directoryPath + 'ui.json'
@@ -10,7 +10,7 @@ const EXERCISES_PATH = directoryPath + 'exercises.json'
 const TRAININGS_PATH = directoryPath + 'trainings.json'
 
 export const getFilesPermissions = async () => {
-    const {status} = await MediaLibrary.requestPermissionsAsync()
+    const { status } = await MediaLibrary.requestPermissionsAsync()
     return status === 'granted'
 }
 
@@ -25,7 +25,7 @@ export const writeUiFile = async (uiFile: UI_STATE_TYPE) => {
 }
 export const readUiFile = async (): Promise<UI_STATE_TYPE | undefined> => {
     try {
-        const {exists} = await FileSystem.getInfoAsync(UI_PATH)
+        const { exists } = await FileSystem.getInfoAsync(UI_PATH)
         if (exists) {
             const uiFile = await FileSystem.readAsStringAsync(UI_PATH)
             return JSON.parse(uiFile) as UI_STATE_TYPE
@@ -46,9 +46,11 @@ export const writeExercisesFile = async (exercises: EXERCISE_FILE_TYPE) => {
     }
 }
 
-export const readExercisesFile = async (): Promise<EXERCISE_FILE_TYPE | undefined> => {
+export const readExercisesFile = async (): Promise<
+    EXERCISE_FILE_TYPE | undefined
+> => {
     try {
-        const {exists} = await FileSystem.getInfoAsync(EXERCISES_PATH)
+        const { exists } = await FileSystem.getInfoAsync(EXERCISES_PATH)
         if (exists) {
             const exercises = await FileSystem.readAsStringAsync(EXERCISES_PATH)
             if (exercises) {
@@ -71,9 +73,11 @@ export const writeTrainingsFile = async (trainings: TRAININGS_STATE_TYPE) => {
     }
 }
 
-export const readTrainingsFile = async (): Promise<TRAININGS_STATE_TYPE | undefined> => {
+export const readTrainingsFile = async (): Promise<
+    TRAININGS_STATE_TYPE | undefined
+> => {
     try {
-        const {exists} = await FileSystem.getInfoAsync(TRAININGS_PATH)
+        const { exists } = await FileSystem.getInfoAsync(TRAININGS_PATH)
         if (exists) {
             const trainings = await FileSystem.readAsStringAsync(TRAININGS_PATH)
             if (trainings) {

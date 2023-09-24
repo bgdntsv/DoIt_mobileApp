@@ -1,5 +1,6 @@
-import {WorkInProgress} from '../../common/WorkInProgress'
+import React from 'react'
+import { WorkInProgress } from '../../common/WorkInProgress'
 
 export const Login = () => {
-    return <WorkInProgress/>
+    return <WorkInProgress />
 }

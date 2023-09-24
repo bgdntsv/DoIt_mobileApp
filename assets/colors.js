@@ -5,7 +5,7 @@ export const ColorPalette = {
         fourth: '#424242',
         main: '#FDFDFD',
         mainFont: '#050606',
-        secondFont: '#FDFDFD'
+        secondFont: '#FDFDFD',
     },
     pink: {
         main: '#ecd0da',
@@ -13,6 +13,6 @@ export const ColorPalette = {
         third: '#A91B60',
         fourth: '#ea9eba',
         mainFont: '#bd397b',
-        secondFont: '#e5e5e5'
-    }
+        secondFont: '#e5e5e5',
+    },
 }

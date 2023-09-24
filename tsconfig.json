@@ -1,14 +1,14 @@
 {
-  "extends": "@tsconfig/react-native/tsconfig.json",
-  "compileOnSave": true,
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "jsx": "react-native",
-    "lib": ["DOM", "ESNext"],
-    "moduleResolution": "node",
-    "skipLibCheck": true,
-    "target": "ESNext",
-    "types": ["node"]
-  },
+    "extends": "@tsconfig/react-native/tsconfig.json",
+    "compileOnSave": true,
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "jsx": "react-native",
+        "lib": ["DOM", "ESNext"],
+        "moduleResolution": "node",
+        "skipLibCheck": true,
+        "target": "ESNext",
+        "types": ["node"]
+    }
 }

@@ -1,26 +1,41 @@
-import {Text, View, StyleSheet, TextInput, Pressable, ScrollView, Image, Alert} from 'react-native'
-import React, {useEffect, useRef, useState} from 'react'
-import {ColorPalette} from '../../assets/colors'
-import {useSelector} from 'react-redux'
-import {STORE_TYPE, useAppDispatch} from '../../redux/store'
+import {
+    Alert,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    useWindowDimensions,
+    View,
+} from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { ColorPalette } from '../../assets/colors'
+import { useSelector } from 'react-redux'
+import { STORE_TYPE, useAppDispatch } from '../../redux/store'
 import Checkbox from 'expo-checkbox'
-import {Picker} from '@react-native-picker/picker'
-import {addExercise, EXERCISE_TYPE} from '../../redux/slices/exerciseSlice'
-import {CustomButton} from '../../common/Button'
-import {MuscleTypeModal} from './SelectTypeModal'
-import {AntDesign} from '@expo/vector-icons'
-import {useTranslation} from 'react-i18next'
-import {MUSCLE_AREA_TYPE} from '../../helpers/constants'
+import { Picker } from '@react-native-picker/picker'
+import {
+    addExercise,
+    EXERCISE_TYPE,
+    MEDIA_LINK_TYPE,
+} from '../../redux/slices/exerciseSlice'
+import { CustomButton } from '../../common/Button'
+import { MuscleTypeModal } from './SelectTypeModal'
+import { AntDesign } from '@expo/vector-icons'
+import { useTranslation } from 'react-i18next'
+import { MUSCLE_AREA_TYPE } from '../../helpers/constants'
 import uuid from 'react-native-uuid'
-import {showToast} from '../../helpers/toast'
+import { showToast } from '../../helpers/toast'
 import * as ImagePicker from 'expo-image-picker'
-import {ImagePickerAsset} from 'expo-image-picker'
-import {ResizeMode, Video} from 'expo-av'
-import {useIsFocused} from '@react-navigation/native'
+import { useIsFocused } from '@react-navigation/native'
+import { BorderContainer } from './BorderContainer'
+import { ShowMediaLink } from '../../common/media/ShowMediaLink'
+import * as Clipboard from 'expo-clipboard'
+import * as Linking from 'expo-linking'
 
 const AddExercise = () => {
-    const {t} = useTranslation()
-    const {exercises} = useSelector(({exercise}: STORE_TYPE) => exercise)
+    const { t } = useTranslation()
+    const { exercises } = useSelector(({ exercise }: STORE_TYPE) => exercise)
     const dispatch = useAppDispatch()
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -30,11 +45,12 @@ const AddExercise = () => {
     const [weight, setWeight] = useState('0')
     const [metric, setMetric] = useState<'kg' | 'lb'>('kg')
     const [muscleArea, setMuscleArea] = useState<Array<MUSCLE_AREA_TYPE>>([])
-    const {theme} = useSelector(({ui}: STORE_TYPE) => ui)
+    const { theme } = useSelector(({ ui }: STORE_TYPE) => ui)
     const descriptionRef = useRef<TextInput>(null)
     const weightRef = useRef<TextInput>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [mediaURI, setMediaURI] = useState<ImagePickerAsset | null>(null)
+    const [mediaURI, setMediaURI] = useState<MEDIA_LINK_TYPE>([])
+    const { height: windowHeight } = useWindowDimensions()
 
     const isFocused = useIsFocused()
 
@@ -55,13 +71,13 @@ const AddExercise = () => {
     }
 
     const handleGymClick = () => {
-        setIsSelectedGym(prev => !prev)
+        setIsSelectedGym((prev) => !prev)
     }
     const handleHomeClick = () => {
-        setIsSelectedHome(prev => !prev)
+        setIsSelectedHome((prev) => !prev)
     }
     const handleOutdoorsClick = () => {
-        setIsSelectedOutdoors(prev => !prev)
+        setIsSelectedOutdoors((prev) => !prev)
     }
     const handleChangeMetric = (metric: 'kg' | 'lb') => {
         setMetric(metric)
@@ -69,11 +85,12 @@ const AddExercise = () => {
 
     const handleSubmit = () => {
         const id = uuid.v4().toString()
-        for (const exercise1 of exercises) { // is already created exercise with the same name
+        for (const exercise1 of exercises) {
+            // is already created exercise with the same name
             if (exercise1.name === name) {
                 showToast({
                     type: 'error',
-                    text1: 'Exercise with the same name is already created'
+                    text1: 'Exercise with the same name is already created',
                 })
                 return
             }
@@ -87,44 +104,71 @@ const AddExercise = () => {
             muscleArea,
             weight,
             metric,
-            id
+            id,
         }
-        if (mediaURI) {
-            exercise.media = [mediaURI]
+        if (mediaURI.length > 0) {
+            exercise.media = mediaURI
         }
         dispatch(addExercise(exercise))
         clearState()
     }
     const muscleAreaArrayShow = () => {
-        const toShow = muscleArea.map(e => {
+        const toShow = muscleArea.map((e) => {
             return t(e)
         })
         return toShow.toLocaleString().split(',').join(', ')
     }
 
     const getMediaURI = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
+        const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [5, 3],
-            quality: 1
+            quality: 1,
         })
 
         if (result.assets) {
-            setMediaURI(result.assets[0])
+            setMediaURI([result.assets[0]])
         }
     }
 
     const changeMedia = () => {
-        if (mediaURI) {
+        if (mediaURI[0] && typeof mediaURI[0] !== 'string') {
             Alert.alert(
-                `Do you want to change selected ${mediaURI?.type === 'image' ? 'image' : 'video'}?`,
+                `Do you want to change selected ${
+                    mediaURI[0].type === 'image' ? 'image' : 'video'
+                }?`,
                 undefined,
                 [
-                    {text: 'Yes', onPress: getMediaURI},
-                    {text: 'No'}
+                    { text: 'Yes', onPress: getMediaURI },
+                    { text: 'No' },
+                    { text: 'Remove', onPress: () => setMediaURI([]) },
                 ]
             )
+        } else {
+            Alert.alert('Do you want to change selected video?', undefined, [
+                { text: 'Yes', onPress: () => setMediaURI([]) },
+                { text: 'No' },
+            ])
+        }
+    }
+
+    const mediaUrlPastValue = async () => {
+        if (await Clipboard.hasStringAsync()) {
+            const url = await Clipboard.getStringAsync()
+            if (await Linking.canOpenURL(url)) {
+                setMediaURI([url])
+            } else {
+                showToast({
+                    type: 'error',
+                    text1: 'URL is not valid',
+                })
+            }
+        } else {
+            showToast({
+                type: 'error',
+                text1: 'URL is not valid',
+            })
         }
     }
     const clearState = () => {
@@ -135,7 +179,7 @@ const AddExercise = () => {
         setIsSelectedOutdoors(false)
         setMuscleArea([])
         setWeight('')
-        setMediaURI(null)
+        setMediaURI([])
     }
     const styles = StyleSheet.create({
         container: {
@@ -143,221 +187,281 @@ const AddExercise = () => {
             paddingHorizontal: 10,
             paddingVertical: 10,
             backgroundColor: ColorPalette[theme].main,
-            height: '100%',
-            position: 'relative'
-        },
-        span: {
-            transform: [{translateY: 9}, {translateX: 10}],
-            backgroundColor: ColorPalette[theme].main,
-            zIndex: 1,
-            alignSelf: 'flex-start',
-            paddingHorizontal: 3,
-            color: ColorPalette[theme].second
+            height: windowHeight,
+            position: 'relative',
         },
         input: {
-            borderWidth: 1,
-            borderColor: ColorPalette[theme].second,
             fontSize: 16,
-            borderRadius: 5,
-            paddingVertical: 5,
-            paddingHorizontal: 10,
-            color: ColorPalette[theme].second
+            color: ColorPalette[theme].second,
         },
-        content: {
-
-        },
+        content: {},
         submit: {
-            bottom: 0
-        },
-        checkboxes: {
-            borderWidth: 1,
-            borderColor: ColorPalette[theme].second,
-            borderRadius: 5,
-            paddingVertical: 5
+            marginTop: 10,
+            marginBottom: 20,
         },
         checkboxContainer: {
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            paddingVertical: 7
+            paddingVertical: 7,
         },
         checkbox: {
             margin: 5,
             width: 25,
             height: 25,
-            borderRadius: 5
+            borderRadius: 5,
         },
         checkboxSpan: {
-            color: ColorPalette[theme].second
+            color: ColorPalette[theme].second,
         },
         splitBlock: {
             flex: 1,
-            flexDirection: 'row'
+            flexDirection: 'row',
         },
         weight: {
-            flexGrow: 3,
-            marginRight: 8
+            flexGrow: 10,
+            marginRight: 8,
         },
         weightInput: {
-            paddingVertical: 14
+            paddingVertical: 14,
         },
         metric: {
-            flexGrow: 1
+            flexGrow: 7,
         },
-        metricDropdown: {
-            borderWidth: 1,
-            borderColor: ColorPalette[theme].second,
-            borderRadius: 5,
-            padding: 1
+        pickerItem: {
+            backgroundColor: ColorPalette[theme].main,
+            width: '100%',
         },
         muscleAreaContainer: {
             flex: 1,
             flexDirection: 'row',
-            alignItems: 'center'
+            alignItems: 'center',
         },
+
         muscleAreaInput: {
-            width: '80%'
+            width: '80%',
         },
         plusIcon: {
             display: 'flex',
             alignItems: 'center',
-            width: '20%',
-            paddingTop: 17
-        }
+            flexGrow: 1,
+            paddingTop: 17,
+        },
+        mediaContainer: {
+            display: 'flex',
+            alignItems: 'flex-end',
+        },
     })
 
-    return <ScrollView style={styles.container}>
-        <Pressable onPress={changeMedia}>{mediaURI && (mediaURI.type === 'image'
-            ? <Image height={150} source={{uri: mediaURI.uri}}/>
-            : <Video
-                style={{
-                    height: 150
-                }}
-                source={{
-                    uri: mediaURI?.uri
-                }}
-                useNativeControls={false}
-                resizeMode={ResizeMode.COVER}
-                isLooping
-                isMuted
-                shouldPlay
-            />)}
-        </Pressable>
-        <View style={styles.content}>
-            <Text style={styles.span}>{t('add_name')}*</Text>
-            <TextInput value={name} onChangeText={setName} style={styles.input}
-                       onSubmitEditing={() => {
-                           if (descriptionRef.current) {
-                               descriptionRef.current.focus()
-                           }
-                       }}
-                       blurOnSubmit={false}
-                       returnKeyType={'next'}/>
-
-            <Text style={styles.span}>{t('add_description')}</Text>
-            <TextInput ref={descriptionRef} value={description} onChangeText={setDescription} style={styles.input}
-                       onSubmitEditing={() => {
-                           if (weightRef.current) {
-                               weightRef.current.focus()
-                           }
-                       }}
-                       blurOnSubmit={false}
-                       returnKeyType={'next'}/>
-
-            <Text style={styles.span}>{t('select_place')}*</Text>
-            <View style={styles.checkboxes}>
-                <Pressable onPress={handleGymClick} style={styles.checkboxContainer}>
-                    <Checkbox
-                        value={isSelectedGym}
-                        color={ColorPalette[theme].second}
-                        style={styles.checkbox} onValueChange={setIsSelectedGym}
-                    />
-                    <Text style={styles.checkboxSpan}>{t('gym')}</Text>
-                </Pressable>
-                <Pressable onPress={handleHomeClick} style={styles.checkboxContainer}>
-                    <Checkbox
-                        value={isSelectedHome}
-                        color={ColorPalette[theme].second}
-                        style={styles.checkbox} onValueChange={setIsSelectedHome}
-                    />
-                    <Text style={styles.checkboxSpan}>{t('home')}</Text>
-                </Pressable>
-                <Pressable onPress={handleOutdoorsClick} style={styles.checkboxContainer}>
-                    <Checkbox
-                        value={isSelectedOutdoors}
-                        color={ColorPalette[theme].second}
-                        style={styles.checkbox} onValueChange={setIsSelectedOutdoors}
-                    />
-                    <Text style={styles.checkboxSpan}>{t('outdoors')}</Text>
-                </Pressable>
-            </View>
-
-            <View style={styles.splitBlock}>
-                <View style={styles.weight}>
-                    <Text style={styles.span}>{t('weight')}</Text>
+    return (
+        <ScrollView style={styles.container}>
+            {mediaURI[0] && (
+                <BorderContainer title={t('media')}>
+                    <View style={styles.mediaContainer}>
+                        <ShowMediaLink link={mediaURI} />
+                        <AntDesign
+                            name="edit"
+                            size={24}
+                            color={ColorPalette[theme].mainFont}
+                            onPress={changeMedia}
+                        />
+                    </View>
+                </BorderContainer>
+            )}
+            <View style={styles.content}>
+                <BorderContainer title={t('add_name')} isRequiredField>
                     <TextInput
-                        ref={weightRef}
-                        value={weight}
-                        onChangeText={setWeight}
-                        style={{...styles.input, ...styles.weightInput}}
-                        keyboardType={'numeric'}
-                        maxLength={8}
+                        value={name}
+                        onChangeText={setName}
+                        style={styles.input}
+                        onSubmitEditing={() => {
+                            if (descriptionRef.current) {
+                                descriptionRef.current.focus()
+                            }
+                        }}
+                        blurOnSubmit={false}
+                        returnKeyType={'next'}
                     />
-                </View>
-                <View style={styles.metric}>
-                    <Text style={styles.span}>{t('metric')}</Text>
-                    <View style={styles.metricDropdown}>
-                        <Picker
-                            mode={'dialog'}
-                            selectedValue={metric}
-                            onValueChange={handleChangeMetric}
-                            dropdownIconColor={ColorPalette[theme].mainFont}>
-                            <Picker.Item style={{backgroundColor: ColorPalette[theme].main}}
-                                         color={ColorPalette[theme].mainFont}
-                                         label={t('kg')}
-                                         value="kg"/>
-                            <Picker.Item style={{backgroundColor: ColorPalette[theme].main}}
-                                         color={ColorPalette[theme].mainFont}
-                                         label={t('lb')}
-                                         value="lb"/>
-                        </Picker>
+                </BorderContainer>
+
+                <BorderContainer title={t('add_description')}>
+                    <TextInput
+                        ref={descriptionRef}
+                        value={description}
+                        onChangeText={setDescription}
+                        style={styles.input}
+                        onSubmitEditing={() => {
+                            if (weightRef.current) {
+                                weightRef.current.focus()
+                            }
+                        }}
+                        blurOnSubmit={false}
+                        returnKeyType={'next'}
+                    />
+                </BorderContainer>
+
+                <BorderContainer title={t('select_place')} isRequiredField>
+                    <Pressable
+                        onPress={handleGymClick}
+                        style={styles.checkboxContainer}
+                    >
+                        <Checkbox
+                            value={isSelectedGym}
+                            color={ColorPalette[theme].second}
+                            style={styles.checkbox}
+                            onValueChange={setIsSelectedGym}
+                        />
+                        <Text style={styles.checkboxSpan}>{t('gym')}</Text>
+                    </Pressable>
+                    <Pressable
+                        onPress={handleHomeClick}
+                        style={styles.checkboxContainer}
+                    >
+                        <Checkbox
+                            value={isSelectedHome}
+                            color={ColorPalette[theme].second}
+                            style={styles.checkbox}
+                            onValueChange={setIsSelectedHome}
+                        />
+                        <Text style={styles.checkboxSpan}>{t('home')}</Text>
+                    </Pressable>
+                    <Pressable
+                        onPress={handleOutdoorsClick}
+                        style={styles.checkboxContainer}
+                    >
+                        <Checkbox
+                            value={isSelectedOutdoors}
+                            color={ColorPalette[theme].second}
+                            style={styles.checkbox}
+                            onValueChange={setIsSelectedOutdoors}
+                        />
+                        <Text style={styles.checkboxSpan}>{t('outdoors')}</Text>
+                    </Pressable>
+                </BorderContainer>
+
+                <View style={styles.splitBlock}>
+                    <View style={styles.weight}>
+                        <BorderContainer title={t('weight')}>
+                            <TextInput
+                                ref={weightRef}
+                                value={weight}
+                                onChangeText={setWeight}
+                                style={{
+                                    ...styles.input,
+                                    ...styles.weightInput,
+                                }}
+                                keyboardType={'numeric'}
+                                maxLength={8}
+                            />
+                        </BorderContainer>
+                    </View>
+
+                    <View style={styles.metric}>
+                        <BorderContainer title={t('metric')}>
+                            <Picker
+                                mode={'dialog'}
+                                selectedValue={metric}
+                                onValueChange={handleChangeMetric}
+                                dropdownIconColor={ColorPalette[theme].mainFont}
+                            >
+                                <Picker.Item
+                                    style={styles.pickerItem}
+                                    color={ColorPalette[theme].mainFont}
+                                    label={t('kg')}
+                                    value="kg"
+                                />
+                                <Picker.Item
+                                    style={styles.pickerItem}
+                                    color={ColorPalette[theme].mainFont}
+                                    label={t('lb')}
+                                    value="lb"
+                                />
+                            </Picker>
+                        </BorderContainer>
                     </View>
                 </View>
+
+                <Pressable
+                    onPress={() => setIsModalOpen(true)}
+                    style={styles.muscleAreaContainer}
+                >
+                    <View style={styles.muscleAreaInput}>
+                        <BorderContainer
+                            title={t('muscle_area')}
+                            isRequiredField
+                        >
+                            <TextInput
+                                value={muscleAreaArrayShow()}
+                                editable={false}
+                                style={styles.input}
+                                multiline={true}
+                            />
+                        </BorderContainer>
+                    </View>
+                    <View style={styles.plusIcon}>
+                        <AntDesign
+                            name="plus"
+                            size={38}
+                            color={ColorPalette[theme].mainFont}
+                        />
+                    </View>
+                </Pressable>
+
+                {!mediaURI[0] && (
+                    <BorderContainer title={t('add_media')}>
+                        <CustomButton
+                            title={'add media'}
+                            onPress={getMediaURI}
+                            icon={
+                                <AntDesign
+                                    name="videocamera"
+                                    size={24}
+                                    color={ColorPalette[theme].secondFont}
+                                />
+                            }
+                        />
+                        <BorderContainer title={'Add media link'}>
+                            <TextInput
+                                placeholder={'https://example.com/123'}
+                                editable={false}
+                                value={
+                                    mediaURI[0] &&
+                                    typeof mediaURI[0] === 'string'
+                                        ? mediaURI[0]
+                                        : undefined
+                                }
+                            />
+                            <Pressable onPress={mediaUrlPastValue}>
+                                <Text>Paste</Text>
+                            </Pressable>
+                        </BorderContainer>
+                    </BorderContainer>
+                )}
+            </View>
+            <View style={styles.submit}>
+                <CustomButton
+                    title={t('add_exercise')}
+                    disabled={!isValidForm()}
+                    onPress={handleSubmit}
+                    icon={
+                        <AntDesign
+                            name="save"
+                            size={24}
+                            color={ColorPalette[theme].secondFont}
+                        />
+                    }
+                />
             </View>
 
-            <Pressable onPress={() => setIsModalOpen(true)} style={styles.muscleAreaContainer}>
-                <View style={styles.muscleAreaInput}>
-                    <Text style={styles.span}>{t('muscle_area')}*</Text>
-                    <TextInput
-                        value={muscleAreaArrayShow()}
-                        editable={false}
-                        style={styles.input}
-                        multiline={true}
-                    />
-                </View>
-                <View style={styles.plusIcon}>
-                    <AntDesign name="plus" size={38} color={ColorPalette[theme].mainFont}/>
-                </View>
-            </Pressable>
-
-            {!mediaURI && <CustomButton title={'add media'}
-                                        onPress={getMediaURI}
-                                        icon={<AntDesign name="videocamera" size={24}
-                                                         color={ColorPalette[theme].secondFont}/>}/>}
-        </View>
-        <View style={styles.submit}>
-            <CustomButton title={t('add_exercise')}
-                          disabled={!isValidForm()}
-                          onPress={handleSubmit}
-                          icon={<AntDesign name="save" size={24} color={ColorPalette[theme].secondFont}/>}/>
-        </View>
-
-        <MuscleTypeModal isOpen={isModalOpen}
-                         setIsOpen={setIsModalOpen}
-                         muscleArea={muscleArea}
-                         setMuscleArea={setMuscleArea}
-                         styles={styles}/>
-    </ScrollView>
+            <MuscleTypeModal
+                isOpen={isModalOpen}
+                setIsOpen={setIsModalOpen}
+                muscleArea={muscleArea}
+                setMuscleArea={setMuscleArea}
+                styles={styles}
+            />
+        </ScrollView>
+    )
 }
 
 export default AddExercise

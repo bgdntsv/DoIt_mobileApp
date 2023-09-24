@@ -1,46 +1,46 @@
 {
-  "expo": {
-    "userInterfaceStyle": "automatic",
-    "scheme": "acme",
-    "web": {
-      "bundler": "metro"
-    },
-    "name": "DoIt",
-    "slug": "DoIt_mobileApp",
-    "icon": "./assets/images/logo.png",
-    "ios": {
-      "supportsTablet": true,
-      "requireFullScreen": true
-    },
-    "extra": {
-      "eas": {
-        "projectId": "2140ff20-dd1f-4c51-bc8d-a14029835e30"
-      }
-    },
-    "android": {
-      "package": "DO.IT.UKRAINE"
-    },
-    "plugins": [
-      [
-        "expo-screen-orientation",
-        {
-          "initialOrientation": "PORTRAIT_UP"
-        }
-      ],
-      [
-        "expo-media-library",
-        {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
-          "isAccessMediaLocationEnabled": true
-        }
-      ],
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos."
-        }
-      ],
-      "expo-localization"
-    ]
-  }
+    "expo": {
+        "userInterfaceStyle": "automatic",
+        "scheme": "acme",
+        "web": {
+            "bundler": "metro"
+        },
+        "name": "DoIt",
+        "slug": "DoIt_mobileApp",
+        "icon": "./assets/images/logo.png",
+        "ios": {
+            "supportsTablet": true,
+            "requireFullScreen": true
+        },
+        "extra": {
+            "eas": {
+                "projectId": "2140ff20-dd1f-4c51-bc8d-a14029835e30"
+            }
+        },
+        "android": {
+            "package": "DO.IT.UKRAINE"
+        },
+        "plugins": [
+            [
+                "expo-screen-orientation",
+                {
+                    "initialOrientation": "PORTRAIT_UP"
+                }
+            ],
+            [
+                "expo-media-library",
+                {
+                    "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
+                    "isAccessMediaLocationEnabled": true
+                }
+            ],
+            [
+                "expo-image-picker",
+                {
+                    "photosPermission": "Allow $(PRODUCT_NAME) to access your photos."
+                }
+            ],
+            "expo-localization"
+        ]
+    }
 }

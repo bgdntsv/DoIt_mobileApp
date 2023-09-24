@@ -1,0 +1,7 @@
+.eslintignore
+.eslintrc.json
+babel.config.js
+/app/declaration.d.ts
+%ProgramData%
+.expo
+.husky

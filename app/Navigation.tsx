@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
-import { Platform, StatusBar, useWindowDimensions } from 'react-native'
-import { AntDesign } from '@expo/vector-icons'
+import { Platform, StatusBar, Text, useWindowDimensions } from 'react-native'
+import { MaterialIcons } from '@expo/vector-icons'
 import { Settings } from './Settings/Settings'
 import { NavigationContainer } from '@react-navigation/native'
 import { ColorPalette } from '../assets/colors'
@@ -123,7 +123,7 @@ export const Navigation = () => {
                             switch (route.name) {
                                 case 'Home': {
                                     return (
-                                        <AntDesign
+                                        <MaterialIcons
                                             name={'home'}
                                             size={size}
                                             color={color}
@@ -132,8 +132,8 @@ export const Navigation = () => {
                                 }
                                 case 'Settings': {
                                     return (
-                                        <AntDesign
-                                            name={'setting'}
+                                        <MaterialIcons
+                                            name={'settings'}
                                             size={size}
                                             color={color}
                                         />
@@ -141,8 +141,8 @@ export const Navigation = () => {
                                 }
                                 case 'Notifications': {
                                     return (
-                                        <AntDesign
-                                            name={'bells'}
+                                        <MaterialIcons
+                                            name={'notifications'}
                                             size={size}
                                             color={color}
                                         />
@@ -150,8 +150,8 @@ export const Navigation = () => {
                                 }
                                 case 'Login': {
                                     return (
-                                        <AntDesign
-                                            name="user"
+                                        <MaterialIcons
+                                            name="person"
                                             size={size}
                                             color={color}
                                         />
@@ -159,21 +159,15 @@ export const Navigation = () => {
                                 }
                                 case 'AddExercise': {
                                     return (
-                                        <AntDesign
-                                            name="pluscircleo"
+                                        <MaterialIcons
+                                            name="add-circle-outline"
                                             size={size}
                                             color={color}
                                         />
                                     )
                                 }
                                 default: {
-                                    return (
-                                        <AntDesign
-                                            name={'question'}
-                                            size={size}
-                                            color={color}
-                                        />
-                                    )
+                                    return <Text>?</Text>
                                 }
                             }
                         },

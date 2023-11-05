@@ -15,6 +15,7 @@ import { EXERCISE_TYPE } from '../../../redux/slices/exerciseSlice'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { BackButtonNavigation } from '../../../common/BackButtonNavigation'
 import { useTranslation } from 'react-i18next'
+import { MaterialIcons } from '@expo/vector-icons'
 import { CustomButton } from '../../../common/Button'
 import { HOME_STACK_ROUTE_PROPS } from '../ExerciseNavigation'
 import {
@@ -23,7 +24,6 @@ import {
     useNavigation,
     useRoute,
 } from '@react-navigation/native'
-import { AntDesign } from '@expo/vector-icons'
 import { ColorPalette } from '../../../assets/colors'
 import { ConfirmTrainingModal } from '../CreateExercise/ConfirmTrainingModal'
 
@@ -191,7 +191,7 @@ export const ExerciseType = () => {
                                 style={styles.input}
                                 autoCorrect={false}
                             />
-                            <AntDesign
+                            <MaterialIcons
                                 name="close"
                                 size={24}
                                 color={ColorPalette[theme].mainFont}
@@ -200,8 +200,8 @@ export const ExerciseType = () => {
                             />
                         </View>
                     ) : (
-                        <AntDesign
-                            name="search1"
+                        <MaterialIcons
+                            name="search"
                             size={24}
                             color={ColorPalette[theme].mainFont}
                             onPress={openSearch}
@@ -212,8 +212,8 @@ export const ExerciseType = () => {
             </ScrollView>
             {Object.keys(selectedExercises).length > 0 && (
                 <View style={styles.fixedScreen}>
-                    <AntDesign
-                        name="play"
+                    <MaterialIcons
+                        name="play-arrow"
                         size={54}
                         color={ColorPalette[theme].secondFont}
                         onPress={confirmTraining}

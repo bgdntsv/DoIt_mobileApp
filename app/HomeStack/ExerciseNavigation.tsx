@@ -7,7 +7,7 @@ import { SelectTraining } from './SelectTraining/SelectTraining'
 import React from 'react'
 
 export type HOME_STACK_ROUTE_PROPS = {
-    Trainings: undefined
+    Start: undefined
     'Generate-training': undefined
     'Create-training': { comesFromSelectTraining: boolean }
     'Select-training': undefined
@@ -25,10 +25,10 @@ export const ExerciseNavigation = () => {
     const Stack = createNativeStackNavigator<HOME_STACK_ROUTE_PROPS>()
     return (
         <Stack.Navigator
-            initialRouteName={'Trainings'}
+            initialRouteName={'Start'}
             screenOptions={{ headerShown: false }}
         >
-            <Stack.Screen name={'Trainings'} component={ExercisesMain} />
+            <Stack.Screen name={'Start'} component={ExercisesMain} />
             <Stack.Screen
                 name={'Generate-training'}
                 component={GenerateTraining}

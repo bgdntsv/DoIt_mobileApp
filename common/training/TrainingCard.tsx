@@ -5,7 +5,7 @@ import { useGlobalStyles } from '../../hooks/useUI'
 import { useSelector } from 'react-redux'
 import { STORE_TYPE } from '../../redux/store'
 import { ColorPalette } from '../../assets/colors'
-import { AntDesign } from '@expo/vector-icons'
+import { MaterialIcons } from '@expo/vector-icons'
 import { EditTrainingModal } from './EditTrainingModal'
 
 type PROP_TYPE = {
@@ -42,7 +42,7 @@ export const TrainingCard = ({ training }: PROP_TYPE) => {
                 <Text style={{ ...globalStyles.p, ...styles.whiteFont }}>
                     {training.name}
                 </Text>
-                <AntDesign
+                <MaterialIcons
                     name="edit"
                     size={24}
                     color={ColorPalette[theme].secondFont}

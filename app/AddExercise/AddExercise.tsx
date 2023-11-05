@@ -21,7 +21,7 @@ import {
 } from '../../redux/slices/exerciseSlice'
 import { CustomButton } from '../../common/Button'
 import { MuscleTypeModal } from './SelectTypeModal'
-import { AntDesign } from '@expo/vector-icons'
+import { MaterialIcons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import { MUSCLE_AREA_TYPE } from '../../helpers/constants'
 import uuid from 'react-native-uuid'
@@ -259,7 +259,7 @@ const AddExercise = () => {
                 <BorderContainer title={t('media')}>
                     <View style={styles.mediaContainer}>
                         <ShowMediaLink link={mediaURI} />
-                        <AntDesign
+                        <MaterialIcons
                             name="edit"
                             size={24}
                             color={ColorPalette[theme].mainFont}
@@ -399,8 +399,8 @@ const AddExercise = () => {
                         </BorderContainer>
                     </View>
                     <View style={styles.plusIcon}>
-                        <AntDesign
-                            name="plus"
+                        <MaterialIcons
+                            name="add"
                             size={38}
                             color={ColorPalette[theme].mainFont}
                         />
@@ -413,8 +413,8 @@ const AddExercise = () => {
                             title={'add media'}
                             onPress={getMediaURI}
                             icon={
-                                <AntDesign
-                                    name="videocamera"
+                                <MaterialIcons
+                                    name="camera"
                                     size={24}
                                     color={ColorPalette[theme].secondFont}
                                 />
@@ -444,7 +444,7 @@ const AddExercise = () => {
                     disabled={!isValidForm()}
                     onPress={handleSubmit}
                     icon={
-                        <AntDesign
+                        <MaterialIcons
                             name="save"
                             size={24}
                             color={ColorPalette[theme].secondFont}

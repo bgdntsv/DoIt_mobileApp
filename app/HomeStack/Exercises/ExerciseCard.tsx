@@ -11,7 +11,7 @@ import { STORE_TYPE, useAppDispatch } from '../../../redux/store'
 import { ColorPalette } from '../../../assets/colors'
 import { useTranslation } from 'react-i18next'
 import { UI_STATE_TYPE } from '../../../redux/slices/uiSlice'
-import { AntDesign } from '@expo/vector-icons'
+import { MaterialIcons } from '@expo/vector-icons'
 import { ExerciseDetailsModal } from './ExerciseDetailsModal'
 
 type propTypes = {
@@ -95,17 +95,17 @@ export const ExerciseCard = ({ exercise, type, select = false }: propTypes) => {
         <Pressable style={styles.container} onPress={cardClick}>
             {select &&
                 (isSelected() ? (
-                    <AntDesign
+                    <MaterialIcons
                         style={styles.icon}
-                        name="checkcircle"
+                        name="check-circle"
                         size={26}
                         color={ColorPalette[theme].secondFont}
                         onPress={selectExercise}
                     />
                 ) : (
-                    <AntDesign
+                    <MaterialIcons
                         style={styles.icon}
-                        name="plus"
+                        name="add"
                         size={26}
                         color={ColorPalette[theme].secondFont}
                         onPress={selectExercise}

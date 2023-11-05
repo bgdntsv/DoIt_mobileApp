@@ -5,3 +5,4 @@ babel.config.js
 %ProgramData%
 .expo
 .husky
+/node_modules

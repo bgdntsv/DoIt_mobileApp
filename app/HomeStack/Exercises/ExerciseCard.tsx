@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {
-    EXERCISE_NAME_TYPES,
+    EXERCISE,
     EXERCISE_TYPE,
     toggleSelectedExercise,
 } from '../../../redux/slices/exerciseSlice'
@@ -15,8 +15,8 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { ExerciseDetailsModal } from './ExerciseDetailsModal'
 
 type propTypes = {
-    exercise: EXERCISE_TYPE
-    type?: EXERCISE_NAME_TYPES
+    exercise: EXERCISE
+    type?: EXERCISE_TYPE
     select?: boolean
 }
 export const ExerciseCard = ({ exercise, type, select = false }: propTypes) => {

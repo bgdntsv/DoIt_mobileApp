@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { TRAINING_TYPE } from '../../redux/slices/trainingSlice'
+import { TRAINING } from '../../redux/slices/trainingSlice'
 import { useGlobalStyles } from '../../hooks/useUI'
 import { useSelector } from 'react-redux'
 import { STORE_TYPE } from '../../redux/store'
@@ -9,7 +9,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { EditTrainingModal } from './EditTrainingModal'
 
 type PROP_TYPE = {
-    training: TRAINING_TYPE
+    training: TRAINING
 }
 export const TrainingCard = ({ training }: PROP_TYPE) => {
     const globalStyles = useGlobalStyles()

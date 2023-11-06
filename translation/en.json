@@ -74,5 +74,6 @@
     "ball": "Ball",
     "roman_chair": "Roman chair",
     "exercise_machine_for_lifting_legs": "Exercise machine for lifting legs",
-    "no_exercises_with_this_name": "No exercises with this name"
+    "no_exercises_with_this_name": "No exercises with this name",
+    "delete": "Delete"
 }

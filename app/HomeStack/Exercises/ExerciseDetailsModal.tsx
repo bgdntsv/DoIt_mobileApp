@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { EXERCISE_TYPE } from '../../../redux/slices/exerciseSlice'
+import { EXERCISE } from '../../../redux/slices/exerciseSlice'
 import { useGlobalStyles } from '../../../hooks/useUI'
 import { useTranslation } from 'react-i18next'
 import { ShowMediaLink } from '../../../common/media/ShowMediaLink'
@@ -9,7 +9,7 @@ import { CustomModal } from '../../../common/CustomModal'
 type PROP_TYPES = {
     isOpen: boolean
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-    exercise: EXERCISE_TYPE
+    exercise: EXERCISE
 }
 export const ExerciseDetailsModal = ({
     isOpen,

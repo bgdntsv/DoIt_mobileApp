@@ -10,7 +10,7 @@ import { ColorPalette } from '../../../assets/colors'
 import { AntDesign } from '@expo/vector-icons'
 import {
     clearSelectedExercises,
-    EXERCISE_NAME_TYPES,
+    EXERCISE_TYPE,
     toggleSelectedExercise,
 } from '../../../redux/slices/exerciseSlice'
 import { addTraining } from '../../../redux/slices/trainingSlice'
@@ -39,7 +39,7 @@ export const ConfirmTrainingModal = ({ isOpen, setIsOpen }: PROP_TYPES) => {
 
     const globalStyles = useGlobalStyles()
 
-    const toggleType = (type: EXERCISE_NAME_TYPES) => {
+    const toggleType = (type: EXERCISE_TYPE) => {
         dispatch(toggleSelectedExercise({ type }))
     }
 
@@ -82,21 +82,19 @@ export const ConfirmTrainingModal = ({ isOpen, setIsOpen }: PROP_TYPES) => {
                                 size={21}
                                 color={ColorPalette[theme].mainFont}
                                 onPress={() =>
-                                    toggleType(
-                                        exercisesKey as EXERCISE_NAME_TYPES
-                                    )
+                                    toggleType(exercisesKey as EXERCISE_TYPE)
                                 }
                             />
                         </View>
-                        {selectedExercises[exercisesKey as EXERCISE_NAME_TYPES]
+                        {selectedExercises[exercisesKey as EXERCISE_TYPE]
                             ?.length ? (
                             selectedExercises[
-                                exercisesKey as EXERCISE_NAME_TYPES
+                                exercisesKey as EXERCISE_TYPE
                             ]?.map((e) => (
                                 <ExerciseCard
                                     exercise={e}
                                     key={e.id}
-                                    type={exercisesKey as EXERCISE_NAME_TYPES}
+                                    type={exercisesKey as EXERCISE_TYPE}
                                     select={true}
                                 />
                             ))

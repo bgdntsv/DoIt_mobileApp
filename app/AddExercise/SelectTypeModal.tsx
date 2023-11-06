@@ -9,7 +9,7 @@ import {
     MUSCLE_AREA_TYPE,
     pressAreaTypes,
     shouldersAreaTypes,
-} from '../../helpers/constants'
+} from '../../helpers/types'
 import Checkbox from 'expo-checkbox'
 import { ColorPalette } from '../../assets/colors'
 import { CustomButton } from '../../common/Button'

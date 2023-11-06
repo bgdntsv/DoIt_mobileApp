@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { STORE_TYPE } from '../store'
 import { writeExercisesFile } from '../../helpers/fileHelper'
-import { INVENTORY_TYPE, MUSCLE_AREA_TYPE } from '../../helpers/constants'
+import { INVENTORY_TYPE, MUSCLE_AREA_TYPE } from '../../helpers/types'
 import { showToast } from '../../helpers/toast'
 import { ImagePickerAsset } from 'expo-image-picker'
 import { baseExercises } from '../../helpers/baseExercises'
 
 export type MEDIA_LINK_TYPE = Array<ImagePickerAsset | string>
 
-export type EXERCISE_TYPE = {
+export type EXERCISE = {
     name: string
     description: string
     muscleArea: Array<MUSCLE_AREA_TYPE>
@@ -23,28 +23,28 @@ export type EXERCISE_TYPE = {
     id: string
 }
 
-export type EXERCISE_FILE_TYPE = {
-    ownExercises: Array<EXERCISE_TYPE>
-    exercises: Array<EXERCISE_TYPE>
+export type EXERCISE_FILE = {
+    ownExercises: Array<EXERCISE>
+    exercises: Array<EXERCISE>
 }
 
-export type EXERCISE_STATE_TYPE = {
-    ownExercises: Array<EXERCISE_TYPE>
-    exercises: Array<EXERCISE_TYPE>
-    selectedExercises: EXERCISES_BY_TYPES_TYPE
+export type EXERCISE_STATE = {
+    ownExercises: Array<EXERCISE>
+    exercises: Array<EXERCISE>
+    selectedExercises: EXERCISES_BY_TYPES
     blackListExerciseIds: Array<string>
 }
 
-export type EXERCISES_BY_TYPES_TYPE = {
-    press?: Array<EXERCISE_TYPE>
-    chest?: Array<EXERCISE_TYPE>
-    legs?: Array<EXERCISE_TYPE>
-    hands?: Array<EXERCISE_TYPE>
-    shoulders?: Array<EXERCISE_TYPE>
-    back?: Array<EXERCISE_TYPE>
+export type EXERCISES_BY_TYPES = {
+    press?: Array<EXERCISE>
+    chest?: Array<EXERCISE>
+    legs?: Array<EXERCISE>
+    hands?: Array<EXERCISE>
+    shoulders?: Array<EXERCISE>
+    back?: Array<EXERCISE>
 }
 
-export type EXERCISE_NAME_TYPES =
+export type EXERCISE_TYPE =
     | 'press'
     | 'chest'
     | 'legs'
@@ -53,8 +53,8 @@ export type EXERCISE_NAME_TYPES =
     | 'back'
 
 export const addExercise = createAsyncThunk<
-    EXERCISE_FILE_TYPE | undefined,
-    EXERCISE_TYPE,
+    EXERCISE_FILE | undefined,
+    EXERCISE,
     {
         state: STORE_TYPE
     }
@@ -83,8 +83,8 @@ export const addExercise = createAsyncThunk<
 })
 
 export const changeExercise = createAsyncThunk<
-    EXERCISE_FILE_TYPE | undefined,
-    EXERCISE_TYPE,
+    EXERCISE_FILE | undefined,
+    EXERCISE,
     {
         state: STORE_TYPE
     }
@@ -121,7 +121,7 @@ export const changeExercise = createAsyncThunk<
 })
 
 export const deleteExercise = createAsyncThunk<
-    EXERCISE_FILE_TYPE | undefined,
+    EXERCISE_FILE | undefined,
     string,
     {
         state: STORE_TYPE
@@ -157,7 +157,7 @@ export const deleteExercise = createAsyncThunk<
     }
 })
 
-const initialState: EXERCISE_STATE_TYPE = {
+const initialState: EXERCISE_STATE = {
     ownExercises: [],
     exercises: [],
     selectedExercises: {},
@@ -169,7 +169,7 @@ const exerciseSlice = createSlice({
     reducers: {
         initExerciseState: (
             state,
-            action: PayloadAction<EXERCISE_FILE_TYPE | undefined>
+            action: PayloadAction<EXERCISE_FILE | undefined>
         ) => {
             if (action.payload) {
                 state.exercises = [
@@ -194,8 +194,8 @@ const exerciseSlice = createSlice({
             {
                 payload: { type, exercise },
             }: PayloadAction<{
-                type: EXERCISE_NAME_TYPES
-                exercise?: EXERCISE_TYPE
+                type: EXERCISE_TYPE
+                exercise?: EXERCISE
             }>
         ) => {
             if (!exercise) {

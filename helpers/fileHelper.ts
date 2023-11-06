@@ -1,8 +1,8 @@
 import { UI_STATE_TYPE } from '../redux/slices/uiSlice'
 import * as FileSystem from 'expo-file-system'
-import { EXERCISE_FILE_TYPE } from '../redux/slices/exerciseSlice'
+import { EXERCISE_FILE } from '../redux/slices/exerciseSlice'
 import * as MediaLibrary from 'expo-media-library'
-import { TRAININGS_STATE_TYPE } from '../redux/slices/trainingSlice'
+import { TRAININGS_STATE } from '../redux/slices/trainingSlice'
 
 const directoryPath = FileSystem.documentDirectory
 const UI_PATH = directoryPath + 'ui.json'
@@ -35,7 +35,7 @@ export const readUiFile = async (): Promise<UI_STATE_TYPE | undefined> => {
     }
 }
 
-export const writeExercisesFile = async (exercises: EXERCISE_FILE_TYPE) => {
+export const writeExercisesFile = async (exercises: EXERCISE_FILE) => {
     const data = JSON.stringify(exercises)
     try {
         await FileSystem.writeAsStringAsync(EXERCISES_PATH, data)
@@ -47,7 +47,7 @@ export const writeExercisesFile = async (exercises: EXERCISE_FILE_TYPE) => {
 }
 
 export const readExercisesFile = async (): Promise<
-    EXERCISE_FILE_TYPE | undefined
+    EXERCISE_FILE | undefined
 > => {
     try {
         const { exists } = await FileSystem.getInfoAsync(EXERCISES_PATH)
@@ -62,7 +62,7 @@ export const readExercisesFile = async (): Promise<
     }
 }
 
-export const writeTrainingsFile = async (trainings: TRAININGS_STATE_TYPE) => {
+export const writeTrainingsFile = async (trainings: TRAININGS_STATE) => {
     const data = JSON.stringify(trainings)
     try {
         await FileSystem.writeAsStringAsync(TRAININGS_PATH, data)
@@ -74,7 +74,7 @@ export const writeTrainingsFile = async (trainings: TRAININGS_STATE_TYPE) => {
 }
 
 export const readTrainingsFile = async (): Promise<
-    TRAININGS_STATE_TYPE | undefined
+    TRAININGS_STATE | undefined
 > => {
     try {
         const { exists } = await FileSystem.getInfoAsync(TRAININGS_PATH)

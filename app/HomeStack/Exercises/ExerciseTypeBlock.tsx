@@ -16,14 +16,14 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { AntDesign, EvilIcons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
 import {
-    EXERCISE_NAME_TYPES,
+    EXERCISE_TYPE,
     toggleSelectedExercise,
 } from '../../../redux/slices/exerciseSlice'
 import { HOME_STACK_ROUTE_PROPS } from '../ExerciseNavigation'
 import { useNavigation } from '@react-navigation/native'
 
 type PROP_TYPES = {
-    title: EXERCISE_NAME_TYPES
+    title: EXERCISE_TYPE
     select?: boolean
     isSelected?: boolean
     img?: ImageSourcePropType | string

@@ -10,6 +10,7 @@ import { ColorPalette } from '../assets/colors'
 import { AntDesign } from '@expo/vector-icons'
 import { useSelector } from 'react-redux'
 import { STORE_TYPE } from '../redux/store'
+import Toast from 'react-native-toast-message'
 
 interface PROP_TYPES extends ModalProps {
     showCloseIcon?: boolean
@@ -48,6 +49,7 @@ export const CustomModal = ({ showCloseIcon = true, ...prop }: PROP_TYPES) => {
             <SafeAreaView style={styles.modal}>
                 <ScrollView>{prop.children}</ScrollView>
             </SafeAreaView>
+            <Toast />
         </Modal>
     )
 }

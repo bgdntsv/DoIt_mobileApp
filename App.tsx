@@ -4,12 +4,15 @@ import store from './redux/store'
 import { Navigation } from './app/Navigation'
 import './translation/i18n.config'
 import Toast from 'react-native-toast-message'
+import { NativeBaseProvider } from 'native-base'
 
 const App = () => {
     return (
         <Provider store={store}>
-            <Navigation />
-            <Toast />
+            <NativeBaseProvider>
+                <Navigation />
+                <Toast />
+            </NativeBaseProvider>
         </Provider>
     )
 }

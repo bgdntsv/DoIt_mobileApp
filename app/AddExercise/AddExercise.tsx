@@ -13,17 +13,16 @@ import { ColorPalette } from '../../assets/colors'
 import { useSelector } from 'react-redux'
 import { STORE_TYPE, useAppDispatch } from '../../redux/store'
 import Checkbox from 'expo-checkbox'
-import { Picker } from '@react-native-picker/picker'
 import {
     addExercise,
-    EXERCISE_TYPE,
+    EXERCISE,
     MEDIA_LINK_TYPE,
 } from '../../redux/slices/exerciseSlice'
 import { CustomButton } from '../../common/Button'
 import { MuscleTypeModal } from './SelectTypeModal'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
-import { MUSCLE_AREA_TYPE } from '../../helpers/constants'
+import { MUSCLE_AREA_TYPE } from '../../helpers/types'
 import uuid from 'react-native-uuid'
 import { showToast } from '../../helpers/toast'
 import * as ImagePicker from 'expo-image-picker'
@@ -32,6 +31,7 @@ import { BorderContainer } from './BorderContainer'
 import { ShowMediaLink } from '../../common/media/ShowMediaLink'
 import * as Clipboard from 'expo-clipboard'
 import * as Linking from 'expo-linking'
+import { CustomSelect } from '../../common/CustomSelect'
 
 const AddExercise = () => {
     const { t } = useTranslation()
@@ -79,8 +79,8 @@ const AddExercise = () => {
     const handleOutdoorsClick = () => {
         setIsSelectedOutdoors((prev) => !prev)
     }
-    const handleChangeMetric = (metric: 'kg' | 'lb') => {
-        setMetric(metric)
+    const handleChangeMetric = (metric: string) => {
+        setMetric(metric as 'kg' | 'lb')
     }
 
     const handleSubmit = () => {
@@ -95,7 +95,7 @@ const AddExercise = () => {
                 return
             }
         }
-        const exercise: EXERCISE_TYPE = {
+        const exercise: EXERCISE = {
             name,
             description,
             gym: isSelectedGym,
@@ -223,7 +223,7 @@ const AddExercise = () => {
             marginRight: 8,
         },
         weightInput: {
-            paddingVertical: 14,
+            paddingVertical: 8,
         },
         metric: {
             flexGrow: 7,
@@ -251,10 +251,17 @@ const AddExercise = () => {
             display: 'flex',
             alignItems: 'flex-end',
         },
+        mediaLink: {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+        },
     })
 
     return (
         <ScrollView style={styles.container}>
+            {/*__________Show added media__________*/}
             {mediaURI[0] && (
                 <BorderContainer title={t('media')}>
                     <View style={styles.mediaContainer}>
@@ -269,8 +276,10 @@ const AddExercise = () => {
                 </BorderContainer>
             )}
             <View style={styles.content}>
+                {/*__________Name__________*/}
                 <BorderContainer title={t('add_name')} isRequiredField>
                     <TextInput
+                        multiline
                         value={name}
                         onChangeText={setName}
                         style={styles.input}
@@ -283,9 +292,10 @@ const AddExercise = () => {
                         returnKeyType={'next'}
                     />
                 </BorderContainer>
-
+                {/*__________Description__________*/}
                 <BorderContainer title={t('add_description')}>
                     <TextInput
+                        multiline
                         ref={descriptionRef}
                         value={description}
                         onChangeText={setDescription}
@@ -300,6 +310,7 @@ const AddExercise = () => {
                     />
                 </BorderContainer>
 
+                {/*__________Place__________*/}
                 <BorderContainer title={t('select_place')} isRequiredField>
                     <Pressable
                         onPress={handleGymClick}
@@ -339,12 +350,15 @@ const AddExercise = () => {
                     </Pressable>
                 </BorderContainer>
 
+                {/*__________Weight__________*/}
                 <View style={styles.splitBlock}>
                     <View style={styles.weight}>
                         <BorderContainer title={t('weight')}>
                             <TextInput
                                 ref={weightRef}
                                 value={weight}
+                                inputMode={'numeric'}
+                                placeholder={'0'}
                                 onChangeText={setWeight}
                                 style={{
                                     ...styles.input,
@@ -358,29 +372,35 @@ const AddExercise = () => {
 
                     <View style={styles.metric}>
                         <BorderContainer title={t('metric')}>
-                            <Picker
-                                mode={'dialog'}
+                            <CustomSelect
                                 selectedValue={metric}
+                                dropdownCloseIcon={
+                                    <MaterialIcons
+                                        name="arrow-drop-down"
+                                        size={24}
+                                        color={ColorPalette[theme].mainFont}
+                                    />
+                                }
+                                dropdownOpenIcon={
+                                    <MaterialIcons
+                                        name="arrow-drop-up"
+                                        size={24}
+                                        color={ColorPalette[theme].mainFont}
+                                    />
+                                }
+                                variant={'unstyled'}
+                                items={[
+                                    { label: t('kg'), value: 'kg' },
+                                    { label: t('lb'), value: 'lb' },
+                                ]}
+                                placeholder={t('metric')}
                                 onValueChange={handleChangeMetric}
-                                dropdownIconColor={ColorPalette[theme].mainFont}
-                            >
-                                <Picker.Item
-                                    style={styles.pickerItem}
-                                    color={ColorPalette[theme].mainFont}
-                                    label={t('kg')}
-                                    value="kg"
-                                />
-                                <Picker.Item
-                                    style={styles.pickerItem}
-                                    color={ColorPalette[theme].mainFont}
-                                    label={t('lb')}
-                                    value="lb"
-                                />
-                            </Picker>
+                            />
                         </BorderContainer>
                     </View>
                 </View>
 
+                {/*__________Add muscle area__________*/}
                 <Pressable
                     onPress={() => setIsModalOpen(true)}
                     style={styles.muscleAreaContainer}
@@ -394,7 +414,7 @@ const AddExercise = () => {
                                 value={muscleAreaArrayShow()}
                                 editable={false}
                                 style={styles.input}
-                                multiline={true}
+                                multiline
                             />
                         </BorderContainer>
                     </View>
@@ -407,6 +427,7 @@ const AddExercise = () => {
                     </View>
                 </Pressable>
 
+                {/*__________Add media__________*/}
                 {!mediaURI[0] && (
                     <BorderContainer title={t('add_media')}>
                         <CustomButton
@@ -414,30 +435,34 @@ const AddExercise = () => {
                             onPress={getMediaURI}
                             icon={
                                 <MaterialIcons
-                                    name="camera"
+                                    name="image"
                                     size={24}
                                     color={ColorPalette[theme].secondFont}
                                 />
                             }
                         />
                         <BorderContainer title={'Add media link'}>
-                            <TextInput
-                                placeholder={'https://example.com/123'}
-                                editable={false}
-                                value={
-                                    mediaURI[0] &&
-                                    typeof mediaURI[0] === 'string'
-                                        ? mediaURI[0]
-                                        : undefined
-                                }
-                            />
-                            <Pressable onPress={mediaUrlPastValue}>
-                                <Text>Paste</Text>
-                            </Pressable>
+                            <View style={styles.mediaLink}>
+                                <TextInput
+                                    placeholder={'https://example.com/123'}
+                                    editable={false}
+                                    value={
+                                        mediaURI[0] &&
+                                        typeof mediaURI[0] === 'string'
+                                            ? mediaURI[0]
+                                            : undefined
+                                    }
+                                />
+                                <Pressable onPress={mediaUrlPastValue}>
+                                    <Text>Paste</Text>
+                                </Pressable>
+                            </View>
                         </BorderContainer>
                     </BorderContainer>
                 )}
             </View>
+
+            {/*__________Submit__________*/}
             <View style={styles.submit}>
                 <CustomButton
                     title={t('add_exercise')}

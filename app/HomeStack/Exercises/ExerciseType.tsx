@@ -11,7 +11,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { STORE_TYPE } from '../../../redux/store'
 import { useGlobalStyles } from '../../../hooks/useUI'
 import { ExerciseCard } from './ExerciseCard'
-import { EXERCISE_TYPE } from '../../../redux/slices/exerciseSlice'
+import { EXERCISE } from '../../../redux/slices/exerciseSlice'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { BackButtonNavigation } from '../../../common/BackButtonNavigation'
 import { useTranslation } from 'react-i18next'
@@ -28,7 +28,7 @@ import { ColorPalette } from '../../../assets/colors'
 import { ConfirmTrainingModal } from '../CreateExercise/ConfirmTrainingModal'
 
 export const ExerciseType = () => {
-    const exercisesState = useSelector<STORE_TYPE, Array<EXERCISE_TYPE>>(
+    const exercisesState = useSelector<STORE_TYPE, Array<EXERCISE>>(
         ({ exercise }) => exercise.exercises
     )
     const globalStyles = useGlobalStyles()

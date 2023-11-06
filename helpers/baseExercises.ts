@@ -1,6 +1,6 @@
-import { EXERCISE_TYPE } from '../redux/slices/exerciseSlice'
+import { EXERCISE } from '../redux/slices/exerciseSlice'
 
-export const baseExercises: Array<EXERCISE_TYPE> = [
+export const baseExercises: Array<EXERCISE> = [
     //Press
     {
         name: 'Планка',

@@ -8,7 +8,7 @@ import chestImg from '../../../assets/images/chest_muscles.png'
 import { BackButtonNavigation } from '../../../common/BackButtonNavigation'
 import { useSelector } from 'react-redux'
 import { STORE_TYPE } from '../../../redux/store'
-import { EXERCISE_NAME_TYPES } from '../../../redux/slices/exerciseSlice'
+import { EXERCISE_TYPE } from '../../../redux/slices/exerciseSlice'
 import { AntDesign } from '@expo/vector-icons'
 import { ColorPalette } from '../../../assets/colors'
 import { ConfirmTrainingModal } from './ConfirmTrainingModal'
@@ -37,7 +37,7 @@ export const CreateTraining = () => {
     }, [isFocused])
 
     const exercises: Array<{
-        name: EXERCISE_NAME_TYPES
+        name: EXERCISE_TYPE
         img: ImageSourcePropType | string
     }> = [
         {

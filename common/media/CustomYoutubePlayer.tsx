@@ -67,6 +67,7 @@ export const CustomYoutubePlayer = ({ media = '' }: PROP_TYPES) => {
                 break
             }
             case 'playing': {
+                setProgressbar()
                 intervalRef.current = setInterval(setProgressbar, 1000)
                 break
             }

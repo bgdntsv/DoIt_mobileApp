@@ -1,10 +1,10 @@
 {
     "scripts": {
-        "start": "expo start",
-        "start offline": "expo start --offline",
-        "android": "expo start --android",
-        "ios": "expo start --ios",
-        "web": "expo start --web",
+        "start": "npx expo start",
+        "start offline": "npx expo start --offline",
+        "android": "npx expo start --android",
+        "ios": "npx expo start --ios",
+        "web": "npx expo start --web",
         "prepare": "husky install"
     },
     "dependencies": {

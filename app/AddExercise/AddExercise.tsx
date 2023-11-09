@@ -5,7 +5,6 @@ import {
     StyleSheet,
     Text,
     TextInput,
-    useWindowDimensions,
     View,
 } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
@@ -50,7 +49,6 @@ const AddExercise = () => {
     const weightRef = useRef<TextInput>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [mediaURI, setMediaURI] = useState<MEDIA_LINK_TYPE>([])
-    const { height: windowHeight } = useWindowDimensions()
 
     const isFocused = useIsFocused()
 
@@ -187,7 +185,7 @@ const AddExercise = () => {
             paddingHorizontal: 10,
             paddingVertical: 10,
             backgroundColor: ColorPalette[theme].main,
-            height: windowHeight,
+            height: '100%',
             position: 'relative',
         },
         input: {
@@ -414,7 +412,7 @@ const AddExercise = () => {
                                 value={muscleAreaArrayShow()}
                                 editable={false}
                                 style={styles.input}
-                                multiline
+                                multiline onPressOut={() => setIsModalOpen(true)}
                             />
                         </BorderContainer>
                     </View>

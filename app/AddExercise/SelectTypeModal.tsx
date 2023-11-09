@@ -12,12 +12,11 @@ import {
 } from '../../helpers/types'
 import Checkbox from 'expo-checkbox'
 import { ColorPalette } from '../../assets/colors'
-import { CustomButton } from '../../common/Button'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { CustomModal } from '../../common/CustomModal'
 
-export type MUSCLE_TYPE_MODAL_TYPE = {
+type PROP_TYPE = {
     isOpen: boolean
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
     setMuscleArea: React.Dispatch<React.SetStateAction<Array<MUSCLE_AREA_TYPE>>>
@@ -30,7 +29,7 @@ export const MuscleTypeModal = ({
     styles,
     setMuscleArea,
     muscleArea,
-}: MUSCLE_TYPE_MODAL_TYPE) => {
+}: PROP_TYPE) => {
     const { theme } = useSelector(({ ui }: STORE_TYPE) => ui)
     const { t } = useTranslation()
 
@@ -52,7 +51,6 @@ export const MuscleTypeModal = ({
             onRequestClose={() => {
                 setIsOpen((prev) => !prev)
             }}
-            showCloseIcon={false}
         >
             <View style={styles.container}>
                 <ScrollView>
@@ -206,12 +204,6 @@ export const MuscleTypeModal = ({
                         })}
                     </View>
                 </ScrollView>
-                <View style={{ marginTop: 10 }}>
-                    <CustomButton
-                        title={'close'}
-                        onPress={() => setIsOpen(false)}
-                    />
-                </View>
             </View>
         </CustomModal>
     )

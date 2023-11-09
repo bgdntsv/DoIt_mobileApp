@@ -7,7 +7,10 @@ import { STORE_TYPE } from '../redux/store'
 import { InterfaceSelectProps } from 'native-base/lib/typescript/components/primitives/Select/types'
 
 interface PROP_TYPE extends InterfaceSelectProps {
-    items: Array<{ label: string; value: string }>
+    items: Array<{
+        label: string
+        value: string
+    }>
 }
 
 export const CustomSelect = ({ items, ...prop }: PROP_TYPE) => {
@@ -29,7 +32,7 @@ export const CustomSelect = ({ items, ...prop }: PROP_TYPE) => {
             {...prop}
         >
             {items.map(({ label, value }, i) => (
-                <Select.Item label={label} value={value} key={i} />
+                <Select.Item label={label} value={value} key={i} shouldRasterizeIOS={true}/>
             ))}
         </Select>
     )

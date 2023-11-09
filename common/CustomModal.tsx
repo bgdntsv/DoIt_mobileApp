@@ -7,7 +7,7 @@ import {
     StyleSheet,
 } from 'react-native'
 import {ColorPalette} from '../assets/colors'
-import {AntDesign} from '@expo/vector-icons'
+import { MaterialIcons } from "@expo/vector-icons";
 import {useSelector} from 'react-redux'
 import {STORE_TYPE} from '../redux/store'
 import Constants from 'expo-constants';
@@ -41,8 +41,8 @@ export const CustomModal = ({showCloseIcon = true, ...prop}: PROP_TYPES) => {
         <Modal {...prop}>
             <SafeAreaView style={styles.modal}>
                 {showCloseIcon && (
-                    <AntDesign
-                        name="closecircleo"
+                    <MaterialIcons
+                        name="close"
                         size={24}
                         color={ColorPalette[theme].mainFont}
                         style={styles.modalCloseIcon}

@@ -12,3 +12,4 @@ web-build/
 %ProgramData%
 # macOS
 .DS_Store
+.idea/

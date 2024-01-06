@@ -1,12 +1,12 @@
 import { ColorPalette } from '../assets/colors'
-import { Select } from 'native-base'
 import React from 'react'
 import { useGlobalStyles } from '../hooks/useUI'
 import { useSelector } from 'react-redux'
 import { STORE_TYPE } from '../redux/store'
-import { InterfaceSelectProps } from 'native-base/lib/typescript/components/primitives/Select/types'
+import { StyleSheet } from 'react-native'
+import { Picker, PickerProps } from '@react-native-picker/picker'
 
-interface PROP_TYPE extends InterfaceSelectProps {
+interface PROP_TYPE extends PickerProps {
     items: Array<{
         label: string
         value: string
@@ -14,26 +14,26 @@ interface PROP_TYPE extends InterfaceSelectProps {
 }
 
 export const CustomSelect = ({ items, ...prop }: PROP_TYPE) => {
-    const globalStyles = useGlobalStyles()
+    const { styles: globalStyles } = useGlobalStyles()
     const { theme } = useSelector(({ ui }: STORE_TYPE) => ui)
+    const styles = StyleSheet.create({
+        input: {
+            padding: 0,
+            height: 47,
+            color: ColorPalette[theme].mainFont,
+        },
+        container: {
+            minWidth: 80,
+            display: 'flex',
+            justifyContent: 'center',
+        },
+    })
 
     return (
-        <Select
-            _item={{
-                color: globalStyles.span.color,
-                fontFamily: globalStyles.span.fontFamily,
-                fontSize: globalStyles.span.fontSize,
-            }}
-            color={ColorPalette[theme].mainFont}
-            fontSize={globalStyles.span.fontSize}
-            fontFamily={globalStyles.span.fontFamily}
-            paddingLeft={-1}
-            _selectedItem={{ bg: ColorPalette[theme].third }}
-            {...prop}
-        >
-            {items.map(({ label, value }, i) => (
-                <Select.Item label={label} value={value} key={i} shouldRasterizeIOS={true}/>
+        <Picker {...prop} dropdownIconColor={ColorPalette[theme].mainFont} style={styles.input}>
+            {items.map((e, i) => (
+                <Picker.Item style={globalStyles.span} label={e.label} value={e.value} key={i} />
             ))}
-        </Select>
+        </Picker>
     )
 }

@@ -1,7 +1,7 @@
 import { EXERCISE } from '../redux/slices/exerciseSlice'
 
 export const baseExercises: Array<EXERCISE> = [
-    //Press
+    ///////////Press//////////////////////
     {
         name: 'Планка',
         description:
@@ -64,8 +64,7 @@ export const baseExercises: Array<EXERCISE> = [
     },
     {
         name: 'Планка з підняттям ноги',
-        description:
-            'Прийміть позицію планки. Піднімайте одну ногу догори, тримаючи її прямо. Змінюйте ноги.',
+        description: 'Прийміть позицію планки. Піднімайте одну ногу догори, тримаючи її прямо. Змінюйте ноги.',
         muscleArea: ['press_base', 'leg_back'],
         gym: true,
         outdoors: true,
@@ -189,5 +188,118 @@ export const baseExercises: Array<EXERCISE> = [
         home: false,
         inventory: ['exercise_machine_for_lifting_legs'],
         id: '0t78q273-7edk-8o8b-jp05-2p5um5u67t78',
+    },
+
+    ///////////Chest//////////////////////
+
+    {
+        name: 'Жим гантелей на лавці',
+        description: 'Ляжте на лавку з гантелями у кожній руці. Відтискайте гантелі вгору, втягуючи груди.',
+        muscleArea: ['chest_base'],
+        media: ['https://youtu.be/KjYak5vZO9s?si=XhD8RGdo9ma49H7m'],
+        gym: true,
+        outdoors: false,
+        home: false,
+        inventory: ['dumbbells', 'bench'],
+        id: '4a20c1db-ef95-4f32-8a92-9e77b5aaf120',
+    },
+
+    {
+        name: 'Жим гантелей лежачи на лавці під кутом',
+        description: 'Ляжте на лавку, тримаючи гантелі. Відтискайте гантелі вгору, втягуючи груди.',
+        muscleArea: ['chest_up'],
+        media: ['https://youtu.be/07Bcqtib4FM?si=_O5ma99VjzTS2u7o'],
+        gym: true,
+        outdoors: false,
+        home: false,
+        inventory: ['dumbbells', 'bench'],
+        id: '3c89d4e9-0b79-40e3-953c-c7d24d25c175',
+    },
+
+    {
+        name: 'Віджимання від підлоги',
+        description:
+            'Станьте у позу віджимання на підлозі, руки розташовані на ширині плечей. Піднімайте тіло вгору, втягуючи груди.',
+        muscleArea: ['chest_base'],
+        media: ['https://youtu.be/lVNzuIArliA?si=48HHaqsGdhFiYN2R'],
+        gym: true,
+        outdoors: true,
+        home: true,
+        id: '2e75c2ca-7d81-4fb7-8a11-3e65b4a1f940',
+    },
+
+    {
+        name: 'Кросовер на тренажері',
+        description:
+            'Використовуйте тренажер кросовера для зведення рук перед грудьми. Контролюйте рух, зосереджуючи увагу на грудях.',
+        muscleArea: ['chest_base'],
+        media: ['https://youtu.be/FVWJglwid4I?si=2DmLUZRChGSb2OGf'],
+        gym: true,
+        outdoors: false,
+        home: false,
+        inventory: ['crossover'],
+        id: '1b65e3df-5e0e-4cc7-9332-7f5c81dbf3e0',
+    },
+
+    {
+        name: 'Розведення гантелей на лавці',
+        description:
+            'Ляжте на лавку з гантелями у руках. Розведіть руки в сторони, роблячи розведення гантелей, потім зводьте руки одину до одної, намагаючись не токатися гантелями при зведені.',
+        muscleArea: ['chest_side'],
+        media: ['https://youtu.be/UKwkChzThig?si=JC1hz08Q2pfjWJz6'],
+        gym: true,
+        outdoors: false,
+        home: false,
+        inventory: ['dumbbells', 'bench'],
+        id: '4f30a2cb-2e8d-48d1-af13-61e1cfa81aa0',
+    },
+
+    ///////////Shoulders//////////////////////
+
+    {
+        name: 'Армстронг',
+        description: "Повисніть на турніку. Піднімайте масу тіла за рахунок м'язів плечей, не згинаючи руки.",
+        muscleArea: ['shoulders_base'],
+        gym: true,
+        outdoors: true,
+        home: true,
+        inventory: ['bar'],
+        id: '1a23b2cb-4c56-7d89-1b23-9a45c6a78b90',
+    },
+    {
+        name: 'Підйом гантелей стоячи',
+        description:
+            'Стійте прямо з гантелями у руках. Піднімайте руки перед собою, зосереджуючи напруження на плечах.',
+        muscleArea: ['shoulders_front'],
+        media: ['https://youtu.be/sOcYlBI85hc?si=8pD2LzxxjFw2YdIH'],
+        gym: true,
+        outdoors: false,
+        home: true,
+        inventory: ['dumbbells'],
+        id: '2c34d5e6-8f67-9a87-2c34-1b45d6e78c91',
+    },
+    {
+        name: 'Жим гантелей від плечей',
+        description:
+            'Стійте прямо(можна виконувати сидячи) з піднятими гантелями у руках над плечима. Відтискайте гантелі від плечей, випрямляючи руки',
+        muscleArea: ['shoulders_base'],
+        media: ['https://youtu.be/0JfYxMRsUCQ?si=ZEfXuhIfU-bwStKh'],
+        gym: true,
+        outdoors: true,
+        home: true,
+        inventory: ['dumbbells'],
+        id: '3d45e6f7-9g89-0b76-3d45-2c56f7d89e92',
+    },
+    {
+        name: 'Махи гантелями в сторони',
+        description:
+            'Стійте(можна виконувати сидячи), трохи нахиливши корпус вперед, з гантелями у руках, руки опущені вниз. Піднімайте гантелі в сторони, роблячи махи, зосереджуючи напруження на плечах.',
+        muscleArea: ['shoulders_base'],
+        media: ['https://youtu.be/3gJXpfwg_go?si=lPDkCUiWtfz_wISC'],
+        gym: true,
+        outdoors: false,
+        home: true,
+        inventory: ['dumbbells'],
+        id: '5j23k4l5-2g67-3j89-5k23-4l5g6h78j23l',
     },
 ]

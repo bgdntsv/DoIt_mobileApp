@@ -75,5 +75,11 @@
     "roman_chair": "Римський стілець",
     "exercise_machine_for_lifting_legs": "Тренажер для підтягування ніг",
     "no_exercises_with_this_name": "Немає вправ з такою назвою",
-    "delete": "Видалити"
+    "delete": "Видалити",
+    "generate_exercises": "Згенерувати вправи",
+    "drag_to_set_order": "Перетягніть, щоб встановити порядок",
+    "confirm_training": "Підтвердіть тренування",
+    "inventory": "Інвентар",
+    "save": "Зберегти",
+    "create_training": "Створити тренування"
 }

@@ -1,22 +1,18 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { EXERCISE } from '../../../redux/slices/exerciseSlice'
-import { useGlobalStyles } from '../../../hooks/useUI'
+import { EXERCISE } from '../redux/slices/exerciseSlice'
+import { useGlobalStyles } from '../hooks/useUI'
 import { useTranslation } from 'react-i18next'
-import { ShowMediaLink } from '../../../common/media/ShowMediaLink'
-import { CustomModal } from '../../../common/CustomModal'
+import { ShowMediaLink } from './media/ShowMediaLink'
+import { CustomModal } from './CustomModal'
 
 type PROP_TYPES = {
     isOpen: boolean
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
     exercise: EXERCISE
 }
-export const ExerciseDetailsModal = ({
-    isOpen,
-    setIsOpen,
-    exercise,
-}: PROP_TYPES) => {
-    const globalStyles = useGlobalStyles()
+export const ExerciseDetailsModal = ({ isOpen, setIsOpen, exercise }: PROP_TYPES) => {
+    const { styles: globalStyles } = useGlobalStyles()
     const { t } = useTranslation()
 
     const closeModal = () => {
@@ -44,11 +40,7 @@ export const ExerciseDetailsModal = ({
     })
     return (
         isOpen && (
-            <CustomModal
-                visible={isOpen}
-                animationType={'slide'}
-                onRequestClose={closeModal}
-            >
+            <CustomModal visible={isOpen} animationType={'slide'} onRequestClose={closeModal}>
                 <View style={styles.content}>
                     {getMediaContent()}
                     <Text style={globalStyles.h1}>{exercise.name}</Text>

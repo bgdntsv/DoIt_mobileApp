@@ -3,6 +3,7 @@ import { EXERCISE, EXERCISE_TYPE } from './exerciseSlice'
 import { STORE_TYPE } from '../store'
 import { writeTrainingsFile } from '../../helpers/fileHelper'
 import { showToast } from '../../helpers/toast'
+import { INVENTORY } from '../../helpers/types'
 
 export type TRAINING = {
     name: string
@@ -16,6 +17,10 @@ export type TRAINING = {
     back?: Array<EXERCISE>
     startTime?: Date
     finishTime?: Date
+    exercisesCount: number
+    allExercises: Array<EXERCISE>
+    defaultRepeatsCount: string // as number,
+    inventory: Array<INVENTORY>
 }
 
 export type TRAININGS_STATE = {
@@ -65,10 +70,7 @@ export const changeTraining = createAsyncThunk<
         const { training: trainingState } = thunkAPI.getState()
         const newTrainingState: TRAININGS_STATE = {
             trainingsHistory: [...trainingState.trainingsHistory],
-            trainings: [
-                ...trainingState.trainings.filter((t) => t.id !== training.id),
-                training,
-            ],
+            trainings: [...trainingState.trainings.filter((t) => t.id !== training.id), training],
         }
         const isWrote = await writeTrainingsFile(newTrainingState)
         if (isWrote) {
@@ -93,55 +95,39 @@ export const removeExerciseFromTraining = createAsyncThunk<
     {
         state: STORE_TYPE
     }
->(
-    'training/RemoveExerciseFromTraining',
-    async ({ trainingId, exerciseId, exerciseType }, thunkAPI) => {
-        try {
-            const { training: trainingState } = thunkAPI.getState()
-            let updatedTraining
-            const trainingToUpdate = JSON.parse(
-                JSON.stringify(
-                    trainingState.trainings.find((t) => t.id === trainingId)
-                )
-            ) as TRAINING
-            const indexOfExercise = trainingToUpdate?.[exerciseType]?.findIndex(
-                (e) => e.id === exerciseId
-            )
+>('training/RemoveExerciseFromTraining', async ({ trainingId, exerciseId, exerciseType }, thunkAPI) => {
+    try {
+        const { training: trainingState } = thunkAPI.getState()
+        let updatedTraining
+        const trainingToUpdate = JSON.parse(
+            JSON.stringify(trainingState.trainings.find((t) => t.id === trainingId))
+        ) as TRAINING
+        const indexOfExercise = trainingToUpdate?.[exerciseType]?.findIndex((e) => e.id === exerciseId)
 
-            if (
-                trainingToUpdate &&
-                typeof indexOfExercise === 'number' &&
-                indexOfExercise >= 0
-            ) {
-                trainingToUpdate?.[exerciseType]?.splice(indexOfExercise, 1)
-                updatedTraining = trainingToUpdate
-            }
-
-            const newTrainingState: TRAININGS_STATE = {
-                trainingsHistory: [...trainingState.trainingsHistory],
-                trainings: updatedTraining
-                    ? [
-                          ...trainingState.trainings.filter(
-                              (t) => t.id !== trainingId
-                          ),
-                          updatedTraining,
-                      ]
-                    : trainingState.trainings,
-            }
-            const isWrote = await writeTrainingsFile(newTrainingState)
-            if (isWrote) {
-                return newTrainingState
-            }
-        } catch (e) {
-            showToast({
-                type: 'error',
-                text1: 'Exercise cannot be removed from your treating',
-                text2: e instanceof Error ? 'Error: ' + e.message : '',
-            })
-            console.error("Can't change training", e)
+        if (trainingToUpdate && typeof indexOfExercise === 'number' && indexOfExercise >= 0) {
+            trainingToUpdate?.[exerciseType]?.splice(indexOfExercise, 1)
+            updatedTraining = trainingToUpdate
         }
+
+        const newTrainingState: TRAININGS_STATE = {
+            trainingsHistory: [...trainingState.trainingsHistory],
+            trainings: updatedTraining
+                ? [...trainingState.trainings.filter((t) => t.id !== trainingId), updatedTraining]
+                : trainingState.trainings,
+        }
+        const isWrote = await writeTrainingsFile(newTrainingState)
+        if (isWrote) {
+            return newTrainingState
+        }
+    } catch (e) {
+        showToast({
+            type: 'error',
+            text1: 'Exercise cannot be removed from your treating',
+            text2: e instanceof Error ? 'Error: ' + e.message : '',
+        })
+        console.error("Can't change training", e)
     }
-)
+})
 
 export const deleteTraining = createAsyncThunk<
     TRAININGS_STATE | undefined,
@@ -154,11 +140,7 @@ export const deleteTraining = createAsyncThunk<
         const { training: trainingState } = thunkAPI.getState()
         const newTrainingState: TRAININGS_STATE = {
             trainingsHistory: [...trainingState.trainingsHistory],
-            trainings: [
-                ...trainingState.trainings.filter(
-                    (training) => training.id !== trainingId
-                ),
-            ],
+            trainings: [...trainingState.trainings.filter((training) => training.id !== trainingId)],
         }
         const isWrote = await writeTrainingsFile(newTrainingState)
         if (isWrote) {
@@ -186,31 +168,31 @@ const trainingSlice = createSlice({
     name: 'training',
     initialState,
     reducers: {
-        initTrainingsState: (state, action: PayloadAction<TRAININGS_STATE>) => {
-            state.trainings = action.payload.trainings
-            state.trainingsHistory = action.payload.trainingsHistory
+        initTrainingsState: (state, { payload }: PayloadAction<TRAININGS_STATE>) => {
+            state.trainings = payload.trainings
+            state.trainingsHistory = payload.trainingsHistory
         },
     },
     extraReducers: (builder) => {
         builder
-            .addCase(addTraining.fulfilled, (state, action) => {
-                if (action.payload) {
-                    state.trainings = action.payload.trainings
+            .addCase(addTraining.fulfilled, (state, { payload }) => {
+                if (payload) {
+                    state.trainings = payload.trainings
                 }
             })
-            .addCase(changeTraining.fulfilled, (state, action) => {
-                if (action.payload) {
-                    state.trainings = action.payload.trainings
+            .addCase(changeTraining.fulfilled, (state, { payload }) => {
+                if (payload) {
+                    state.trainings = payload.trainings
                 }
             })
-            .addCase(deleteTraining.fulfilled, (state, action) => {
-                if (action.payload) {
-                    state.trainings = action.payload.trainings
+            .addCase(deleteTraining.fulfilled, (state, { payload }) => {
+                if (payload) {
+                    state.trainings = payload.trainings
                 }
             })
-            .addCase(removeExerciseFromTraining.fulfilled, (state, action) => {
-                if (action.payload) {
-                    state.trainings = action.payload.trainings
+            .addCase(removeExerciseFromTraining.fulfilled, (state, { payload }) => {
+                if (payload) {
+                    state.trainings = payload.trainings
                 }
             })
     },

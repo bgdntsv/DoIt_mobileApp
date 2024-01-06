@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Image, Pressable, StyleSheet } from 'react-native'
+import { Image, Pressable, StyleSheet, View } from 'react-native'
 import { ResizeMode, Video } from 'expo-av'
 import { MEDIA_LINK_TYPE } from '../../redux/slices/exerciseSlice'
 import WebView from 'react-native-webview'
@@ -8,6 +8,7 @@ import { CustomModal } from '../CustomModal'
 import { CustomYoutubePlayer } from './CustomYoutubePlayer'
 import * as Network from 'expo-network'
 import { NoInternetMedia } from './NoInternetMedia'
+import { useGlobalStyles } from '../../hooks/useUI'
 
 type PROP_TYPES = {
     link: MEDIA_LINK_TYPE
@@ -15,6 +16,7 @@ type PROP_TYPES = {
 
 export const ShowMediaLink = ({ link }: PROP_TYPES) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const { styles: globalStyles } = useGlobalStyles()
     const [isInternetConnection, setIsInternetConnection] = useState(true)
     useEffect(() => {
         const init = async () => {
@@ -44,7 +46,7 @@ export const ShowMediaLink = ({ link }: PROP_TYPES) => {
         },
         urlMedia: {
             width: '100%',
-            height: '50%',
+            height: '100%',
             borderTopRightRadius: 10,
             borderTopLeftRadius: 10,
             backgroundColor: 'transparent',
@@ -54,6 +56,18 @@ export const ShowMediaLink = ({ link }: PROP_TYPES) => {
             height: '100%',
             borderTopRightRadius: 10,
             borderTopLeftRadius: 10,
+        },
+        modalContainer: {
+            ...globalStyles.container,
+            display: 'flex',
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        fullMediaShow: {
+            height: 300,
+            width: '100%',
         },
     })
 
@@ -110,22 +124,37 @@ export const ShowMediaLink = ({ link }: PROP_TYPES) => {
         <>
             {getContent}
             <CustomModal visible={isModalOpen} onRequestClose={closeModal}>
-                {typeof link[0] === 'string' ? (
-                    <WebView
-                        style={styles.urlMedia}
-                        source={{
-                            uri: link[0],
-                        }}
-                        useNativeControls={false}
-                        resizeMode={ResizeMode.CONTAIN}
-                        isLooping
-                        isMuted
-                        shouldPlay
-                        onError={() => errorHandler("Can't load source")}
-                    />
-                ) : (
-                    <Image style={styles.image} source={{ uri: link[0].uri }} />
-                )}
+                <View style={styles.modalContainer}>
+                    {typeof link[0] === 'string' ? (
+                        <WebView
+                            style={styles.urlMedia}
+                            source={{
+                                uri: link[0],
+                            }}
+                            useNativeControls={false}
+                            resizeMode={ResizeMode.CONTAIN}
+                            isLooping
+                            isMuted
+                            shouldPlay
+                            onError={() => errorHandler("Can't load source")}
+                        />
+                    ) : link[0].type === 'image' ? (
+                        <Image style={styles.fullMediaShow} source={{ uri: link[0].uri }} />
+                    ) : (
+                        <Video
+                            style={styles.fullMediaShow}
+                            source={{
+                                uri: link[0].uri,
+                            }}
+                            useNativeControls={true}
+                            resizeMode={ResizeMode.CONTAIN}
+                            isLooping
+                            isMuted={false}
+                            shouldPlay
+                            onError={errorHandler}
+                        />
+                    )}
+                </View>
             </CustomModal>
         </>
     )

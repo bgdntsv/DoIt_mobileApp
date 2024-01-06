@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet, Text } from 'react-native'
 import React from 'react'
-import { ColorPalette } from '../../assets/colors'
+import { ColorPalette } from '../assets/colors'
 import { useSelector } from 'react-redux'
-import { STORE_TYPE } from '../../redux/store'
+import { STORE_TYPE } from '../redux/store'
 
 type PROP_TYPES = {
     title?: string | React.ReactNode
@@ -10,12 +10,7 @@ type PROP_TYPES = {
     children: React.ReactNode
     onPress?: () => void
 }
-export const BorderContainer = ({
-    title,
-    isRequiredField,
-    children,
-    onPress,
-}: PROP_TYPES) => {
+export const BorderInputContainer = ({ title, isRequiredField, children, onPress }: PROP_TYPES) => {
     const { theme } = useSelector(({ ui }: STORE_TYPE) => ui)
     const styles = StyleSheet.create({
         container: {

@@ -1,11 +1,11 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, TextInputProps } from 'react-native'
 import { useSelector } from 'react-redux'
 import { STORE_TYPE } from '../redux/store'
 import { ColorPalette } from '../assets/colors'
 
 export const useGlobalStyles = () => {
     const { theme } = useSelector(({ ui }: STORE_TYPE) => ui)
-    return StyleSheet.create({
+    const styles = StyleSheet.create({
         container: {
             flex: 1,
             backgroundColor: ColorPalette[theme].main,
@@ -15,18 +15,39 @@ export const useGlobalStyles = () => {
         h1: {
             fontFamily: 'Inter-Regular',
             fontWeight: 'bold',
-            fontSize: 22,
+            fontSize: 20,
             color: ColorPalette[theme].mainFont,
         },
         p: {
             fontFamily: 'Inter-Regular',
-            fontSize: 18,
+            fontSize: 16,
             color: ColorPalette[theme].mainFont,
         },
         span: {
             fontFamily: 'Inter-Regular',
-            fontSize: 16,
+            fontSize: 14,
             color: ColorPalette[theme].mainFont,
         },
+        span1: {
+            fontFamily: 'Inter-Regular',
+            fontSize: 12,
+            color: ColorPalette[theme].mainFont,
+        },
+        modal: {
+            backgroundColor: ColorPalette[theme].main,
+        },
+        input: {
+            maxHeight: 100,
+            paddingHorizontal: 5,
+        },
     })
+    const inputProps: TextInputProps = {
+        placeholderTextColor: ColorPalette[theme].placeholderFont,
+        style: { ...styles.span, ...styles.input },
+        cursorColor: ColorPalette[theme].mainFont,
+    }
+    return {
+        styles,
+        inputProps,
+    }
 }

@@ -8,17 +8,8 @@ import { STORE_TYPE, useAppDispatch } from '../redux/store'
 import { Notifications } from './Notifications/Notifications'
 import { ExerciseNavigation } from './HomeStack/ExerciseNavigation'
 import React, { useLayoutEffect, useState } from 'react'
-import {
-    getFilesPermissions,
-    readExercisesFile,
-    readTrainingsFile,
-    readUiFile,
-} from '../helpers/fileHelper'
-import {
-    changeLanguage,
-    changeTheme,
-    LANGUAGE_TYPE,
-} from '../redux/slices/uiSlice'
+import { getFilesPermissions, readExercisesFile, readTrainingsFile, readUiFile } from '../helpers/fileHelper'
+import { changeLanguage, changeTheme, LANGUAGE_TYPE } from '../redux/slices/uiSlice'
 import * as ScreenOrientation from 'expo-screen-orientation'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { Login } from './Login/Login'
@@ -51,9 +42,7 @@ export const Navigation = () => {
     const init = async () => {
         setIsLoading(true)
         if (Platform.OS !== 'web') {
-            await ScreenOrientation.lockAsync(
-                ScreenOrientation.OrientationLock.PORTRAIT_UP
-            )
+            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP)
             await getFilesPermissions()
             const uiFile = await readUiFile()
             if (uiFile) {
@@ -86,6 +75,7 @@ export const Navigation = () => {
     if (isLoading || !fontsLoaded) {
         return <Loading />
     }
+
     return (
         <NavigationContainer
             theme={{
@@ -100,10 +90,7 @@ export const Navigation = () => {
                 },
             }}
         >
-            <StatusBar
-                barStyle={'light-content'}
-                backgroundColor={ColorPalette[theme].fourth}
-            />
+            <StatusBar barStyle={'light-content'} backgroundColor={ColorPalette[theme].fourth} />
 
             <Drawer.Navigator
                 initialRouteName={'DoIt'}
@@ -114,57 +101,24 @@ export const Navigation = () => {
                         drawerInactiveTintColor: ColorPalette[theme].secondFont,
                         drawerActiveBackgroundColor: ColorPalette[theme].main,
                         drawerActiveTintColor: ColorPalette[theme].mainFont,
-                        drawerType:
-                            dimensions.width >= 768 ? 'permanent' : 'front',
+                        drawerType: dimensions.width >= 768 ? 'permanent' : 'front',
                         drawerIcon: ({ size, focused }) => {
-                            const color = focused
-                                ? ColorPalette[theme].mainFont
-                                : ColorPalette[theme].secondFont
+                            const color = focused ? ColorPalette[theme].mainFont : ColorPalette[theme].secondFont
                             switch (route.name) {
                                 case 'Home': {
-                                    return (
-                                        <MaterialIcons
-                                            name={'home'}
-                                            size={size}
-                                            color={color}
-                                        />
-                                    )
+                                    return <MaterialIcons name={'home'} size={size} color={color} />
                                 }
                                 case 'Settings': {
-                                    return (
-                                        <MaterialIcons
-                                            name={'settings'}
-                                            size={size}
-                                            color={color}
-                                        />
-                                    )
+                                    return <MaterialIcons name={'settings'} size={size} color={color} />
                                 }
                                 case 'Notifications': {
-                                    return (
-                                        <MaterialIcons
-                                            name={'notifications'}
-                                            size={size}
-                                            color={color}
-                                        />
-                                    )
+                                    return <MaterialIcons name={'notifications'} size={size} color={color} />
                                 }
                                 case 'Login': {
-                                    return (
-                                        <MaterialIcons
-                                            name="person"
-                                            size={size}
-                                            color={color}
-                                        />
-                                    )
+                                    return <MaterialIcons name="person" size={size} color={color} />
                                 }
                                 case 'AddExercise': {
-                                    return (
-                                        <MaterialIcons
-                                            name="add-circle-outline"
-                                            size={size}
-                                            color={color}
-                                        />
-                                    )
+                                    return <MaterialIcons name="add-circle-outline" size={size} color={color} />
                                 }
                                 default: {
                                     return <Text>?</Text>
@@ -177,28 +131,17 @@ export const Navigation = () => {
                 <Drawer.Screen
                     name={'Home'}
                     options={{ title: t('main'), headerTitle: '' }}
+                    // @ts-ignore: Unreachable code error
                     component={ExerciseNavigation}
                 />
-                <Drawer.Screen
-                    name={'Login'}
-                    options={{ title: t('login') }}
-                    component={Login}
-                />
-                <Drawer.Screen
-                    name={'AddExercise'}
-                    options={{ title: t('add_exercise') }}
-                    component={AddExercise}
-                />
+                <Drawer.Screen name={'Login'} options={{ title: t('login') }} component={Login} />
+                <Drawer.Screen name={'AddExercise'} options={{ title: t('add_exercise') }} component={AddExercise} />
                 <Drawer.Screen
                     name={'Notifications'}
                     options={{ title: t('notifications') }}
                     component={Notifications}
                 />
-                <Drawer.Screen
-                    name={'Settings'}
-                    options={{ title: t('settings') }}
-                    component={Settings}
-                />
+                <Drawer.Screen name={'Settings'} options={{ title: t('settings') }} component={Settings} />
             </Drawer.Navigator>
         </NavigationContainer>
     )

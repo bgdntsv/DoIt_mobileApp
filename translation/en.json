@@ -75,5 +75,11 @@
     "roman_chair": "Roman chair",
     "exercise_machine_for_lifting_legs": "Exercise machine for lifting legs",
     "no_exercises_with_this_name": "No exercises with this name",
-    "delete": "Delete"
+    "delete": "Delete",
+    "add_this_muscle_type_to_training": "Add muscle area to the training",
+    "generate_exercises": "Generate exercises",
+    "confirm_training": "Confirm training",
+    "inventory": "Inventory",
+    "save": "Save",
+    "create_training": "Create training"
 }

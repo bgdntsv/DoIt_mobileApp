@@ -1,28 +1,24 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { useSelector } from 'react-redux'
-import {
-    changeLanguage,
-    changeTheme,
-    LANGUAGE_TYPE,
-    THEME_TYPE,
-} from '../../redux/slices/uiSlice'
+import { changeLanguage, changeTheme, LANGUAGE_TYPE, THEME_TYPE } from '../../redux/slices/uiSlice'
 import { STORE_TYPE, useAppDispatch } from '../../redux/store'
-import { Picker } from '@react-native-picker/picker'
 import { useTranslation } from 'react-i18next'
 import { useGlobalStyles } from '../../hooks/useUI'
 import { ColorPalette } from '../../assets/colors'
+import { CustomSelect } from '../../common/CustomSelect'
+import { ItemValue } from '@react-native-picker/picker/typings/Picker'
 
 export const Settings = () => {
     const dispatch = useAppDispatch()
     const { t } = useTranslation()
     const { theme, language } = useSelector(({ ui }: STORE_TYPE) => ui)
-    const globalStyles = useGlobalStyles()
-    const handleChangeTheme = (itemValue: THEME_TYPE) => {
-        dispatch(changeTheme(itemValue))
+    const { styles: globalStyles } = useGlobalStyles()
+    const handleChangeTheme = (itemValue: ItemValue) => {
+        dispatch(changeTheme(itemValue as THEME_TYPE))
     }
-    const handleChangeLanguage = async (language: LANGUAGE_TYPE) => {
-        dispatch(changeLanguage(language))
+    const handleChangeLanguage = async (language: ItemValue) => {
+        dispatch(changeLanguage(language as LANGUAGE_TYPE))
     }
     const styles = StyleSheet.create({
         itemContainer: {
@@ -41,26 +37,26 @@ export const Settings = () => {
     return (
         <View style={globalStyles.container}>
             <View style={styles.itemContainer}>
-                <Text>{t('select_theme')}</Text>
-                <Picker
-                    mode={'dialog'}
+                <Text style={globalStyles.span1}>{t('select_theme')}</Text>
+                <CustomSelect
+                    items={[
+                        { label: t('white'), value: 'white' },
+                        { label: t('pink'), value: 'pink' },
+                    ]}
                     selectedValue={theme}
                     onValueChange={handleChangeTheme}
-                >
-                    <Picker.Item label={t('white')} value="white" />
-                    <Picker.Item label={t('pink')} value="pink" />
-                </Picker>
+                />
             </View>
             <View style={styles.itemContainer}>
-                <Text>{t('select_language')}</Text>
-                <Picker
-                    mode={'dialog'}
+                <Text style={globalStyles.span1}>{t('select_language')}</Text>
+                <CustomSelect
+                    items={[
+                        { label: 'Українська', value: 'ua' },
+                        { label: 'English', value: 'en' },
+                    ]}
                     selectedValue={language}
                     onValueChange={handleChangeLanguage}
-                >
-                    <Picker.Item label="Українська" value="ua" />
-                    <Picker.Item label="English" value="en" />
-                </Picker>
+                />
             </View>
         </View>
     )

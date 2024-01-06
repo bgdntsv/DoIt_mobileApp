@@ -5,7 +5,7 @@ import { ResizeMode, Video } from 'expo-av'
 import React, { useRef } from 'react'
 
 export const WorkInProgress = () => {
-    const globalStyles = useGlobalStyles()
+    const { styles: globalStyles } = useGlobalStyles()
     const { t } = useTranslation()
     const videoRef = useRef(null)
     const styles = StyleSheet.create({
@@ -18,9 +18,7 @@ export const WorkInProgress = () => {
     })
     return (
         <View style={globalStyles.container}>
-            <Text style={globalStyles.h1}>
-                {t('we_are_working_on_this_one')}
-            </Text>
+            <Text style={globalStyles.h1}>{t('we_are_working_on_this_one')}</Text>
             <Video
                 ref={videoRef}
                 style={styles.video}

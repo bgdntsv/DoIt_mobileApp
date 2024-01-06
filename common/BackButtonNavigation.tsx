@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text } from 'react-native'
-import { AntDesign } from '@expo/vector-icons'
+import { MaterialIcons } from '@expo/vector-icons'
 import { useSelector } from 'react-redux'
 import { STORE_TYPE } from '../redux/store'
 import { ColorPalette } from '../assets/colors'
@@ -7,13 +7,18 @@ import { useNavigation } from '@react-navigation/native'
 import { useGlobalStyles } from '../hooks/useUI'
 import React from 'react'
 
-export const BackButtonNavigation = ({ title }: { title?: string }) => {
+export const BackButtonNavigation = ({ title, onPress }: { title?: string; onPress?: () => void }) => {
     const { theme } = useSelector(({ ui }: STORE_TYPE) => ui)
     const navigation = useNavigation()
-    const handleNavigate = () => {
+    const handlePress = () => {
+        if (onPress) {
+            onPress()
+        }
         navigation.goBack()
     }
-    const { p } = useGlobalStyles()
+    const {
+        styles: { p },
+    } = useGlobalStyles()
     const styles = StyleSheet.create({
         container: {
             marginTop: 12,
@@ -29,12 +34,8 @@ export const BackButtonNavigation = ({ title }: { title?: string }) => {
         },
     })
     return (
-        <Pressable style={styles.container} onPress={handleNavigate}>
-            <AntDesign
-                name="arrowleft"
-                size={24}
-                color={ColorPalette[theme].mainFont}
-            />
+        <Pressable style={styles.container}>
+            <MaterialIcons name="arrow-back" size={24} color={ColorPalette[theme].mainFont} onPress={handlePress} />
             {title && <Text style={styles.title}>{title}</Text>}
         </Pressable>
     )

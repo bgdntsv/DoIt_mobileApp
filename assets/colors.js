@@ -6,6 +6,7 @@ export const ColorPalette = {
         main: '#FDFDFD',
         mainFont: '#050606',
         secondFont: '#FDFDFD',
+        placeholderFont: 'rgba(5, 6, 6, .5)',
     },
     pink: {
         main: '#ecd0da',
@@ -14,5 +15,6 @@ export const ColorPalette = {
         fourth: '#ea9eba',
         mainFont: '#bd397b',
         secondFont: '#e5e5e5',
+        placeholderFont: 'rgba(189, 57, 123, .5)',
     },
 }

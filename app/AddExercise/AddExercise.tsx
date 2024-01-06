@@ -1,22 +1,10 @@
-import {
-    Alert,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
-} from 'react-native'
+import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { ColorPalette } from '../../assets/colors'
 import { useSelector } from 'react-redux'
 import { STORE_TYPE, useAppDispatch } from '../../redux/store'
 import Checkbox from 'expo-checkbox'
-import {
-    addExercise,
-    EXERCISE,
-    MEDIA_LINK_TYPE,
-} from '../../redux/slices/exerciseSlice'
+import { addExercise, EXERCISE, MEDIA_LINK_TYPE } from '../../redux/slices/exerciseSlice'
 import { CustomButton } from '../../common/Button'
 import { MuscleTypeModal } from './SelectTypeModal'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -26,11 +14,13 @@ import uuid from 'react-native-uuid'
 import { showToast } from '../../helpers/toast'
 import * as ImagePicker from 'expo-image-picker'
 import { useIsFocused } from '@react-navigation/native'
-import { BorderContainer } from './BorderContainer'
+import { BorderInputContainer } from '../../common/BorderInputContainer'
 import { ShowMediaLink } from '../../common/media/ShowMediaLink'
 import * as Clipboard from 'expo-clipboard'
 import * as Linking from 'expo-linking'
 import { CustomSelect } from '../../common/CustomSelect'
+import { ItemValue } from '@react-native-picker/picker/typings/Picker'
+import { useGlobalStyles } from '../../hooks/useUI'
 
 const AddExercise = () => {
     const { t } = useTranslation()
@@ -41,14 +31,14 @@ const AddExercise = () => {
     const [isSelectedGym, setIsSelectedGym] = useState(false)
     const [isSelectedOutdoors, setIsSelectedOutdoors] = useState(false)
     const [isSelectedHome, setIsSelectedHome] = useState(false)
-    const [weight, setWeight] = useState('0')
+    const [weight, setWeight] = useState('')
     const [metric, setMetric] = useState<'kg' | 'lb'>('kg')
     const [muscleArea, setMuscleArea] = useState<Array<MUSCLE_AREA_TYPE>>([])
     const { theme } = useSelector(({ ui }: STORE_TYPE) => ui)
     const descriptionRef = useRef<TextInput>(null)
-    const weightRef = useRef<TextInput>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [mediaURI, setMediaURI] = useState<MEDIA_LINK_TYPE>([])
+    const { styles: globalStyles, inputProps } = useGlobalStyles()
 
     const isFocused = useIsFocused()
 
@@ -77,7 +67,7 @@ const AddExercise = () => {
     const handleOutdoorsClick = () => {
         setIsSelectedOutdoors((prev) => !prev)
     }
-    const handleChangeMetric = (metric: string) => {
+    const handleChangeMetric = (metric: ItemValue) => {
         setMetric(metric as 'kg' | 'lb')
     }
 
@@ -133,9 +123,7 @@ const AddExercise = () => {
     const changeMedia = () => {
         if (mediaURI[0] && typeof mediaURI[0] !== 'string') {
             Alert.alert(
-                `Do you want to change selected ${
-                    mediaURI[0].type === 'image' ? 'image' : 'video'
-                }?`,
+                `Do you want to change selected ${mediaURI[0].type === 'image' ? 'image' : 'video'}?`,
                 undefined,
                 [
                     { text: 'Yes', onPress: getMediaURI },
@@ -188,10 +176,6 @@ const AddExercise = () => {
             height: '100%',
             position: 'relative',
         },
-        input: {
-            fontSize: 16,
-            color: ColorPalette[theme].second,
-        },
         content: {},
         submit: {
             marginTop: 10,
@@ -224,7 +208,7 @@ const AddExercise = () => {
             paddingVertical: 8,
         },
         metric: {
-            flexGrow: 7,
+            flexGrow: 8,
         },
         pickerItem: {
             backgroundColor: ColorPalette[theme].main,
@@ -261,7 +245,7 @@ const AddExercise = () => {
         <ScrollView style={styles.container}>
             {/*__________Show added media__________*/}
             {mediaURI[0] && (
-                <BorderContainer title={t('media')}>
+                <BorderInputContainer title={t('media')}>
                     <View style={styles.mediaContainer}>
                         <ShowMediaLink link={mediaURI} />
                         <MaterialIcons
@@ -271,17 +255,19 @@ const AddExercise = () => {
                             onPress={changeMedia}
                         />
                     </View>
-                </BorderContainer>
+                </BorderInputContainer>
             )}
             <View style={styles.content}>
                 {/*__________Name__________*/}
-                <BorderContainer title={t('add_name')} isRequiredField>
+                <BorderInputContainer title={t('add_name')} isRequiredField>
                     <TextInput
-                        multiline
+                        {...inputProps}
+                        enterKeyHint={'next'}
                         value={name}
                         onChangeText={setName}
-                        style={styles.input}
+                        id={'name'}
                         onSubmitEditing={() => {
+                            console.log(descriptionRef.current)
                             if (descriptionRef.current) {
                                 descriptionRef.current.focus()
                             }
@@ -289,31 +275,23 @@ const AddExercise = () => {
                         blurOnSubmit={false}
                         returnKeyType={'next'}
                     />
-                </BorderContainer>
+                </BorderInputContainer>
                 {/*__________Description__________*/}
-                <BorderContainer title={t('add_description')}>
+                <BorderInputContainer title={t('add_description')}>
                     <TextInput
+                        {...inputProps}
                         multiline
+                        numberOfLines={3}
                         ref={descriptionRef}
                         value={description}
                         onChangeText={setDescription}
-                        style={styles.input}
-                        onSubmitEditing={() => {
-                            if (weightRef.current) {
-                                weightRef.current.focus()
-                            }
-                        }}
                         blurOnSubmit={false}
-                        returnKeyType={'next'}
                     />
-                </BorderContainer>
+                </BorderInputContainer>
 
                 {/*__________Place__________*/}
-                <BorderContainer title={t('select_place')} isRequiredField>
-                    <Pressable
-                        onPress={handleGymClick}
-                        style={styles.checkboxContainer}
-                    >
+                <BorderInputContainer title={t('select_place')} isRequiredField>
+                    <Pressable onPress={handleGymClick} style={styles.checkboxContainer}>
                         <Checkbox
                             value={isSelectedGym}
                             color={ColorPalette[theme].second}
@@ -322,10 +300,7 @@ const AddExercise = () => {
                         />
                         <Text style={styles.checkboxSpan}>{t('gym')}</Text>
                     </Pressable>
-                    <Pressable
-                        onPress={handleHomeClick}
-                        style={styles.checkboxContainer}
-                    >
+                    <Pressable onPress={handleHomeClick} style={styles.checkboxContainer}>
                         <Checkbox
                             value={isSelectedHome}
                             color={ColorPalette[theme].second}
@@ -334,10 +309,7 @@ const AddExercise = () => {
                         />
                         <Text style={styles.checkboxSpan}>{t('home')}</Text>
                     </Pressable>
-                    <Pressable
-                        onPress={handleOutdoorsClick}
-                        style={styles.checkboxContainer}
-                    >
+                    <Pressable onPress={handleOutdoorsClick} style={styles.checkboxContainer}>
                         <Checkbox
                             value={isSelectedOutdoors}
                             color={ColorPalette[theme].second}
@@ -346,47 +318,28 @@ const AddExercise = () => {
                         />
                         <Text style={styles.checkboxSpan}>{t('outdoors')}</Text>
                     </Pressable>
-                </BorderContainer>
+                </BorderInputContainer>
 
                 {/*__________Weight__________*/}
                 <View style={styles.splitBlock}>
                     <View style={styles.weight}>
-                        <BorderContainer title={t('weight')}>
+                        <BorderInputContainer title={t('weight')}>
                             <TextInput
-                                ref={weightRef}
+                                {...inputProps}
                                 value={weight}
                                 inputMode={'numeric'}
                                 placeholder={'0'}
                                 onChangeText={setWeight}
-                                style={{
-                                    ...styles.input,
-                                    ...styles.weightInput,
-                                }}
+                                style={styles.weightInput}
                                 keyboardType={'numeric'}
                                 maxLength={8}
                             />
-                        </BorderContainer>
+                        </BorderInputContainer>
                     </View>
 
                     <View style={styles.metric}>
-                        <BorderContainer title={t('metric')}>
+                        <BorderInputContainer title={t('metric')}>
                             <CustomSelect
-                                selectedValue={metric}
-                                dropdownCloseIcon={
-                                    <MaterialIcons
-                                        name="arrow-drop-down"
-                                        size={24}
-                                        color={ColorPalette[theme].mainFont}
-                                    />
-                                }
-                                dropdownOpenIcon={
-                                    <MaterialIcons
-                                        name="arrow-drop-up"
-                                        size={24}
-                                        color={ColorPalette[theme].mainFont}
-                                    />
-                                }
-                                variant={'unstyled'}
                                 items={[
                                     { label: t('kg'), value: 'kg' },
                                     { label: t('lb'), value: 'lb' },
@@ -394,69 +347,47 @@ const AddExercise = () => {
                                 placeholder={t('metric')}
                                 onValueChange={handleChangeMetric}
                             />
-                        </BorderContainer>
+                        </BorderInputContainer>
                     </View>
                 </View>
 
                 {/*__________Add muscle area__________*/}
-                <Pressable
-                    onPress={() => setIsModalOpen(true)}
-                    style={styles.muscleAreaContainer}
-                >
+                <Pressable onPress={() => setIsModalOpen(true)} style={styles.muscleAreaContainer}>
                     <View style={styles.muscleAreaInput}>
-                        <BorderContainer
+                        <BorderInputContainer
                             title={t('muscle_area')}
                             isRequiredField
+                            onPress={() => setIsModalOpen(true)}
                         >
-                            <TextInput
-                                value={muscleAreaArrayShow()}
-                                editable={false}
-                                style={styles.input}
-                                multiline onPressOut={() => setIsModalOpen(true)}
-                            />
-                        </BorderContainer>
+                            <TextInput {...inputProps} value={muscleAreaArrayShow()} editable={false} multiline />
+                        </BorderInputContainer>
                     </View>
                     <View style={styles.plusIcon}>
-                        <MaterialIcons
-                            name="add"
-                            size={38}
-                            color={ColorPalette[theme].mainFont}
-                        />
+                        <MaterialIcons name="add" size={38} color={ColorPalette[theme].mainFont} />
                     </View>
                 </Pressable>
 
                 {/*__________Add media__________*/}
                 {!mediaURI[0] && (
-                    <BorderContainer title={t('add_media')}>
+                    <BorderInputContainer title={t('add_media')}>
                         <CustomButton
                             title={'add media'}
                             onPress={getMediaURI}
-                            icon={
-                                <MaterialIcons
-                                    name="image"
-                                    size={24}
-                                    color={ColorPalette[theme].secondFont}
-                                />
-                            }
+                            icon={<MaterialIcons name="image" size={24} color={ColorPalette[theme].secondFont} />}
                         />
-                        <BorderContainer title={'Add media link'}>
+                        <BorderInputContainer title={'Add media link'}>
                             <View style={styles.mediaLink}>
                                 <TextInput
                                     placeholder={'https://example.com/123'}
                                     editable={false}
-                                    value={
-                                        mediaURI[0] &&
-                                        typeof mediaURI[0] === 'string'
-                                            ? mediaURI[0]
-                                            : undefined
-                                    }
+                                    value={mediaURI[0] && typeof mediaURI[0] === 'string' ? mediaURI[0] : undefined}
                                 />
                                 <Pressable onPress={mediaUrlPastValue}>
-                                    <Text>Paste</Text>
+                                    <Text style={globalStyles.span1}>Paste</Text>
                                 </Pressable>
                             </View>
-                        </BorderContainer>
-                    </BorderContainer>
+                        </BorderInputContainer>
+                    </BorderInputContainer>
                 )}
             </View>
 
@@ -466,13 +397,7 @@ const AddExercise = () => {
                     title={t('add_exercise')}
                     disabled={!isValidForm()}
                     onPress={handleSubmit}
-                    icon={
-                        <MaterialIcons
-                            name="save"
-                            size={24}
-                            color={ColorPalette[theme].secondFont}
-                        />
-                    }
+                    icon={<MaterialIcons name="save" size={24} color={ColorPalette[theme].secondFont} />}
                 />
             </View>
 

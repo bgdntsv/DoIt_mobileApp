@@ -1,18 +1,11 @@
-import {
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableHighlight,
-    View,
-} from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 import { ColorPalette } from '../../assets/colors'
 import { useSelector } from 'react-redux'
 import { STORE_TYPE } from '../../redux/store'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import React, { useEffect } from 'react'
 import { useGlobalStyles } from '../../hooks/useUI'
-import robotImage from '../../assets/images/robot_sportsman.png'
+import robotImage from '../../assets/images/robot_sportsman.jpg'
 import sportsmanImage from '../../assets/images/sportsman_writing.png'
 import selectTrainingImage from '../../assets/images/select_training.jpg'
 import { useTranslation } from 'react-i18next'
@@ -21,11 +14,10 @@ import { useIsFocused, useNavigation } from '@react-navigation/native'
 
 export const ExercisesMain = () => {
     const { theme } = useSelector(({ ui }: STORE_TYPE) => ui)
-    const globalStyles = useGlobalStyles()
+    const { styles: globalStyles } = useGlobalStyles()
     const { t } = useTranslation()
 
-    const navigation =
-        useNavigation<NativeStackNavigationProp<HOME_STACK_ROUTE_PROPS>>()
+    const navigation = useNavigation<NativeStackNavigationProp<HOME_STACK_ROUTE_PROPS>>()
     const isFocused = useIsFocused()
 
     useEffect(() => {
@@ -40,7 +32,7 @@ export const ExercisesMain = () => {
 
     const styles = StyleSheet.create({
         containerBlock: {
-            height: 200,
+            height: 300,
             borderRadius: 5,
             overflow: 'hidden',
             marginVertical: 8,
@@ -56,9 +48,8 @@ export const ExercisesMain = () => {
             color: ColorPalette[theme].secondFont,
         },
         image: {
-            height: '100%',
             width: '100%',
-            flex: 4,
+            flex: 1,
         },
     })
     return (
@@ -69,10 +60,7 @@ export const ExercisesMain = () => {
             >
                 <View style={styles.containerBlock}>
                     <View style={styles.containerContent}>
-                        <Image
-                            source={selectTrainingImage}
-                            style={styles.image}
-                        />
+                        <Image source={selectTrainingImage} style={styles.image} />
                         <Text
                             style={{
                                 ...globalStyles.p,

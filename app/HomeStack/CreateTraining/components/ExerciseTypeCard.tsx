@@ -1,53 +1,34 @@
-import {
-    Image,
-    ImageSourcePropType,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
-} from 'react-native'
+import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { STORE_TYPE, useAppDispatch } from '../../../redux/store'
-import { UI_STATE_TYPE } from '../../../redux/slices/uiSlice'
-import { ColorPalette } from '../../../assets/colors'
-import { useGlobalStyles } from '../../../hooks/useUI'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { AntDesign, EvilIcons } from '@expo/vector-icons'
 import { useTranslation } from 'react-i18next'
-import {
-    EXERCISE_TYPE,
-    toggleSelectedExercise,
-} from '../../../redux/slices/exerciseSlice'
-import { HOME_STACK_ROUTE_PROPS } from '../ExerciseNavigation'
-import { useNavigation } from '@react-navigation/native'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import { EXERCISE_TYPE } from '../../../../redux/slices/exerciseSlice'
+import { STORE_TYPE } from '../../../../redux/store'
+import { UI_STATE_TYPE } from '../../../../redux/slices/uiSlice'
+import { useGlobalStyles } from '../../../../hooks/useUI'
+import { HOME_STACK_ROUTE_PROPS } from '../../ExerciseNavigation'
+import { ColorPalette } from '../../../../assets/colors'
 
 type PROP_TYPES = {
     title: EXERCISE_TYPE
-    select?: boolean
     isSelected?: boolean
     img?: ImageSourcePropType | string
 }
-export const ExerciseTypeBlock = ({
-    select = false,
-    isSelected,
-    title,
-    img,
-}: PROP_TYPES) => {
+export const ExerciseTypeCard = ({ isSelected, title, img }: PROP_TYPES) => {
     const { theme } = useSelector<STORE_TYPE, UI_STATE_TYPE>(({ ui }) => ui)
-    const globalStyles = useGlobalStyles()
-    const dispatch = useAppDispatch()
+    const { styles: globalStyles } = useGlobalStyles()
     const { t } = useTranslation()
-    const navigation =
-        useNavigation<NativeStackNavigationProp<HOME_STACK_ROUTE_PROPS>>()
+    const navigation = useNavigation<NativeStackNavigationProp<HOME_STACK_ROUTE_PROPS>>()
+    const route = useRoute<RouteProp<HOME_STACK_ROUTE_PROPS, 'Create-training'>>()
 
     const goToExercises = () => {
-        navigation.navigate('Exercises-type', { exerciseType: title })
-    }
-    const clickCheckBox = () => {
-        if (select && title) {
-            dispatch(toggleSelectedExercise({ type: title }))
-        }
+        navigation.navigate('Exercises-type', {
+            exerciseType: title,
+            comesFromSelectTraining: route.params?.comesFromSelectTraining,
+        })
     }
 
     const styles = StyleSheet.create({
@@ -97,8 +78,8 @@ export const ExerciseTypeBlock = ({
 
     return (
         <View style={styles.container}>
-            <Pressable onPress={clickCheckBox} style={styles.image}>
-                {select && isSelected && (
+            <Pressable onPress={goToExercises} style={styles.image}>
+                {isSelected && (
                     <AntDesign
                         style={styles.icon}
                         name="checkcircle"
@@ -110,25 +91,13 @@ export const ExerciseTypeBlock = ({
                     <Image style={styles.img} source={img} />
                 ) : (
                     <View style={styles.withoutImg}>
-                        <EvilIcons
-                            name="image"
-                            size={52}
-                            color={ColorPalette[theme].secondFont}
-                        />
+                        <EvilIcons name="image" size={52} color={ColorPalette[theme].secondFont} />
                     </View>
                 )}
             </Pressable>
 
             <View style={styles.bottom}>
-                <Text style={{ ...globalStyles.p, ...styles.containerTitle }}>
-                    {t(title)}
-                </Text>
-                <AntDesign
-                    name="arrowright"
-                    style={styles.containerTitle}
-                    size={26}
-                    onPress={goToExercises}
-                />
+                <Text style={{ ...globalStyles.p, ...styles.containerTitle }}>{t(title)}</Text>
             </View>
         </View>
     )

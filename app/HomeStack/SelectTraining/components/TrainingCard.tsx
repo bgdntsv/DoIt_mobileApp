@@ -1,22 +1,29 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { TRAINING } from '../../redux/slices/trainingSlice'
-import { useGlobalStyles } from '../../hooks/useUI'
+import { TRAINING } from '../../../../redux/slices/trainingSlice'
+import { useGlobalStyles } from '../../../../hooks/useUI'
 import { useSelector } from 'react-redux'
-import { STORE_TYPE } from '../../redux/store'
-import { ColorPalette } from '../../assets/colors'
+import { STORE_TYPE } from '../../../../redux/store'
+import { ColorPalette } from '../../../../assets/colors'
 import { MaterialIcons } from '@expo/vector-icons'
-import { EditTrainingModal } from './EditTrainingModal'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { HOME_STACK_ROUTE_PROPS } from '../../ExerciseNavigation'
 
 type PROP_TYPE = {
     training: TRAINING
+    setTrainingToEdit: React.Dispatch<React.SetStateAction<TRAINING | null>>
 }
-export const TrainingCard = ({ training }: PROP_TYPE) => {
-    const globalStyles = useGlobalStyles()
+export const TrainingCard = ({ training, setTrainingToEdit }: PROP_TYPE) => {
+    const { styles: globalStyles } = useGlobalStyles()
     const { theme } = useSelector(({ ui }: STORE_TYPE) => ui)
-    const [isModalOpen, setIsModalOpen] = useState(false)
+    const navigation = useNavigation<NativeStackNavigationProp<HOME_STACK_ROUTE_PROPS>>()
     const handleEditTraining = () => {
-        setIsModalOpen(true)
+        setTrainingToEdit(training)
+    }
+
+    const startTraining = () => {
+        navigation.navigate('Training', { trainingId: training.id })
     }
 
     const styles = StyleSheet.create({
@@ -27,7 +34,11 @@ export const TrainingCard = ({ training }: PROP_TYPE) => {
             padding: 10,
             marginVertical: 8,
         },
-        whiteFont: {
+        title: {
+            ...globalStyles.p,
+            display: 'flex',
+            alignSelf: 'stretch',
+            textAlign: 'center',
             color: ColorPalette[theme].secondFont,
         },
         header: {
@@ -39,7 +50,7 @@ export const TrainingCard = ({ training }: PROP_TYPE) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={{ ...globalStyles.p, ...styles.whiteFont }}>
+                <Text style={styles.title} onPress={startTraining}>
                     {training.name}
                 </Text>
                 <MaterialIcons
@@ -49,11 +60,6 @@ export const TrainingCard = ({ training }: PROP_TYPE) => {
                     onPress={handleEditTraining}
                 />
             </View>
-            <EditTrainingModal
-                isOpen={isModalOpen}
-                training={training}
-                setIsOpen={setIsModalOpen}
-            />
         </View>
     )
 }

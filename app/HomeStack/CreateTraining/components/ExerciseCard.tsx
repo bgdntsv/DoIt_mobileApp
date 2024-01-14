@@ -36,7 +36,7 @@ export const ExerciseCard = ({ exercise, type, select = false }: propTypes) => {
 
     const selectExercise = () => {
         if (select && type) {
-            dispatch(toggleSelectedExercise({ type, exercise }))
+            dispatch(toggleSelectedExercise({ exercise }))
         }
     }
 

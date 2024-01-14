@@ -7,7 +7,7 @@ import { STORE_TYPE, useAppDispatch } from '../../../redux/store'
 import { useTranslation } from 'react-i18next'
 import { ColorPalette } from '../../../assets/colors'
 import { MaterialIcons } from '@expo/vector-icons'
-import { clearSelectedExercises, EXERCISE } from '../../../redux/slices/exerciseSlice'
+import { clearSelectedExercises, EXERCISE, toggleSelectedExercise } from '../../../redux/slices/exerciseSlice'
 import { addTraining, TRAINING } from '../../../redux/slices/trainingSlice'
 import uuid from 'react-native-uuid'
 import { useGetDateString } from '../../../helpers/dateHelper'
@@ -84,13 +84,16 @@ export const ConfirmTraining = () => {
     }
 
     const renderItem = ({ item, drag, isActive }: RenderItemParams<EXERCISE>) => {
+        const removeExercise = () => {
+            dispatch(toggleSelectedExercise({ exercise: item }))
+        }
         return (
             <TouchableOpacity onPressIn={drag} disabled={isActive} style={styles.item}>
                 <View style={styles.itemTitle}>
                     <Text style={styles.itemName}>{item.name}</Text>
                     <MaterialIcons name="info" style={styles.itemInfoIcon} onPress={() => onInfoIconPress(item)} />
                 </View>
-                <MaterialIcons name="menu" style={styles.itemDragIcon} />
+                <MaterialIcons name="close" style={styles.itemCloseIcon} onPress={removeExercise} />
             </TouchableOpacity>
         )
     }
@@ -129,7 +132,7 @@ export const ConfirmTraining = () => {
             marginLeft: 8,
             fontSize: 24,
         },
-        itemDragIcon: {
+        itemCloseIcon: {
             color: ColorPalette[theme].secondFont,
             maxWidth: '20%',
             fontSize: 26,
@@ -145,7 +148,7 @@ export const ConfirmTraining = () => {
                 </BorderInputContainer>
 
                 {/*Count of exercises repeats*/}
-                <BorderInputContainer title={t('count_repeats_exercises')}>
+                <BorderInputContainer title={t('count_of_repeats')}>
                     <TextInput
                         {...inputProps}
                         keyboardType={'numeric'}

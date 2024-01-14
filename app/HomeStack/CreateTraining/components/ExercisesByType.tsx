@@ -15,6 +15,7 @@ import { BackButtonNavigation } from '../../../../common/BackButtonNavigation'
 import { Tooltip } from '../../../../common/Tooltip'
 import { ExerciseCard } from './ExerciseCard'
 import { CustomModal } from '../../../../common/CustomModal'
+import { BorderInputContainer } from '../../../../common/BorderInputContainer'
 
 export const ExerciseType = () => {
     const exercisesState = useSelector<STORE_TYPE, Array<EXERCISE>>(({ exercise }) => exercise.exercises)
@@ -56,8 +57,7 @@ export const ExerciseType = () => {
     }, [])
 
     const getContent = useCallback(() => {
-        const exercisesToShow = exercises
-            .filter((e) => e.muscleArea.find((m) => m.includes(exerciseType, 0)))
+        const exercisesToShow = exercisesByType
             .filter((e) => e.name.toLowerCase().includes(searchString.toLowerCase()))
             .sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0))
             .map((e) => {
@@ -86,7 +86,7 @@ export const ExerciseType = () => {
             const randomId = Math.round(Math.random() * exercisesIds.length - 1)
             const exercise = exercisesByType.find((e) => e.id === exercisesIds[randomId])
             if (exercise) {
-                dispatch(toggleSelectedExercise({ exercise: exercise, type: exerciseType }))
+                dispatch(toggleSelectedExercise({ exercise: exercise }))
             }
             exercisesIds = exercisesIds.filter((e) => e !== exercisesIds[randomId])
             if (!exercisesIds.length) {
@@ -243,15 +243,17 @@ export const ExerciseType = () => {
             )}
             {/*Generate training modal*/}
             <CustomModal visible={isGenerateModalOpen} onRequestClose={closeGenerateModal}>
-                <Text style={globalStyles.p}>Enter count of exercises to generate for this muscle type</Text>
-                <TextInput
-                    {...inputProps}
-                    keyboardType={'numeric'}
-                    value={generateExercisesCount}
-                    onChangeText={(t) => setGenerateExercisesCount(t)}
-                    style={styles.generateExerciseInput}
-                />
-                <CustomButton title={'Generate'} onPress={generateExercises} />
+                <Text style={globalStyles.p}>{t('generate_exercises_title')}</Text>
+                <BorderInputContainer title={t('count_of_exercises')}>
+                    <TextInput
+                        {...inputProps}
+                        keyboardType={'numeric'}
+                        value={generateExercisesCount}
+                        onChangeText={(t) => setGenerateExercisesCount(t)}
+                    />
+                </BorderInputContainer>
+
+                <CustomButton title={t('generate')} onPress={generateExercises} />
             </CustomModal>
         </>
     )

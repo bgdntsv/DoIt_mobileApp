@@ -51,7 +51,7 @@ export const MuscleTypeModal = ({ isOpen, setIsOpen, styles, setMuscleArea, musc
         hands: ['biceps', 'triceps', 'forearm'],
         shoulders: ['shoulders_base', 'shoulders_front', 'shoulders_back'],
         back: ['back_base', 'back_up', 'back_down'],
-        legs: ['leg_base', 'leg_front', 'leg_back', 'leg_calf', 'leg_ass'],
+        legs: ['legs_base', 'legs_front', 'legs_back', 'legs_calf', 'legs_ass'],
     }
 
     const getContent = () => {
@@ -60,7 +60,7 @@ export const MuscleTypeModal = ({ isOpen, setIsOpen, styles, setMuscleArea, musc
         return values.map((e, i) => (
             <View key={i}>
                 <Text style={styles.span}>{t(keys[i])}</Text>
-                <View style={styles.checkboxes}>
+                <View>
                     {e.map((type) => {
                         return (
                             <Pressable

@@ -21,6 +21,8 @@ export type EXERCISE = {
     home: boolean
     inventory?: Array<INVENTORY>
     id: string
+    type: EXERCISE_TYPE
+    isOwn?: boolean
 }
 
 export type EXERCISE_FILE = {
@@ -155,57 +157,8 @@ const setExercisesByTypes = (exercises: Array<EXERCISE>): EXERCISES_BY_TYPES => 
         legs: [],
         shoulders: [],
     }
-    // Back area
-    exercisesByType.back = exercises.filter((e) => {
-        //back_base | back_up | back_down
-        return (
-            e.muscleArea.includes('back_base') || e.muscleArea.includes('back_up') || e.muscleArea.includes('back_down')
-        )
-    })
-    // Chest area
-    exercisesByType.chest = exercises.filter((e) => {
-        //chest_base | chest_up | chest_down | chest_side
-        return (
-            e.muscleArea.includes('chest_base') ||
-            e.muscleArea.includes('chest_up') ||
-            e.muscleArea.includes('chest_side') ||
-            e.muscleArea.includes('chest_down')
-        )
-    })
-    // Hands area
-    exercisesByType.hands = exercises.filter((e) => {
-        //biceps | triceps | forearm
-        return e.muscleArea.includes('biceps') || e.muscleArea.includes('triceps') || e.muscleArea.includes('forearm')
-    })
-    // Legs area
-    exercisesByType.legs = exercises.filter((e) => {
-        //leg_base | leg_front | leg_back | leg_calf | leg_ass
-        return (
-            e.muscleArea.includes('leg_base') ||
-            e.muscleArea.includes('leg_front') ||
-            e.muscleArea.includes('leg_calf') ||
-            e.muscleArea.includes('leg_ass') ||
-            e.muscleArea.includes('leg_back')
-        )
-    })
-    // Press area
-    exercisesByType.press = exercises.filter((e) => {
-        //press_base | press_down | press_up | press_side
-        return (
-            e.muscleArea.includes('press_base') ||
-            e.muscleArea.includes('press_down') ||
-            e.muscleArea.includes('press_up') ||
-            e.muscleArea.includes('press_side')
-        )
-    })
-    // Shoulders area
-    exercisesByType.shoulders = exercises.filter((e) => {
-        //shoulders_base | shoulders_front | shoulders_back
-        return (
-            e.muscleArea.includes('shoulders_base') ||
-            e.muscleArea.includes('shoulders_front') ||
-            e.muscleArea.includes('shoulders_back')
-        )
+    exercises.forEach((e) => {
+        exercisesByType[e.type].push(e)
     })
     return exercisesByType
 }
@@ -252,53 +205,39 @@ const exerciseSlice = createSlice({
         toggleSelectedExercise: (
             state,
             {
-                payload: { type, exercise },
+                payload: { exercise },
             }: PayloadAction<{
-                type: EXERCISE_TYPE
-                exercise?: EXERCISE
+                exercise: EXERCISE
             }>
         ) => {
-            if (!exercise) {
-                // toggle exercise type
-                // remove
-                if (!!state.selectedExercisesByTypes[type]) {
-                    delete state.selectedExercisesByTypes[type]
-                    state.selectedExercisesByTypes = { ...state.selectedExercisesByTypes }
-                } else {
-                    //add
+            // toggle exercise
+            if (state.selectedExercisesByTypes[exercise.type] === undefined) {
+                // add first exercise in current type
+                state.selectedExercisesByTypes[exercise.type] = [exercise]
+            } else {
+                // toggle exercise in type
+                if (!!state.selectedExercisesByTypes[exercise.type]?.find((e) => e.id === exercise.id)) {
+                    // remove exercise from type
                     state.selectedExercisesByTypes = {
                         ...state.selectedExercisesByTypes,
-                        [type]: [],
+                        [exercise.type]: state.selectedExercisesByTypes[exercise.type]?.filter(
+                            (e) => e.id !== exercise.id
+                        ),
+                    }
+                } else {
+                    // add exercise to type
+                    state.selectedExercisesByTypes = {
+                        ...state.selectedExercisesByTypes,
+                        [exercise.type]: [...(<[]>state.selectedExercisesByTypes[exercise.type]), exercise],
                     }
                 }
+            }
+            if (state.allSelectedExercises.find((e) => e.id === exercise.id)) {
+                // remove exercise
+                state.allSelectedExercises = state.allSelectedExercises.filter((e) => e.id !== exercise.id)
             } else {
-                // toggle exercise
-                if (state.selectedExercisesByTypes[type] === undefined) {
-                    // add first exercise in current type
-                    state.selectedExercisesByTypes[type] = [exercise]
-                } else {
-                    // toggle exercise in type
-                    if (!!state.selectedExercisesByTypes[type]?.find((e) => e.id === exercise.id)) {
-                        // remove exercise from type
-                        state.selectedExercisesByTypes = {
-                            ...state.selectedExercisesByTypes,
-                            [type]: state.selectedExercisesByTypes[type]?.filter((e) => e.id !== exercise.id),
-                        }
-                    } else {
-                        // add exercise to type
-                        state.selectedExercisesByTypes = {
-                            ...state.selectedExercisesByTypes,
-                            [type]: [...(<[]>state.selectedExercisesByTypes[type]), exercise],
-                        }
-                    }
-                }
-                if (state.allSelectedExercises.find((e) => e.id === exercise.id)) {
-                    // remove exercise
-                    state.allSelectedExercises = state.allSelectedExercises.filter((e) => e.id !== exercise.id)
-                } else {
-                    // add exercise
-                    state.allSelectedExercises = [...state.allSelectedExercises, exercise]
-                }
+                // add exercise
+                state.allSelectedExercises = [...state.allSelectedExercises, exercise]
             }
         },
         clearSelectedExercises: (state) => {

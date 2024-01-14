@@ -1,10 +1,12 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { EXERCISE } from '../redux/slices/exerciseSlice'
+import { deleteExercise, EXERCISE } from '../redux/slices/exerciseSlice'
 import { useGlobalStyles } from '../hooks/useUI'
 import { useTranslation } from 'react-i18next'
 import { ShowMediaLink } from './media/ShowMediaLink'
 import { CustomModal } from './CustomModal'
+import { useAppDispatch } from '../redux/store'
+import { CustomButton } from './Button'
 
 type PROP_TYPES = {
     isOpen: boolean
@@ -14,6 +16,7 @@ type PROP_TYPES = {
 export const ExerciseDetailsModal = ({ isOpen, setIsOpen, exercise }: PROP_TYPES) => {
     const { styles: globalStyles } = useGlobalStyles()
     const { t } = useTranslation()
+    const dispatch = useAppDispatch()
 
     const closeModal = () => {
         setIsOpen(false)
@@ -30,6 +33,9 @@ export const ExerciseDetailsModal = ({ isOpen, setIsOpen, exercise }: PROP_TYPES
             return <></>
         }
         return <ShowMediaLink link={exercise.media} />
+    }
+    const handleDeleteExercise = () => {
+        dispatch(deleteExercise(exercise.id))
     }
 
     const styles = StyleSheet.create({
@@ -53,6 +59,10 @@ export const ExerciseDetailsModal = ({ isOpen, setIsOpen, exercise }: PROP_TYPES
                         {t('muscle_area')}: {muscleAreaArrayShow()}
                     </Text>
                 </View>
+                <CustomButton
+                    title={exercise.isOwn ? t('delete') : t('hide_this_exercise')}
+                    onPress={handleDeleteExercise}
+                />
             </CustomModal>
         )
     )

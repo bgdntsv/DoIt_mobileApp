@@ -11,7 +11,7 @@ export type PRESS_AREA_TYPE = 'press_base' | 'press_down' | 'press_up' | 'press_
 export type HANDS_AREA_TYPE = 'biceps' | 'triceps' | 'forearm'
 export type SHOULDERS_AREA_TYPE = 'shoulders_base' | 'shoulders_front' | 'shoulders_back'
 export type BACK_AREA_TYPE = 'back_base' | 'back_up' | 'back_down'
-export type LEGS_AREA_TYPE = 'leg_base' | 'leg_front' | 'leg_back' | 'leg_calf' | 'leg_ass'
+export type LEGS_AREA_TYPE = 'legs_base' | 'legs_front' | 'legs_back' | 'legs_calf' | 'legs_ass'
 
 export type INVENTORY =
     | 'bar'

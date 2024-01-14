@@ -1,10 +1,10 @@
 import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { ColorPalette } from '../../assets/colors'
 import { useSelector } from 'react-redux'
 import { STORE_TYPE, useAppDispatch } from '../../redux/store'
 import Checkbox from 'expo-checkbox'
-import { addExercise, EXERCISE, MEDIA_LINK_TYPE } from '../../redux/slices/exerciseSlice'
+import { addExercise, EXERCISE, EXERCISE_TYPE, MEDIA_LINK_TYPE } from '../../redux/slices/exerciseSlice'
 import { CustomButton } from '../../common/Button'
 import { MuscleTypeModal } from './SelectTypeModal'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -21,6 +21,7 @@ import * as Linking from 'expo-linking'
 import { CustomSelect } from '../../common/CustomSelect'
 import { ItemValue } from '@react-native-picker/picker/typings/Picker'
 import { useGlobalStyles } from '../../hooks/useUI'
+import { exerciseTypes } from '../../helpers/constants'
 
 const AddExercise = () => {
     const { t } = useTranslation()
@@ -39,7 +40,7 @@ const AddExercise = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [mediaURI, setMediaURI] = useState<MEDIA_LINK_TYPE>([])
     const { styles: globalStyles, inputProps } = useGlobalStyles()
-
+    const [exerciseType, setExerciseType] = useState<EXERCISE_TYPE | null>(null)
     const isFocused = useIsFocused()
 
     useEffect(() => {
@@ -52,7 +53,7 @@ const AddExercise = () => {
             return false
         } else if (!isSelectedGym && !isSelectedOutdoors && !isSelectedHome) {
             return false
-        } else if (muscleArea.length === 0) {
+        } else if (!exerciseType) {
             return false
         }
         return true
@@ -71,7 +72,17 @@ const AddExercise = () => {
         setMetric(metric as 'kg' | 'lb')
     }
 
+    const handleChangeExerciseType = (type: ItemValue) => {
+        if (type === '0') {
+            return
+        }
+        setExerciseType(type as EXERCISE_TYPE)
+    }
+
     const handleSubmit = () => {
+        if (!exerciseType) {
+            return
+        }
         const id = uuid.v4().toString()
         for (const exercise1 of exercises) {
             // is already created exercise with the same name
@@ -83,6 +94,9 @@ const AddExercise = () => {
                 return
             }
         }
+        if (muscleArea.length === 0 && exerciseType) {
+            muscleArea.push((exerciseType + '_base') as MUSCLE_AREA_TYPE)
+        }
         const exercise: EXERCISE = {
             name,
             description,
@@ -93,6 +107,8 @@ const AddExercise = () => {
             weight,
             metric,
             id,
+            isOwn: true,
+            type: exerciseType,
         }
         if (mediaURI.length > 0) {
             exercise.media = mediaURI
@@ -100,12 +116,12 @@ const AddExercise = () => {
         dispatch(addExercise(exercise))
         clearState()
     }
-    const muscleAreaArrayShow = () => {
+    const muscleAreaArrayShow = useMemo(() => {
         const toShow = muscleArea.map((e) => {
             return t(e)
         })
         return toShow.toLocaleString().split(',').join(', ')
-    }
+    }, [muscleArea])
 
     const getMediaURI = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -157,6 +173,12 @@ const AddExercise = () => {
             })
         }
     }
+    const exerciseTypesItems = useMemo(() => {
+        const types: Array<{ value: string; label: string }> = exerciseTypes.map((e) => {
+            return { value: e, label: t(e) }
+        })
+        return exerciseType ? types : [{ value: '0', label: 'Select type' }, ...types]
+    }, [exerciseTypes, exerciseType])
     const clearState = () => {
         setName('')
         setDescription('')
@@ -166,6 +188,7 @@ const AddExercise = () => {
         setMuscleArea([])
         setWeight('')
         setMediaURI([])
+        setExerciseType(null)
     }
     const styles = StyleSheet.create({
         container: {
@@ -320,6 +343,30 @@ const AddExercise = () => {
                     </Pressable>
                 </BorderInputContainer>
 
+                {/*__________Select exercise type__________*/}
+                <BorderInputContainer title={t('Select exercise type')} isRequiredField>
+                    <CustomSelect
+                        items={exerciseTypesItems}
+                        selectedValue={exerciseType ? exerciseType.toString() : 0}
+                        placeholder={t('exercise_type')}
+                        onValueChange={handleChangeExerciseType}
+                    />
+                </BorderInputContainer>
+
+                {/*__________Add muscle area__________*/}
+                {exerciseType && (
+                    <Pressable onPress={() => setIsModalOpen(true)} style={styles.muscleAreaContainer}>
+                        <View style={styles.muscleAreaInput}>
+                            <BorderInputContainer title={t('muscle_area')} onPress={() => setIsModalOpen(true)}>
+                                <TextInput {...inputProps} value={muscleAreaArrayShow} editable={false} multiline />
+                            </BorderInputContainer>
+                        </View>
+                        <View style={styles.plusIcon}>
+                            <MaterialIcons name="add" size={38} color={ColorPalette[theme].mainFont} />
+                        </View>
+                    </Pressable>
+                )}
+
                 {/*__________Weight__________*/}
                 <View style={styles.splitBlock}>
                     <View style={styles.weight}>
@@ -350,22 +397,6 @@ const AddExercise = () => {
                         </BorderInputContainer>
                     </View>
                 </View>
-
-                {/*__________Add muscle area__________*/}
-                <Pressable onPress={() => setIsModalOpen(true)} style={styles.muscleAreaContainer}>
-                    <View style={styles.muscleAreaInput}>
-                        <BorderInputContainer
-                            title={t('muscle_area')}
-                            isRequiredField
-                            onPress={() => setIsModalOpen(true)}
-                        >
-                            <TextInput {...inputProps} value={muscleAreaArrayShow()} editable={false} multiline />
-                        </BorderInputContainer>
-                    </View>
-                    <View style={styles.plusIcon}>
-                        <MaterialIcons name="add" size={38} color={ColorPalette[theme].mainFont} />
-                    </View>
-                </Pressable>
 
                 {/*__________Add media__________*/}
                 {!mediaURI[0] && (

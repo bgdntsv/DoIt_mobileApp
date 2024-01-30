@@ -18,7 +18,7 @@
             }
         },
         "android": {
-            "package": "DO.IT.UKRAINE"
+            "package": "ua.com.doIt"
         },
         "plugins": [
             [
@@ -40,7 +40,8 @@
                     "photosPermission": "Allow $(PRODUCT_NAME) to access your photos."
                 }
             ],
-            "expo-localization"
+            "expo-localization",
+            "expo-font"
         ]
     }
 }

@@ -20,6 +20,7 @@ import { initExerciseState } from '../redux/slices/exerciseSlice'
 import { useFonts } from 'expo-font'
 import { Loading } from '../common/Loading'
 import { initTrainingsState } from '../redux/slices/trainingSlice'
+import { showToast } from '../helpers/toast'
 
 export type DRAWER_PROP_TYPES = {
     Home: undefined
@@ -34,35 +35,48 @@ export const Navigation = () => {
     const Drawer = createDrawerNavigator()
     const { languageCode } = getLocales()[0]
     const dispatch = useAppDispatch()
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false) //
     const dimensions = useWindowDimensions()
     const [fontsLoaded] = useFonts({
         'Inter-Regular': require('../assets/fonts/inter/Inter-Regular.ttf'),
     })
     const init = async () => {
         setIsLoading(true)
+        showToast({ type: 'success', text1: 'Init start' })
         if (Platform.OS !== 'web') {
-            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP)
-            await getFilesPermissions()
-            const uiFile = await readUiFile()
-            if (uiFile) {
-                if (!uiFile.theme) {
-                    dispatch(changeTheme('white'))
-                } else {
-                    dispatch(changeTheme(uiFile.theme))
+            try {
+                await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP)
+                await getFilesPermissions()
+                showToast({ type: 'success', text1: 'Permissions granted' })
+                const uiFile = await readUiFile()
+                showToast({ type: 'success', text1: 'UI file read' })
+                if (uiFile) {
+                    if (!uiFile.theme) {
+                        dispatch(changeTheme('white'))
+                    } else {
+                        dispatch(changeTheme(uiFile.theme))
+                    }
+                    if (!uiFile.language) {
+                        dispatch(changeLanguage(languageCode as LANGUAGE_TYPE))
+                    } else {
+                        dispatch(changeLanguage(uiFile.language))
+                    }
                 }
-                if (!uiFile.language) {
-                    dispatch(changeLanguage(languageCode as LANGUAGE_TYPE))
-                } else {
-                    dispatch(changeLanguage(uiFile.language))
-                }
-            }
-            const exercises = await readExercisesFile()
-            dispatch(initExerciseState(exercises))
+                showToast({ type: 'success', text1: 'UI file inited' })
+                const exercises = await readExercisesFile()
+                showToast({ type: 'success', text1: 'Exercise file read' })
+                dispatch(initExerciseState(exercises))
+                showToast({ type: 'success', text1: 'Exercise file inited' })
 
-            const trainings = await readTrainingsFile()
-            if (trainings) {
-                dispatch(initTrainingsState(trainings))
+                const trainings = await readTrainingsFile()
+                showToast({ type: 'success', text1: 'Trainings file read' })
+                if (trainings) {
+                    dispatch(initTrainingsState(trainings))
+                }
+                showToast({ type: 'success', text1: 'Trainings file inited' })
+            } catch (e) {
+                // @ts-ignore
+                showToast({ type: 'error', text1: e })
             }
         }
         setIsLoading(false)

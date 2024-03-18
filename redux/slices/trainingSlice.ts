@@ -3,7 +3,7 @@ import { EXERCISE, EXERCISE_TYPE } from './exerciseSlice'
 import { STORE_TYPE } from '../store'
 import { writeTrainingsFile } from '../../helpers/fileHelper'
 import { showToast } from '../../helpers/toast'
-import { INVENTORY } from '../../helpers/types'
+import { INVENTORY, MUSCLE_AREA_TYPE } from '../../helpers/types'
 
 export type TRAINING = {
     name: string
@@ -20,7 +20,8 @@ export type TRAINING = {
     exercisesCount: number
     allExercises: Array<EXERCISE>
     defaultRepeatsCount: string // as number,
-    inventory: Array<INVENTORY>
+    inventory: Array<INVENTORY | string>
+    muscleAreas: Array<MUSCLE_AREA_TYPE>
 }
 
 export type TRAININGS_STATE = {

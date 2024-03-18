@@ -17,7 +17,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist'
 import { BackButtonNavigation } from '../../../common/BackButtonNavigation'
 import { ExerciseDetailsModal } from '../../../common/ExerciseDetailsModal'
-import { INVENTORY } from '../../../helpers/types'
+import { INVENTORY, MUSCLE_AREA_TYPE } from '../../../helpers/types'
 import { BorderInputContainer } from '../../../common/BorderInputContainer'
 
 export const ConfirmTraining = () => {
@@ -44,12 +44,17 @@ export const ConfirmTraining = () => {
     const saveTraining = () => {
         const id = uuid.v4().toString()
         let inventory: Array<INVENTORY> = []
+        let muscleAreas: Array<MUSCLE_AREA_TYPE> = []
         allExercises.forEach((e) => {
             if (e.inventory?.length) {
                 inventory.push(...e.inventory)
             }
+            if (e.muscleArea?.length) {
+                muscleAreas.push(...e.muscleArea)
+            }
         })
         inventory = inventory.filter((value, index, array) => array.indexOf(value) === index)
+        muscleAreas = muscleAreas.filter((value, index, array) => array.indexOf(value) === index)
         const training: TRAINING = {
             dateCreation: new Date().getTime(),
             id,
@@ -58,6 +63,7 @@ export const ConfirmTraining = () => {
             allExercises,
             inventory,
             defaultRepeatsCount: defaultRepeatsCount || '4',
+            muscleAreas,
             ...selectedExercisesByTypes,
         }
         dispatch(addTraining(training))

@@ -40,6 +40,9 @@ export const useGlobalStyles = () => {
             maxHeight: 100,
             paddingHorizontal: 5,
         },
+        whiteText: {
+            color: ColorPalette[theme].secondFont,
+        },
     })
     const inputProps: TextInputProps = {
         placeholderTextColor: ColorPalette[theme].placeholderFont,
